@@ -8,14 +8,17 @@ import 'package:zeronet_ws/zeronet_ws.dart';
 IOWebSocketChannel socket;
 
 main(List<String> args) async {
-  await ZeroNet.instance
-      .connect('127.0.0.1:43110', '1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D');
+  await ZeroNet.instance.connect('1HeLLo4uzjaLetFx6NH3PMwFP3qbRbTf3D');
   ZeroNet.instance.siteInfo(callback: (message) {
     SiteInfo info = SiteInfo.fromJson(
       Message.fromJson(json.decode(message)).result,
     );
     print(message);
-    print(info);
-    ZeroNet.instance.close();
+    print('\n\n\n');
+    print(info.toJson());
   });
+
+  ZeroNet.instance.shutDown();
+
+  // ZeroNet.instance.close();
 }

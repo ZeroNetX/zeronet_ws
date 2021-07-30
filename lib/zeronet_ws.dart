@@ -11,6 +11,10 @@ import 'models/message.dart';
 typedef void MessageCallback(message);
 
 class ZeroNet {
+  static const String kCMD_RESPONSE = 'response';
+  static const String kCMD_PING = 'ping';
+  static const String kCMD_PONG = 'pong';
+
   static String wrapperKey = '';
   Client client = Client();
   bool invoked = false;
@@ -24,11 +28,14 @@ class ZeroNet {
 
   static bool get isInitialised => instance.channel != null;
 
-  Future<String> getWrapperKey(String url) async {
-    if (wrapperKey.isEmpty) {
+  Future<String> getWrapperKey(
+    String url, {
+    bool override = false,
+  }) async {
+    if (wrapperKey.isEmpty || override) {
       try {
         var res = await client.get(
-          url,
+          Uri.parse(url),
           headers: {'Accept': 'text/html'},
         );
         var body = res.body;
@@ -45,14 +52,23 @@ class ZeroNet {
   }
 
   Future<IOWebSocketChannel> connect(
-    String ipwithPort,
-    String siteAddress,
-  ) async {
-    var wrapperKey =
-        await instance.getWrapperKey('http://$ipwithPort/$siteAddress');
-    channel ??= IOWebSocketChannel.connect(
-      'ws://$ipwithPort/Websocket?wrapper_key=$wrapperKey',
+    String site, {
+    String ip = '127.0.0.1',
+    String port = '43110',
+    bool override = false,
+  }) async {
+    final wrapperKey = await instance.getWrapperKey(
+      'http://$ip:$port/$site',
+      override: override,
     );
+    if (override)
+      channel = IOWebSocketChannel.connect(
+        'ws://$ip:$port/Websocket?wrapper_key=$wrapperKey',
+      );
+    else
+      channel ??= IOWebSocketChannel.connect(
+        'ws://$ip:$port/Websocket?wrapper_key=$wrapperKey',
+      );
     return channel;
   }
 
@@ -68,7 +84,7 @@ class ZeroNet {
         json.encode({
           'cmd': cmdStr,
           'params': params,
-          'id': id,
+          'id': id++,
         }),
       );
       if (!isListening) {

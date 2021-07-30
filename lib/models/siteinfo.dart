@@ -36,7 +36,7 @@ class SiteInfo {
   });
 
   SiteInfo.fromJson(Map<String, dynamic> json) {
-    authKey = json['auth_key'];
+    if (json.containsKey('auth_key')) authKey = json['auth_key'];
     authAddress = json['auth_address'];
     certUserId = json['cert_user_id'];
     address = json['address'];
