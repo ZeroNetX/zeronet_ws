@@ -1,12 +1,11 @@
 library zeronet_ws;
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:zeronet_ws/constants.dart';
-
-import 'models/message.dart';
 
 typedef void MessageCallback(message);
 
@@ -19,8 +18,9 @@ class ZeroNet {
   Client client = Client();
   bool invoked = false;
   bool isListening = false;
-  IOWebSocketChannel channel;
-  static ZeroNet _instance;
+  IOWebSocketChannel? channel;
+  StreamSubscription<dynamic>? subscription;
+  static ZeroNet? _instance;
 
   ZeroNet._();
 
@@ -51,7 +51,7 @@ class ZeroNet {
     }
   }
 
-  Future<IOWebSocketChannel> connect(
+  Future<IOWebSocketChannel?> connect(
     String site, {
     String ip = '127.0.0.1',
     String port = '43110',
@@ -69,31 +69,50 @@ class ZeroNet {
       channel ??= IOWebSocketChannel.connect(
         'ws://$ip:$port/Websocket?wrapper_key=$wrapperKey',
       );
+    subscription = channel!.stream.listen(null);
     return channel;
+  }
+
+  Future<String> cmdFuture(
+    String cmdStr, {
+    Map params = const {},
+  }) async {
+    if (subscription == null) {
+      throw Exception('Initalize ZeroNet Api First before calling any method');
+    }
+    Completer<String> completer = Completer();
+    cmd(cmdStr, params: params);
+    subscription?.onData((message) async {
+      if (!completer.isCompleted) {
+        completer.complete(message);
+      }
+    });
+    return completer.future;
   }
 
   void cmd(
     String cmdStr, {
-    IOWebSocketChannel channelK,
     Map params = const {},
-    int id = 1,
-    MessageCallback callback,
+    int? id,
+    MessageCallback? callback,
   }) {
+    i = id ?? i++;
     try {
-      channel.sink.add(
+      channel!.sink.add(
         json.encode({
           'cmd': cmdStr,
           'params': params,
-          'id': id++,
+          'id': i,
         }),
       );
-      if (!isListening) {
-        isListening = true;
-        channel.stream.listen(callback ?? onMessage);
-      }
     } catch (e) {
       if (channel == null)
         throw 'Initalize ZeroNet Api First before calling any method';
+    }
+    if (callback != null) {
+      subscription?.onData((message) {
+        callback(message);
+      });
     }
   }
 
@@ -101,9 +120,9 @@ class ZeroNet {
     int to = 1,
     int result = 1,
     int id = 2,
-    MessageCallback callback,
+    MessageCallback? callback,
   }) {
-    channel.sink.add(
+    channel!.sink.add(
       json.encode(
         response(
           to: to,
@@ -114,7 +133,7 @@ class ZeroNet {
     );
     if (!isListening) {
       isListening = true;
-      channel.stream.listen(callback ?? onMessage);
+      channel?.stream.listen(callback ?? onMessage);
     }
   }
 
@@ -134,26 +153,7 @@ class ZeroNet {
     print(message);
   }
 
-  void siteInfo({MessageCallback callback}) => ZeroNet.instance
-      .cmd(ZeroNetCmd.siteInfo, callback: callback ?? onMessage);
-
   int i = 1;
 
-  void shutDown({
-    MessageCallback callback,
-  }) =>
-      ZeroNet.instance.cmd(
-        ZeroNetCmd.serverShutdown,
-        id: i,
-        callback: callback ??
-            (message) {
-              Message msg = Message.fromJson(json.decode(message));
-              if (msg.cmd == 'confirm' && msg.id == i) {
-                ZeroNet.instance.respond();
-                i = 1;
-              }
-            },
-      );
-
-  void close() => channel.sink.close();
+  void close() => channel!.sink.close();
 }

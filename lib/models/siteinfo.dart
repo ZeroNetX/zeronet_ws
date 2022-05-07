@@ -1,20 +1,22 @@
+import 'package:zeronet_ws/models/message.dart';
+
 class SiteInfo {
-  String authKey;
-  String authAddress;
-  Null certUserId;
-  String address;
-  String addressShort;
-  Settings settings;
+  String? authKey;
+  String? authAddress;
+  String? certUserId;
+  String? address;
+  String? addressShort;
+  Settings? settings;
   dynamic contentUpdated;
-  int badFiles;
-  int sizeLimit;
-  int nextSizeLimit;
-  int peers;
-  int startedTaskNum;
-  int tasks;
-  int workers;
-  Content content;
-  Null feedFollowNum;
+  int? badFiles;
+  int? sizeLimit;
+  int? nextSizeLimit;
+  int? peers;
+  int? startedTaskNum;
+  int? tasks;
+  int? workers;
+  Content? content;
+  int? feedFollowNum;
 
   SiteInfo({
     this.authKey,
@@ -36,11 +38,11 @@ class SiteInfo {
   });
 
   SiteInfo.fromJson(Map<String, dynamic> json) {
+    address = json['address'];
+    addressShort = json['address_short'];
     if (json.containsKey('auth_key')) authKey = json['auth_key'];
     authAddress = json['auth_address'];
     certUserId = json['cert_user_id'];
-    address = json['address'];
-    addressShort = json['address_short'];
     settings =
         json['settings'] != null ? Settings.fromJson(json['settings']) : null;
     contentUpdated = json['content_updated'];
@@ -51,8 +53,11 @@ class SiteInfo {
     startedTaskNum = json['started_task_num'];
     tasks = json['tasks'];
     workers = json['workers'];
-    content =
-        json['content'] != null ? Content.fromJson(json['content']) : null;
+    content = json['content'] != null
+        ? Content.fromJson(
+            json['content'],
+          )
+        : null;
     feedFollowNum = json['feed_follow_num'];
   }
 
@@ -64,7 +69,7 @@ class SiteInfo {
     data['address'] = this.address;
     data['address_short'] = this.addressShort;
     if (this.settings != null) {
-      data['settings'] = this.settings.toJson();
+      data['settings'] = this.settings!.toJson();
     }
     data['content_updated'] = this.contentUpdated;
     data['bad_files'] = this.badFiles;
@@ -75,7 +80,7 @@ class SiteInfo {
     data['tasks'] = this.tasks;
     data['workers'] = this.workers;
     if (this.content != null) {
-      data['content'] = this.content.toJson();
+      data['content'] = this.content!.toJson();
     }
     data['feed_follow_num'] = this.feedFollowNum;
     return data;
@@ -83,21 +88,21 @@ class SiteInfo {
 }
 
 class Settings {
-  int added;
-  String ajaxKey;
-  int bytesRecv;
-  int bytesSent;
-  Cache cache;
-  int downloaded;
-  int modified;
-  int optionalDownloaded;
-  bool own;
-  int peers;
-  List<String> permissions;
-  bool serving;
-  int size;
-  int sizeFilesOptional;
-  int sizeOptional;
+  int? added;
+  String? ajaxKey;
+  int? bytesRecv;
+  int? bytesSent;
+  Cache? cache;
+  int? downloaded;
+  int? modified;
+  int? optionalDownloaded;
+  bool? own;
+  int? peers;
+  List<String>? permissions;
+  bool? serving;
+  int? size;
+  int? sizeFilesOptional;
+  int? sizeOptional;
 
   Settings({
     this.added,
@@ -142,7 +147,7 @@ class Settings {
     data['bytes_recv'] = this.bytesRecv;
     data['bytes_sent'] = this.bytesSent;
     if (this.cache != null) {
-      data['cache'] = this.cache.toJson();
+      data['cache'] = this.cache!.toJson();
     }
     data['downloaded'] = this.downloaded;
     data['modified'] = this.modified;
@@ -161,7 +166,7 @@ class Settings {
 class Cache {
   Cache();
 
-  Cache.fromJson(Map<String, dynamic> json) {}
+  Cache.fromJson(Map<String, dynamic>? json) {}
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
@@ -170,22 +175,22 @@ class Cache {
 }
 
 class Content {
-  String address;
-  String backgroundColor;
-  String backgroundColorDark;
-  String description;
-  int files;
-  String ignore;
-  String innerPath;
-  int modified;
-  bool postmessageNonceSecurity;
-  int signsRequired;
-  String title;
-  List<String> translate;
-  String viewport;
-  String zeronetVersion;
-  int filesOptional;
-  int includes;
+  String? address;
+  String? backgroundColor;
+  String? backgroundColorDark;
+  String? description;
+  int? files;
+  String? ignore;
+  String? innerPath;
+  int? modified;
+  bool? postmessageNonceSecurity;
+  int? signsRequired;
+  String? title;
+  List<String>? translate;
+  String? viewport;
+  String? zeronetVersion;
+  int? filesOptional;
+  int? includes;
 
   Content({
     this.address,
@@ -244,5 +249,11 @@ class Content {
     data['files_optional'] = this.filesOptional;
     data['includes'] = this.includes;
     return data;
+  }
+}
+
+extension SiteInfoMessageExt on Message {
+  SiteInfo get siteInfo {
+    return SiteInfo.fromJson(this.result);
   }
 }

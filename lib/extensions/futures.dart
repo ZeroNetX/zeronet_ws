@@ -1,0 +1,744 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:http/http.dart';
+
+import '../constants.dart';
+import '../models/message.dart';
+import '../zeronet_ws.dart';
+
+extension UiServerExt on ZeroNet {
+  ///Return stats for current Site
+  Future<Message> announcerInfoFuture() async {
+    var resultStr = await ZeroNetCmd.announcerInfo.callFuture();
+    return resultStr.toMessage();
+  }
+
+  ///Returns "ok", "Not changed" or {"error": error_message}.
+  Future<bool> certAddFuture(
+    String domain,
+    String auth_type,
+    String auth_user_name,
+    String cert,
+  ) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.certAdd,
+      params: {
+        'domain': domain,
+        'auth_type': auth_type,
+        'auth_user_name': auth_user_name,
+        'cert': cert,
+      },
+    );
+    var result = resultStr.toMsgOrNotification();
+    if (result.first == 'message') {
+      Message message = result.last;
+      return message.result == "Not changed";
+    } else {
+      Notification notification = result.last;
+      var res = notification.params.first;
+      throw true;
+    }
+    return false;
+  }
+
+  ///Return: None.
+  Future<void> certSelectFuture({
+    List<String>? accepted_domains,
+    String? accept_any,
+    String? accepted_pattern,
+  }) async {
+    var params = {};
+    if (accepted_domains != null) {
+      params['accepted_domains'] = accepted_domains;
+    }
+    if (accept_any != null) params['accept_any'] = accept_any;
+    if (accepted_pattern != null) params['accepted_pattern'] = accepted_pattern;
+
+    // var resultStr =
+    ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.certSelect,
+      params: params,
+    );
+    // return resultStr.toMessage();
+  }
+
+  ///Return: None.
+  Future<void> channelJoinFuture(String channel) async {
+    await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.channelJoin,
+      params: {
+        'channel': channel,
+      },
+    );
+  }
+
+  ///Return: Result of the query as an array.
+  Future<Message> dbQueryFuture(String query, Map sqlparams) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.dbQuery,
+      params: {
+        'query': query,
+        'params': sqlparams,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  ///Return: List of file and directory names
+  Future<Message> dirListFuture(String inner_path) async {
+    var resultsStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.dirList,
+      params: {
+        'inner_path': inner_path,
+      },
+    );
+    return resultsStr.toMessage();
+  }
+
+  ///Return: "ok" on success, the error message otherwise.
+  Future<Message> fileDeleteFuture(String inner_path) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.fileDelete,
+      params: {
+        'inner_path': inner_path,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  ///Return: The content of the file.
+  Future<Message> fileGetFuture(
+    String inner_path, {
+    bool required_ = true,
+    String format = 'text',
+    int timeout = 300,
+  }) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.fileGet,
+      params: {
+        'inner_path': inner_path,
+        'required': required_,
+        'format': format,
+        'timeout': timeout,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  ///Return: List of files in the directory (recursive).
+  Future<Message> fileListFuture(String inner_path) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.fileList,
+      params: {
+        'inner_path': inner_path,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  ///Return: "ok" on successful download.
+  Future<Message> fileNeedFuture(
+    String inner_path, {
+    int timeout = 300,
+  }) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.fileNeed,
+      params: {
+        'inner_path': inner_path,
+        'timeout': timeout,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  ///Return: Matched content as an array.
+  Future<Message> fileQueryFuture(
+    String dir_inner_path, {
+    String query = '',
+  }) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.fileQuery,
+      params: {
+        'dir_inner_path': dir_inner_path,
+        'query': query,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  ///Return: Matched content as an array.
+  Future<Message> fileRulesFuture(String inner_path) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.fileRules,
+      params: {
+        'inner_path': inner_path,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  ///Return: "ok" on success, the error message otherwise.
+  Future<Message> fileWriteFuture(
+    String inner_path,
+    String content_base64,
+  ) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.fileWrite,
+      params: {
+        'inner_path': inner_path,
+        'content_base64': content_base64,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  ///Return: pong
+  Future<Message> pingFuture() async {
+    final resultStr = await ZeroNetCmd.ping.callFuture();
+    return resultStr.toMessage();
+  }
+
+  ///Return: All information about the Site as a JavaScript object.
+  Future<Message> siteInfoFuture() async {
+    final resultStr = await ZeroNetCmd.siteInfo.callFuture();
+    return resultStr.toMessage();
+  }
+
+  //Return: All information about the server as a JavaScript object.
+  Future<Message> serverInfoFuture() async {
+    final resultStr = await ZeroNetCmd.serverInfo.callFuture();
+    return resultStr.toMessage();
+  }
+
+  ///Return: "ok" on success, the error message otherwise.
+  Future<Message> sitePublishFuture({
+    String? privatekey,
+    String? inner_path,
+    bool sign = true,
+  }) async {
+    var params = {};
+    if (privatekey != null) params['privatekey'] = privatekey;
+    if (inner_path != null) params['inner_path'] = inner_path;
+    params['sign'] = sign;
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.sitePublish,
+      params: params,
+    );
+    return resultStr.toMessage();
+  }
+
+  ///Return: "ok" on success
+  Future<Message> siteReloadFuture() async {
+    final resultStr = await ZeroNetCmd.siteReload.callFuture();
+    return resultStr.toMessage();
+  }
+
+  ///Return: "ok" on success, the error message otherwise.
+  Future<Message> siteSignFuture({
+    String privatekey = 'stored',
+    String? inner_path,
+    bool remove_missing_optional = false,
+  }) async {
+    var params = {};
+    if (inner_path != null) params['inner_path'] = inner_path;
+    params['privatekey'] = privatekey;
+    params['remove_missing_optional'] = remove_missing_optional;
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.siteSign,
+      params: params,
+    );
+    return resultStr.toMessage();
+  }
+
+  ///Return: None.
+  Future<Message> siteUpdateFuture(String address) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.siteUpdate,
+      params: {
+        'address': address,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  ///Return: The user specific site's settings saved using userSetSettings.
+  Future<Message> userGetSettingsFuture() async {
+    final resultStr = await ZeroNetCmd.userGetSettings.callFuture();
+    return resultStr.toMessage();
+  }
+
+  ///Return: "ok" on success.
+  Future<Message> userSetSettingsFuture(Map settings) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.userSetSettings,
+      params: {
+        'settings': settings,
+      },
+    );
+    return resultStr.toMessage();
+  }
+}
+
+extension AdminExt on ZeroNet {
+  ///Return: Command's return value.
+  Future<Message> asFuture(
+    String site,
+    String cmd,
+    List arguments,
+  ) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.as_,
+      params: {
+        'site': site,
+        'cmd': cmd,
+        'arguments': arguments,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  ///Return: A list of objects each representing a certificate from an identity provider.
+  Future<Message> certListFuture() async {
+    final resultStr = await ZeroNetCmd.certList.callFuture();
+    return resultStr.toMessage();
+  }
+
+  ///Return: None
+  Future<void> certSetFuture(String domain) async => ZeroNet.instance.cmdFuture(
+        ZeroNetCmd.certSet,
+        params: {'domain': domain},
+      );
+
+  ///Return: None
+  Future<void> channelJoinAllSiteFuture(String channel) async {
+    await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.channelJoinAllsite,
+      params: {'channel': channel},
+    );
+  }
+
+  ///Return: ok
+  Future<Message> configSetFuture(String key, String value) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.configSet,
+      params: {
+        'key': key,
+        'value': value,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  ///Return: True (port opened) or False (port closed).
+  Future<Message> serverPortcheckFuture() async {
+    final resultStr = await ZeroNetCmd.serverPortcheck.callFuture();
+    return resultStr.toMessage();
+  }
+
+  ///Return: None
+  Future<Message> serverShutdownFuture() async {
+    final resultStr = await ZeroNetCmd.serverShutdown.callFuture();
+    return resultStr.toMessage();
+  }
+
+  ///Return: None
+  Future<Message> serverUpdateFuture() async {
+    final resultStr = await ZeroNetCmd.serverUpdate.callFuture();
+    return resultStr.toMessage();
+  }
+
+  ///Return: None, automatically redirects to new site on completion
+  Future<void> siteCloneFuture(String address, String root_inner_path) async =>
+      await ZeroNet.instance.cmdFuture(ZeroNetCmd.siteClone, params: {
+        'address': address,
+        'root_inner_path': root_inner_path,
+      });
+
+  ///Return: SiteInfo list of all downloaded sites
+  Future<Message> siteListFuture() async {
+    final resultStr = await ZeroNetCmd.siteList.callFuture();
+    return resultStr.toMessage();
+  }
+
+  ///Return: None
+  Future<void> sitePauseFuture(String address) async => await ZeroNet.instance
+      .cmdFuture(ZeroNetCmd.sitePause, params: {'address': address});
+
+  ///Return: None
+  Future<void> siteResumeFuture(String address) async => await ZeroNet.instance
+      .cmdFuture(ZeroNetCmd.siteResume, params: {'address': address});
+}
+
+extension BigFileExt on ZeroNet {
+  Future<Message> bigFileUploadInitFuture(
+    String innerPath,
+    int size,
+  ) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.bigfileUploadInit,
+      params: {'inner_path': innerPath, 'size': size},
+    );
+    return resultStr.toMessage();
+  }
+
+  ///TODO: Check for proper working
+  Future<bool> uploadFile(String url, String fileName, String filePath) async {
+    MultipartRequest request = MultipartRequest('POST', Uri.parse(url));
+    request.files.add(
+      await MultipartFile.fromPath(
+        fileName,
+        filePath,
+      ),
+    );
+    var response = await request.send();
+    return response.statusCode == 200;
+  }
+}
+
+extension ChartExt on ZeroNet {
+  Future<Message> chartDbQueryFuture(String query, Map sqlparams) async {
+    var msg = await ZeroNet.instance.dbQueryFuture(query, sqlparams);
+    return msg;
+  }
+
+  ///Return: A list of unique peers.
+  Future<Message> chartGetPeerLocationsFuture() async {
+    var msg = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.chartGetPeerLocations,
+    );
+    return msg.toMessage();
+  }
+}
+
+extension CorsExt on ZeroNet {
+  ///Return: "ok" on success.
+  Future<Message> corsPermissionFuture(String address) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.corsPermission,
+      params: {
+        'address': address,
+      },
+    );
+    return resultStr.toMessage();
+  }
+}
+
+extension CryptMessageExt on ZeroNet {
+  ///Return: Base64-encoded public key.
+  Future<Message> userPublickeyFuture({int? index}) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.userPublickey,
+      params: {
+        'index': index ?? 0,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  ///Encrypted text in base64 format or [Encrypted text in base64 format, AES key in base64 format].
+  Future<Message> eciesEncryptFuture(
+    String text, {
+    int publicKey = 0,
+    bool returnAesKey = false,
+  }) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.eciesEncrypt,
+      params: {
+        'text': text,
+        'public_key': publicKey,
+        'return_aes_key': returnAesKey,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  ///Decrypted text or array of decrypted texts (null for failed decodings).
+  Future<Message> eciesDecryptFuture(
+    List<String> params, {
+    int privateKey = 0,
+  }) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.eciesDecrypt,
+      params: {
+        'params': params,
+        'private_key': privateKey,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  ///Return: [base64 encoded key, base64 encoded iv, base64 encoded encrypted text].
+  Future<Message> aesEncryptFuture(String text,
+      {String? key, String? iv}) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.aesEncrypt,
+      params: {
+        'text': text,
+        'key': key,
+        'iv': iv,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  ///Return: Decoded text
+  Future<Message> aesDecryptFuture(
+    String? iv,
+    String encryptedText,
+    String key, {
+    List<String>? encryptedTexts,
+    List<String>? keys,
+  }) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.aesDecrypt,
+      params: {
+        'iv': iv,
+        'encrypted_text': encryptedText,
+        'key': key,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  ///Return: Decoded array of decoded texts.
+  Future<Message> aesDecryptArrayFuture(
+    List<String>? encryptedTexts,
+    List<String>? keys,
+  ) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.aesDecrypt,
+      params: {
+        'encrypted_texts': encryptedTexts,
+        'keys': keys,
+      },
+    );
+    return resultStr.toMessage();
+  }
+}
+
+extension MergerSiteExt on ZeroNet {
+  ///Return: None
+  Future<Message> mergerSiteAddFuture(List<String> addresses) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.mergerSiteAdd,
+      params: {
+        'addresses': addresses,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  ///Return: None
+  Future<Message> mergerSiteDeleteFuture(String address) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.mergerSiteDelete,
+      params: {
+        'address': address,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  ///Return: None
+  Future<Message> mergerSiteListFuture(bool querySiteInfo) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.mergerSiteList,
+      params: {
+        'query_site_info': querySiteInfo,
+      },
+    );
+    return resultStr.toMessage();
+  }
+}
+
+extension MuteExt on ZeroNet {
+  ///Return: "ok" if confirmed.
+  Future<Message> muteAddFuture(
+    String authAddress,
+    String certUserId,
+    String reason,
+  ) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.muteAdd,
+      params: {
+        'auth_address': authAddress,
+        'cert_user_id': certUserId,
+        'reason': reason,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  ///Return: "ok" if confirmed.
+  Future<Message> muteRemoveFuture(String authAddress) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.muteRemove,
+      params: {
+        'auth_address': authAddress,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  ///Return: Array of muted users.
+  Future<Message> muteListFuture() async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.muteList,
+    );
+    return resultStr.toMessage();
+  }
+}
+
+extension OptionalFileExt on ZeroNet {
+  Future<Message> optionalFileListFuture({
+    String? address,
+    String orderBy = 'DESC',
+    int limit = 10,
+  }) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.optionalFileList,
+      params: {
+        'address': address,
+        'orderby': orderBy,
+        'limit': limit,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  Future<Message> optionalFileInfoFuture(
+    String innerPath,
+  ) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.optionalFileInfo,
+      params: {
+        'inner_path': innerPath,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  Future<Message> optionalFilePinFuture(
+    String innerPath, {
+    String? address,
+  }) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.optionalFilePin,
+      params: {
+        'inner_path': innerPath,
+        'address': address,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  Future<Message> optionalFileDeleteFuture(
+    String innerPath, {
+    String? address,
+  }) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.optionalFileDelete,
+      params: {
+        'inner_path': innerPath,
+        'address': address,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  Future<Message> optionalLimitStatsFuture() async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.optionalLimitStats,
+    );
+    return resultStr.toMessage();
+  }
+
+  Future<Message> optionalLimitSetFuture({
+    String? limit,
+  }) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.optionalLimitSet,
+      params: {
+        'address': limit,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  Future<Message> optionalHelpListFuture({
+    String? address,
+  }) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.optionalHelpList,
+      params: {
+        'address': address,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  Future<Message> optionalHelpFuture(
+    String directory, {
+    String? title,
+    String? address,
+  }) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.optionalHelp,
+      params: {
+        'directory': directory,
+        'title': title,
+        'address': address,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  Future<Message> optionalHelpRemoveFuture(
+    String directory, {
+    String? address,
+  }) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.optionalHelpRemove,
+      params: {
+        'directory': directory,
+        'address': address,
+      },
+    );
+    return resultStr.toMessage();
+  }
+
+  Future<Message> optionalHelpAllFuture(
+    String value, {
+    String? address,
+  }) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.optionalHelpAll,
+      params: {
+        'value': value,
+        'address': address,
+      },
+    );
+    return resultStr.toMessage();
+  }
+}
+
+extension ToMessage on String {
+  Message toMessage() => Message.fromJson(json.decode(this));
+
+  //{"cmd": "notification", "params": ["done", "New certificate added <b>app/helloworld@skynetid.bit</b>."], "id": 2}
+  Notification toNotification() => Notification.fromJson(json.decode(this));
+
+  dynamic toMsgOrNotification() {
+    try {
+      return ['notification', toNotification()];
+    } catch (e) {
+      var msg = toMessage();
+      return ['message', msg];
+    }
+  }
+
+  Future<String> callFuture() async {
+    return await ZeroNet.instance.cmdFuture(this);
+  }
+}

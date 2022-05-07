@@ -17,10 +17,12 @@ class ZeroNetCmd {
   static const String wrapperSetViewport = 'wrapperSetViewport';
 
   //UiServer
+  static const String announcerInfo = 'announcerInfo';
   static const String certAdd = 'certAdd';
   static const String certSelect = 'certSelect';
   static const String channelJoin = 'channelJoin';
   static const String dbQuery = 'dbQuery';
+  static const String dirList = 'dirList';
   static const String fileDelete = 'fileDelete';
   static const String fileGet = 'fileGet';
   static const String fileList = 'fileList';
@@ -28,9 +30,11 @@ class ZeroNetCmd {
   static const String fileQuery = 'fileQuery';
   static const String fileRules = 'fileRules';
   static const String fileWrite = 'fileWrite';
+  static const String ping = 'ping';
   static const String siteInfo = 'siteInfo';
   static const String serverInfo = 'serverInfo';
   static const String sitePublish = 'sitePublish';
+  static const String siteReload = 'siteReload';
   static const String siteSign = 'siteSign';
   static const String siteUpdate = 'siteUpdate';
   static const String userGetSettings = 'userGetSettings';
@@ -77,37 +81,15 @@ class ZeroNetCmd {
 
   //Admin
   static const String as_ = 'as';
-
   static const String configSet = 'configSet';
-  static Map configSetParams(Map<String, String> map) => map;
-
+  static const String certList = 'certList';
   static const String certSet = 'certSet';
-  static Map certSetParams(String domain) => {'domain': domain};
-
   static const String channelJoinAllsite = 'channelJoinAllsite';
-  static Map channelJoinAllsiteParams(String channel) => {'channel': channel};
-
   static const String serverPortcheck = 'serverPortcheck';
-
   static const String serverShutdown = 'serverShutdown';
-
   static const String serverUpdate = 'serverUpdate';
-
   static const String siteClone = 'siteClone';
-  static Map siteCloneParams(
-    String address,
-    String root_inner_path,
-  ) =>
-      {
-        'address': address,
-        'root_inner_path': root_inner_path,
-      };
-
   static const String siteList = 'siteList';
-
   static const String sitePause = 'sitePause';
-  static Map sitePauseParams(String address) => {'address': address};
-
   static const String siteResume = 'siteResume';
-  static Map siteResumeParams(String address) => {'address': address};
 }

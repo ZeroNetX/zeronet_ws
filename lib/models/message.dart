@@ -1,21 +1,21 @@
 import 'dart:convert';
 
 class Message {
-  String cmd;
-  int to;
-  dynamic result;
-  int id;
+  late String cmd;
+  late int to;
+  late dynamic result;
+  late int id;
 
-  Message({
+  Message(
     this.cmd,
     this.to,
     this.result,
     this.id,
-  });
+  );
 
   Message.fromJson(Map<String, dynamic> json) {
     cmd = json['cmd'];
-    to = json['to'];
+    to = json['to'] ?? 0;
     result = json['result'];
     id = json['id'];
   }
@@ -30,4 +30,24 @@ class Message {
     data['id'] = this.id;
     return data;
   }
+}
+
+class Notification {
+  final String cmd;
+  final List<String> params;
+  final int id;
+
+  Notification(this.cmd, this.params, this.id);
+
+  factory Notification.fromJson(Map<String, dynamic> json) => Notification(
+        json['cmd'] as String,
+        json['params'] as List<String>,
+        json['id'] as int,
+      );
+
+  Map<String, dynamic> toJson() => {
+        'cmd': cmd,
+        'params': params,
+        'id': id,
+      };
 }

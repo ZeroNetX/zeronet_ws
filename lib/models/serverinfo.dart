@@ -1,27 +1,29 @@
+import 'package:zeronet_ws/models/message.dart';
+
 class ServerInfo extends Result {
-  bool ipExternal;
-  PortOpened portOpened;
-  String platform;
-  String fileserverIp;
-  int fileserverPort;
-  bool torEnabled;
-  String torStatus;
-  bool torHasMeekBridges;
-  bool torUseBridges;
-  String uiIp;
-  int uiPort;
-  String version;
-  int rev;
-  double timecorrection;
-  String language;
-  bool debug;
-  bool offline;
-  List<String> plugins;
-  PluginsRev pluginsRev;
-  UserSettings userSettings;
-  String updatesite;
-  String distType;
-  String libVerifyBest;
+  bool? ipExternal;
+  PortOpened? portOpened;
+  String? platform;
+  String? fileserverIp;
+  int? fileserverPort;
+  bool? torEnabled;
+  String? torStatus;
+  bool? torHasMeekBridges;
+  bool? torUseBridges;
+  String? uiIp;
+  int? uiPort;
+  String? version;
+  int? rev;
+  double? timecorrection;
+  String? language;
+  bool? debug;
+  bool? offline;
+  List<String>? plugins;
+  PluginsRev? pluginsRev;
+  UserSettings? userSettings;
+  String? updatesite;
+  String? distType;
+  String? libVerifyBest;
 
   ServerInfo({
     this.ipExternal,
@@ -85,7 +87,7 @@ class ServerInfo extends Result {
     final Map<String, dynamic> data = Map<String, dynamic>();
     data['ip_external'] = this.ipExternal;
     if (this.portOpened != null) {
-      data['port_opened'] = this.portOpened.toJson();
+      data['port_opened'] = this.portOpened!.toJson();
     }
     data['platform'] = this.platform;
     data['fileserver_ip'] = this.fileserverIp;
@@ -104,10 +106,10 @@ class ServerInfo extends Result {
     data['offline'] = this.offline;
     data['plugins'] = this.plugins;
     if (this.pluginsRev != null) {
-      data['plugins_rev'] = this.pluginsRev.toJson();
+      data['plugins_rev'] = this.pluginsRev!.toJson();
     }
     if (this.userSettings != null) {
-      data['user_settings'] = this.userSettings.toJson();
+      data['user_settings'] = this.userSettings!.toJson();
     }
     data['updatesite'] = this.updatesite;
     data['dist_type'] = this.distType;
@@ -117,8 +119,8 @@ class ServerInfo extends Result {
 }
 
 class PortOpened {
-  bool ipv4;
-  bool ipv6;
+  bool? ipv4;
+  bool? ipv6;
 
   PortOpened({
     this.ipv4,
@@ -141,7 +143,7 @@ class PortOpened {
 class PluginsRev {
   PluginsRev();
 
-  PluginsRev.fromJson(Map<String, dynamic> json);
+  PluginsRev.fromJson(Map<String, dynamic>? json);
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
@@ -150,8 +152,8 @@ class PluginsRev {
 }
 
 class UserSettings {
-  String theme;
-  bool useSystemTheme;
+  String? theme;
+  bool? useSystemTheme;
 
   UserSettings({
     this.theme,
@@ -175,4 +177,10 @@ abstract class Result {
   Result();
   Result.fromJson();
   toJson();
+}
+
+extension ServerInfoMessage on Message {
+  ServerInfo get serverInfo {
+    return ServerInfo.fromJson(this.result);
+  }
 }
