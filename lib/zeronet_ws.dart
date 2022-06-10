@@ -20,6 +20,7 @@ class ZeroNet {
   bool isListening = false;
   IOWebSocketChannel? channel;
   StreamSubscription<dynamic>? subscription;
+  MessageCallback? onEventMessage;
   static ZeroNet? _instance;
 
   ZeroNet._();
@@ -56,6 +57,7 @@ class ZeroNet {
     String ip = '127.0.0.1',
     String port = '43110',
     bool override = false,
+    MessageCallback? onEventMessage,
   }) async {
     final wrapperKey = await instance.getWrapperKey(
       'http://$ip:$port/$site',
@@ -70,6 +72,7 @@ class ZeroNet {
         'ws://$ip:$port/Websocket?wrapper_key=$wrapperKey',
       );
     subscription = channel!.stream.listen(null);
+    this.onEventMessage = onEventMessage;
     return channel;
   }
 
@@ -81,14 +84,21 @@ class ZeroNet {
       throw Exception('Initalize ZeroNet Api First before calling any method');
     }
     Completer<String> completer = Completer();
-    cmd(cmdStr, params: params);
-    subscription?.onData((message) async {
-      if (!completer.isCompleted) {
+    cmd(cmdStr, params: params, callback: (message) {
+      var msg = json.decode(message);
+      if (msg['cmd'] == kCMD_RESPONSE) {
         completer.complete(message);
       }
     });
+    // subscription?.onData((message) async {
+    //   if (!completer.isCompleted) {
+    //     completer.complete(message);
+    //   }
+    // });
     return completer.future;
   }
+
+  var callbacks = <int, MessageCallback>{};
 
   void cmd(
     String cmdStr, {
@@ -96,13 +106,16 @@ class ZeroNet {
     int? id,
     MessageCallback? callback,
   }) {
-    i = id ?? i++;
+    var cmd_id = id ?? i++;
     try {
+      if (callback != null) {
+        callbacks[cmd_id] = callback;
+      }
       channel!.sink.add(
         json.encode({
           'cmd': cmdStr,
           'params': params,
-          'id': i,
+          'id': cmd_id,
         }),
       );
     } catch (e) {
@@ -111,7 +124,11 @@ class ZeroNet {
     }
     if (callback != null) {
       subscription?.onData((message) {
-        callback(message);
+        var msg = json.decode(message);
+        var id = msg['to'];
+        callbacks[id]?.call(message);
+        callbacks.remove(id);
+        this.onEventMessage?.call(message);
       });
     }
   }

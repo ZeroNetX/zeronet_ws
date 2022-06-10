@@ -82,6 +82,9 @@ class ZeroNetCmd {
   //Admin
   static const String as_ = 'as';
   static const String configSet = 'configSet';
+  static const String permissionAdd = 'permissionAdd';
+  static const String permissionRemove = 'permissionRemove';
+  static const String permissionDetails = 'permissionDetails';
   static const String certList = 'certList';
   static const String certSet = 'certSet';
   static const String channelJoinAllsite = 'channelJoinAllsite';

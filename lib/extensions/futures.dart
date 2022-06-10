@@ -45,22 +45,22 @@ extension UiServerExt on ZeroNet {
   ///Return: None.
   Future<void> certSelectFuture({
     List<String>? accepted_domains,
-    String? accept_any,
+    bool accept_any = false,
     String? accepted_pattern,
   }) async {
     var params = {};
     if (accepted_domains != null) {
       params['accepted_domains'] = accepted_domains;
     }
-    if (accept_any != null) params['accept_any'] = accept_any;
+    params['accept_any'] = accept_any;
     if (accepted_pattern != null) params['accepted_pattern'] = accepted_pattern;
 
-    // var resultStr =
-    ZeroNet.instance.cmdFuture(
+    var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.certSelect,
       params: params,
     );
-    // return resultStr.toMessage();
+    return;
+    // resultStr.toMsgOrNotification();
   }
 
   ///Return: None.
@@ -113,6 +113,7 @@ extension UiServerExt on ZeroNet {
     bool required_ = true,
     String format = 'text',
     int timeout = 300,
+    int priority = 6,
   }) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.fileGet,
@@ -121,6 +122,7 @@ extension UiServerExt on ZeroNet {
         'required': required_,
         'format': format,
         'timeout': timeout,
+        'priority': priority,
       },
     );
     return resultStr.toMessage();
@@ -141,12 +143,14 @@ extension UiServerExt on ZeroNet {
   Future<Message> fileNeedFuture(
     String inner_path, {
     int timeout = 300,
+    int priority = 6,
   }) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.fileNeed,
       params: {
         'inner_path': inner_path,
         'timeout': timeout,
+        'priority': priority,
       },
     );
     return resultStr.toMessage();
@@ -181,13 +185,15 @@ extension UiServerExt on ZeroNet {
   ///Return: "ok" on success, the error message otherwise.
   Future<Message> fileWriteFuture(
     String inner_path,
-    String content_base64,
-  ) async {
+    String content_base64, [
+    bool ignore_bad_files = false,
+  ]) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.fileWrite,
       params: {
         'inner_path': inner_path,
         'content_base64': content_base64,
+        'ignore_bad_files': ignore_bad_files,
       },
     );
     return resultStr.toMessage();
@@ -216,11 +222,15 @@ extension UiServerExt on ZeroNet {
     String? privatekey,
     String? inner_path,
     bool sign = true,
+    bool remove_missing_optional = false,
+    bool update_changed_files = false,
   }) async {
     var params = {};
     if (privatekey != null) params['privatekey'] = privatekey;
     if (inner_path != null) params['inner_path'] = inner_path;
     params['sign'] = sign;
+    params['remove_missing_optional'] = remove_missing_optional;
+    params['update_changed_files'] = update_changed_files;
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.sitePublish,
       params: params,
@@ -229,6 +239,7 @@ extension UiServerExt on ZeroNet {
   }
 
   ///Return: "ok" on success
+  ///TODO! Add inner_path parameter
   Future<Message> siteReloadFuture() async {
     final resultStr = await ZeroNetCmd.siteReload.callFuture();
     return resultStr.toMessage();
@@ -239,11 +250,13 @@ extension UiServerExt on ZeroNet {
     String privatekey = 'stored',
     String? inner_path,
     bool remove_missing_optional = false,
+    bool update_changed_files = false,
   }) async {
     var params = {};
     if (inner_path != null) params['inner_path'] = inner_path;
     params['privatekey'] = privatekey;
     params['remove_missing_optional'] = remove_missing_optional;
+    params['update_changed_files'] = update_changed_files;
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.siteSign,
       params: params,
@@ -252,6 +265,7 @@ extension UiServerExt on ZeroNet {
   }
 
   ///Return: None.
+  ///TODO! Add check_files, since, announce parameters
   Future<Message> siteUpdateFuture(String address) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.siteUpdate,
@@ -298,6 +312,27 @@ extension AdminExt on ZeroNet {
     return resultStr.toMessage();
   }
 
+  ///Return: ok
+  Future<void> permissionAddFuture(String permission) async =>
+      ZeroNet.instance.cmdFuture(
+        ZeroNetCmd.permissionAdd,
+        params: {'permission': permission},
+      );
+
+  ///Return: ok
+  Future<void> permissionRemoveFuture(String permission) async =>
+      ZeroNet.instance.cmdFuture(
+        ZeroNetCmd.permissionRemove,
+        params: {'permission': permission},
+      );
+
+  ///Return: ok
+  Future<void> permissionDetailsFuture(String permission) async =>
+      ZeroNet.instance.cmdFuture(
+        ZeroNetCmd.permissionDetails,
+        params: {'permission': permission},
+      );
+
   ///Return: A list of objects each representing a certificate from an identity provider.
   Future<Message> certListFuture() async {
     final resultStr = await ZeroNetCmd.certList.callFuture();
@@ -337,6 +372,7 @@ extension AdminExt on ZeroNet {
   }
 
   ///Return: None
+  ///TODO! Add restart parameter
   Future<Message> serverShutdownFuture() async {
     final resultStr = await ZeroNetCmd.serverShutdown.callFuture();
     return resultStr.toMessage();
@@ -356,6 +392,7 @@ extension AdminExt on ZeroNet {
       });
 
   ///Return: SiteInfo list of all downloaded sites
+  ///TODO! Add connecting_sites parameter
   Future<Message> siteListFuture() async {
     final resultStr = await ZeroNetCmd.siteList.callFuture();
     return resultStr.toMessage();

@@ -8,13 +8,12 @@ import 'package:zeronet_ws/zeronet_ws.dart';
 import 'dart:convert';
 import 'package:zeronet_ws/models/message.dart';
 import 'package:zeronet_ws/models/siteinfo.dart';
-import 'package:zeronet_ws/zeronet_ws_rust.dart';
 
 void main() {
   var dashboard = '1HELLoE3sFD9569CLCbHEAVqvqV7U2Ri9d';
   var talk = '1TaLkFrMwvbNsooF4ioKAY9EuxTBTjipT';
+  var instance = ZeroNet.instance;
   test('serverInfo', () async {
-    var instance = ZeroNet.instance;
     await instance.connect(dashboard);
     var res = await instance.serverInfoFuture();
     var serverInfo = res.serverInfo;
@@ -22,14 +21,13 @@ void main() {
   });
 
   test('siteInfo', () async {
-    var instance = ZeroNet.instance;
-    await instance.connect(dashboard);
     var res = await instance.siteInfoFuture();
     var siteInfo = res.siteInfo;
     assert(siteInfo.address == dashboard);
   });
 
   test('dbQueryLoadATopic', () async {
+    await instance.connect(talk, override: true);
     var topic_id = 1638782523;
     var topic_user_address = '1AmeB7f5wBfJm6iR7MRZfFh65xkJzaVCX7';
     var query = """
@@ -40,8 +38,6 @@ LEFT JOIN json AS topic_creator_content ON (topic_creator_content.directory = to
 LEFT JOIN keyvalue AS topic_creator_user ON (topic_creator_user.json_id = topic_creator_content.json_id AND topic_creator_user.key = 'cert_user_id')
 WHERE topic.topic_id = "$topic_id" AND topic_creator_address = '$topic_user_address' LIMIT 1
 		""";
-    var instance = ZeroNet.instance;
-    await instance.connect(talk);
     var res = await instance.dbQueryFuture(query, {});
     var dbQueryResult = res.result.first;
     assert(dbQueryResult['topic_id'] == topic_id);
@@ -73,8 +69,6 @@ HAVING last_action < $date
 
 ORDER BY sticky DESC, last_action DESC LIMIT 31
 		""";
-    var instance = ZeroNet.instance;
-    await instance.connect(talk);
     var res = await instance.dbQueryFuture(query, {});
     var dbQueryResult = res.result;
     assert(dbQueryResult.isNotEmpty);
@@ -85,10 +79,10 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
   });
 
   test('Old Api', () async {
-    await ZeroNet.instance.connect(
-      '1JP2hyjfFsNXejnYBGpDbegBXLnTXjbJz3',
-      port: '43110',
-    );
+    // await ZeroNet.instance.connect(
+    //   '1JP2hyjfFsNXejnYBGpDbegBXLnTXjbJz3',
+    //   port: '43110',
+    // );
     ZeroNet.instance.siteInfo(callback: (message) {
       SiteInfo info = SiteInfo.fromJson(
         Message.fromJson(json.decode(message)).result,
@@ -106,10 +100,10 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
   });
 
   test('New Api', () async {
-    await ZeroNet.instance.connect_new(
-      '1HELLoE3sFD9569CLCbHEAVqvqV7U2Ri9d',
-      port: '43110',
-    );
+    // await ZeroNet.instance.connect_new(
+    //   '1HELLoE3sFD9569CLCbHEAVqvqV7U2Ri9d',
+    //   port: '43110',
+    // );
     ZeroNet.instance.siteInfo(callback: (message) {
       SiteInfo info = SiteInfo.fromJson(
         Message.fromJson(json.decode(message)).result,

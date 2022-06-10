@@ -129,7 +129,9 @@ class Settings {
     bytesSent = json['bytes_sent'];
     cache = json['cache'] != null ? Cache.fromJson(json['cache']) : null;
     downloaded = json['downloaded'];
-    modified = json['modified'];
+    modified = (json['modified'] is double)
+        ? json['modified'].toInt()
+        : json['modified'];
     optionalDownloaded = json['optional_downloaded'];
     own = json['own'];
     peers = json['peers'];
