@@ -225,7 +225,7 @@ class Content {
     postmessageNonceSecurity = json['postmessage_nonce_security'];
     signsRequired = json['signs_required'];
     title = json['title'];
-    translate = json['translate'].cast<String>();
+    translate = json['translate']?.cast<String>();
     viewport = json['viewport'];
     zeronetVersion = json['zeronet_version'];
     filesOptional = json['files_optional'];

@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'package:zeronet_ws/models/message.dart';
 import 'package:zeronet_ws/zeronet_ws.dart';
 
 import '../constants.dart';

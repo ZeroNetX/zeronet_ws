@@ -1,6 +1,6 @@
 name: zeronet_ws
-description: ZeroNet WebSocket Package.
-version: 0.0.5
+description: ZeroNet(X) WebSocket Package to use ZeroNet API via Websockets in your dart program.
+version: 0.0.6
 homepage: https://github.com/canewsin/zeronet_ws
 
 environment:
