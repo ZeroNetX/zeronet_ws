@@ -88,6 +88,8 @@ class ZeroNet {
       var msg = json.decode(message);
       if (msg['cmd'] == kCMD_RESPONSE) {
         completer.complete(message);
+      } else {
+        completer.complete(message);
       }
     });
     // subscription?.onData((message) async {

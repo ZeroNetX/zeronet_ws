@@ -33,11 +33,20 @@ extension UiServerExt on ZeroNet {
     var result = resultStr.toMsgOrNotification();
     if (result.first == 'message') {
       Message message = result.last;
-      return message.result == "Not changed";
+      if (message.result == 'ok' || message.result == 'Not changed') {
+        return true;
+      } else {
+        assert(false);
+      }
     } else {
       Notification notification = result.last;
-      var res = notification.params.first;
-      throw true;
+      var params = notification.params.first;
+      var res = notification.params;
+      if (res == 'ok') {
+        return true;
+      } else {
+        assert(false);
+      }
     }
     return false;
   }
@@ -74,7 +83,10 @@ extension UiServerExt on ZeroNet {
   }
 
   ///Return: Result of the query as an array.
-  Future<Message> dbQueryFuture(String query, Map sqlparams) async {
+  Future<Message> dbQueryFuture(
+    String query, [
+    Map sqlparams = const {},
+  ]) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.dbQuery,
       params: {
@@ -247,14 +259,14 @@ extension UiServerExt on ZeroNet {
 
   ///Return: "ok" on success, the error message otherwise.
   Future<Message> siteSignFuture({
-    String privatekey = 'stored',
+    String? privatekey,
     String? inner_path,
     bool remove_missing_optional = false,
     bool update_changed_files = false,
   }) async {
     var params = {};
     if (inner_path != null) params['inner_path'] = inner_path;
-    params['privatekey'] = privatekey;
+    if (privatekey != null) params['privatekey'] = privatekey;
     params['remove_missing_optional'] = remove_missing_optional;
     params['update_changed_files'] = update_changed_files;
     var resultStr = await ZeroNet.instance.cmdFuture(
