@@ -1,3 +1,9 @@
+## [0.0.7]
+
+- Add `wrapperKey_` arg for connect method, usefull in web platform.
+- Replace `IOWebSocketChannel` with `WebSocketChannel` to improve support for web platform.
+- Various Bug fixes in method channels.
+
 ## [0.0.6]
 
 - Remove unused imports.

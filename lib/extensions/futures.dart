@@ -488,14 +488,14 @@ extension CryptMessageExt on ZeroNet {
   ///Encrypted text in base64 format or [Encrypted text in base64 format, AES key in base64 format].
   Future<Message> eciesEncryptFuture(
     String text, {
-    int publicKey = 0,
+    dynamic publicKey = 0,
     bool returnAesKey = false,
   }) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.eciesEncrypt,
       params: {
         'text': text,
-        'public_key': publicKey,
+        'publickey': publicKey,
         'return_aes_key': returnAesKey,
       },
     );
@@ -504,28 +504,26 @@ extension CryptMessageExt on ZeroNet {
 
   ///Decrypted text or array of decrypted texts (null for failed decodings).
   Future<Message> eciesDecryptFuture(
-    List<String> params, {
+    dynamic params, {
     int privateKey = 0,
   }) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.eciesDecrypt,
       params: {
-        'params': params,
-        'private_key': privateKey,
+        'param': params,
+        'privatekey': privateKey,
       },
     );
     return resultStr.toMessage();
   }
 
   ///Return: [base64 encoded key, base64 encoded iv, base64 encoded encrypted text].
-  Future<Message> aesEncryptFuture(String text,
-      {String? key, String? iv}) async {
+  Future<Message> aesEncryptFuture(String text, {String? key}) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.aesEncrypt,
       params: {
         'text': text,
         'key': key,
-        'iv': iv,
       },
     );
     return resultStr.toMessage();
@@ -534,18 +532,20 @@ extension CryptMessageExt on ZeroNet {
   ///Return: Decoded text
   Future<Message> aesDecryptFuture(
     String? iv,
-    String encryptedText,
-    String key, {
-    List<String>? encryptedTexts,
-    List<String>? keys,
+    String? encryptedText,
+    String? key, {
+    List<List<String>> encryptedTexts = const [],
+    List<String> keys = const [],
   }) async {
+    var params = [];
+    if (encryptedText != null) {
+      params = [iv, encryptedText, keys];
+    } else {
+      params = [encryptedTexts, keys];
+    }
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.aesDecrypt,
-      params: {
-        'iv': iv,
-        'encrypted_text': encryptedText,
-        'key': key,
-      },
+      params: params,
     );
     return resultStr.toMessage();
   }

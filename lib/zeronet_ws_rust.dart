@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:zeronet_ws/zeronet_ws.dart';
 
 extension ZeroNetExt on ZeroNet {
@@ -26,7 +26,7 @@ extension ZeroNetExt on ZeroNet {
     return ZeroNet.wrapperKey;
   }
 
-  Future<IOWebSocketChannel?> connect_new(
+  Future<WebSocketChannel?> connect_new(
     String site, {
     String ip = '127.0.0.1',
     String port = '43110',
@@ -36,14 +36,11 @@ extension ZeroNetExt on ZeroNet {
       'http://$ip:$port/',
       site,
     );
+    final uri = Uri.parse('ws://$ip:$port/Websocket?wrapper_key=$wrapperKey');
     if (override)
-      channel = IOWebSocketChannel.connect(
-        'ws://$ip:$port/Websocket?wrapper_key=$wrapperKey',
-      );
+      channel = WebSocketChannel.connect(uri);
     else
-      channel ??= IOWebSocketChannel.connect(
-        'ws://$ip:$port/Websocket?wrapper_key=$wrapperKey',
-      );
+      channel ??= WebSocketChannel.connect(uri);
     return channel;
   }
 }

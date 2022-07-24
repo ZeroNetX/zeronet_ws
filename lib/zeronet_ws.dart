@@ -4,8 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:web_socket_channel/io.dart';
-import 'package:zeronet_ws/constants.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 typedef void MessageCallback(message);
 
@@ -18,7 +17,7 @@ class ZeroNet {
   Client client = Client();
   bool invoked = false;
   bool isListening = false;
-  IOWebSocketChannel? channel;
+  WebSocketChannel? channel;
   StreamSubscription<dynamic>? subscription;
   MessageCallback? onEventMessage;
   static ZeroNet? _instance;
@@ -52,25 +51,24 @@ class ZeroNet {
     }
   }
 
-  Future<IOWebSocketChannel?> connect(
+  Future<WebSocketChannel?> connect(
     String site, {
     String ip = '127.0.0.1',
     String port = '43110',
     bool override = false,
+    String? wrapperKey_,
     MessageCallback? onEventMessage,
   }) async {
-    final wrapperKey = await instance.getWrapperKey(
-      'http://$ip:$port/$site',
-      override: override,
-    );
+    final wrapperKey = wrapperKey_ ??
+        await instance.getWrapperKey(
+          'http://$ip:$port/$site',
+          override: override,
+        );
+    var uri = Uri.parse('ws://$ip:$port/Websocket?wrapper_key=$wrapperKey');
     if (override)
-      channel = IOWebSocketChannel.connect(
-        'ws://$ip:$port/Websocket?wrapper_key=$wrapperKey',
-      );
+      channel = WebSocketChannel.connect(uri);
     else
-      channel ??= IOWebSocketChannel.connect(
-        'ws://$ip:$port/Websocket?wrapper_key=$wrapperKey',
-      );
+      channel ??= WebSocketChannel.connect(uri);
     subscription = channel!.stream.listen(null);
     this.onEventMessage = onEventMessage;
     return channel;
@@ -78,7 +76,7 @@ class ZeroNet {
 
   Future<String> cmdFuture(
     String cmdStr, {
-    Map params = const {},
+    dynamic params = const {},
   }) async {
     if (subscription == null) {
       throw Exception('Initalize ZeroNet Api First before calling any method');
@@ -104,7 +102,7 @@ class ZeroNet {
 
   void cmd(
     String cmdStr, {
-    Map params = const {},
+    dynamic params = const {},
     int? id,
     MessageCallback? callback,
   }) {
