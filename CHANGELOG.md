@@ -1,3 +1,9 @@
+## [0.0.8]
+ - Add Support for Flutter Web Apps, See README.md for more Info on config needed.
+ - Added flutter_lint and implement suggession.
+ - Full Changelog https://github.com/ZeroNetX/zeronet_ws/compare/73e9d309...715ddb4e
+
+
 ## [0.0.7]
 
 - Add `wrapperKey_` arg for connect method, usefull in web platform.
