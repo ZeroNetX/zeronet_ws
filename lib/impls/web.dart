@@ -2,7 +2,9 @@
 // of your plugin as a separate package, instead of inlining it in the same
 // package as the core of your plugin.
 // ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html show document, Location, promiseToFutureAsMap;
+import 'dart:html' as html
+    show document, Location, ScriptElement, promiseToFutureAsMap, querySelector;
+
 import 'bindings.dart' as bindings;
 
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
@@ -16,7 +18,19 @@ class ZeroNetWSWeb extends ZeroNetWSInterface {
 
   String? _wrapperKey;
 
+  static _importJsLibrary(String url) {
+    final head = html.querySelector('head');
+    final assetUrl = 'assets/packages/zeronet_ws/$url';
+    final html.ScriptElement script = html.ScriptElement()
+      ..type = "text/javascript"
+      ..charset = "utf-8"
+      ..async = true
+      ..src = assetUrl;
+    head?.children.add(script);
+  }
+
   static void registerWith(Registrar registrar) {
+    _importJsLibrary('js/bindings.js');
     ZeroNetWSInterface.instance = ZeroNetWSWeb();
   }
 
