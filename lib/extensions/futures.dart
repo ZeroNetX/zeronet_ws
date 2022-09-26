@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -40,8 +42,12 @@ extension UiServerExt on ZeroNet {
       }
     } else {
       Notification notification = result.last;
+      //TODO!
+      // ignore: unused_local_variable
       var params = notification.params.first;
       var res = notification.params;
+      //TODO!
+      // ignore: unrelated_type_equality_checks
       if (res == 'ok') {
         return true;
       } else {
@@ -64,6 +70,8 @@ extension UiServerExt on ZeroNet {
     params['accept_any'] = accept_any;
     if (accepted_pattern != null) params['accepted_pattern'] = accepted_pattern;
 
+    //TODO!
+    // ignore: unused_local_variable
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.certSelect,
       params: params,
