@@ -789,3 +789,19 @@ extension ToMessage on String {
     return await ZeroNet.instance.cmdFuture(this);
   }
 }
+
+extension ToMessageExt on Map<String, dynamic>? {
+  Message toMessage() => Message.fromJson(this ?? {});
+
+  //{"cmd": "notification", "params": ["done", "New certificate added <b>app/helloworld@skynetid.bit</b>."], "id": 2}
+  Notification toNotification() => Notification.fromJson(this ?? {});
+
+  dynamic toMsgOrNotification() {
+    try {
+      return ['notification', toNotification()];
+    } catch (e) {
+      var msg = toMessage();
+      return ['message', msg];
+    }
+  }
+}
