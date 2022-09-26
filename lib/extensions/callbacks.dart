@@ -1,6 +1,7 @@
 import 'package:zeronet_ws/zeronet_ws.dart';
 
 import '../constants.dart';
+import '../interface.dart';
 
 extension UiServerExt on ZeroNet {
   void announcerInfo({MessageCallback? callback}) => ZeroNet.instance.cmd(

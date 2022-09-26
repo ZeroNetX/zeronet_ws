@@ -6,7 +6,6 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-typedef void MessageCallback(message);
 
 class ZeroNet {
   static const String kCMD_RESPONSE = 'response';
