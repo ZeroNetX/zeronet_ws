@@ -785,7 +785,7 @@ extension ToMessage on String {
     }
   }
 
-  Future<String> callFuture() async {
+  Future<Map<String, dynamic>?> callFuture() async {
     return await ZeroNet.instance.cmdFuture(this);
   }
 }
