@@ -697,9 +697,7 @@ extension OptionalFileExt on ZeroNet {
   }
 
   Future<Message> optionalLimitStatsFuture() async {
-    var resultStr = await ZeroNet.instance.cmdFuture(
-      ZeroNetCmd.optionalLimitStats,
-    );
+    var resultStr = await ZeroNetCmd.optionalLimitStats.callFuture();
     return resultStr.toMessage();
   }
 
