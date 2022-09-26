@@ -1,11 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
+
 import 'package:zeronet_ws/extensions/callbacks.dart';
-import 'package:zeronet_ws/extensions/futures.dart';
 import 'package:zeronet_ws/models/serverinfo.dart';
 import 'package:zeronet_ws/zeronet_ws.dart';
-import 'dart:convert';
 import 'package:zeronet_ws/models/message.dart';
 import 'package:zeronet_ws/models/siteinfo.dart';
 
