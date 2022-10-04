@@ -405,11 +405,19 @@ extension AdminExt on ZeroNet {
   }
 
   ///Return: None, automatically redirects to new site on completion
-  Future<void> siteCloneFuture(String address, String root_inner_path) async =>
-      await ZeroNet.instance.cmdFuture(ZeroNetCmd.siteClone, params: {
+  Future<Message> siteCloneFuture(
+    String address,
+    String root_inner_path,
+  ) async {
+    final result = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.siteClone,
+      params: {
         'address': address,
         'root_inner_path': root_inner_path,
-      });
+      },
+    );
+    return await respondFuture(result!['id']);
+  }
 
   Future<Message> respondFuture(int to) async {
     Completer<String> completer = Completer();
