@@ -49,6 +49,7 @@ class ZeroNetWSWeb extends ZeroNetWSInterface {
     params = const {},
     int? id,
     MessageCallback? callback,
+    bool isWrapperCmd = false,
   }) =>
       bindings.cmd(cmdStr, params);
 
@@ -56,9 +57,21 @@ class ZeroNetWSWeb extends ZeroNetWSInterface {
   Future<Map<String, dynamic>?> cmdFuture(
     String cmdStr, {
     dynamic params = const {},
+    bool isWrapperCmd = false,
   }) async {
     final result = await html.promiseToFutureAsMap(bindings.cmdp(cmdStr));
     final value = {'cmd': cmdStr, 'id': -1, 'result': result};
     return value;
+  }
+
+  @override
+  void respond({
+    int to = 1,
+    int result = 1,
+    int? id,
+    MessageCallback? callback,
+  }) {
+    //TODO Need Impl
+    assert(false);
   }
 }
