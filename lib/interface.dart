@@ -52,4 +52,23 @@ abstract class ZeroNetWSInterface extends PlatformInterface {
     dynamic params = const {},
     bool isWrapperCmd = false,
   });
+
+  void respond({
+    int to = 1,
+    int result = 1,
+    int? id,
+    MessageCallback? callback,
+  });
+
+  Map response({
+    int to = 1,
+    int result = 1,
+    int id = 2,
+  }) =>
+      {
+        'cmd': 'response',
+        'to': to,
+        'result': result,
+        'id': id,
+      };
 }
