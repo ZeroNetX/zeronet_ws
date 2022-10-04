@@ -411,6 +411,17 @@ extension AdminExt on ZeroNet {
         'root_inner_path': root_inner_path,
       });
 
+  Future<Message> respondFuture(int to) async {
+    Completer<String> completer = Completer();
+    ZeroNet.instance.respond(
+      to: to,
+      callback: (msg) {
+        completer.complete(msg);
+      },
+    );
+    return (await completer.future).toMessage();
+  }
+
   ///Return: SiteInfo list of all downloaded sites
   ///TODO! Add connecting_sites parameter
   Future<Message> siteListFuture() async {
