@@ -86,11 +86,16 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
     String? wrapperKey_,
     MessageCallback? onEventMessage,
   }) async {
-    final wrapperKey = wrapperKey_ ??
-        await getWrapperKey(
-          'http://$ip:$port/$site',
-          override: override,
-        );
+    wrapperKey = (wrapperKey_ != null)
+        ? wrapperKey_
+        : (override || wrapperKey.isEmpty)
+            ? await getWrapperKey(
+                  'http://$ip:$port/$site',
+                  override: override,
+                ) ??
+                ''
+            : wrapperKey;
+    assert(wrapperKey.isNotEmpty);
     var uri = Uri.parse('ws://$ip:$port/Websocket?wrapper_key=$wrapperKey');
     channel ??= WebSocketChannel.connect(uri);
     subscription ??= channel!.stream.listen(null);
