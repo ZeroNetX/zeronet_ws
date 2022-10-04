@@ -32,6 +32,13 @@ abstract class ZeroNetWSInterface extends PlatformInterface {
   }) =>
       Future.value();
 
+  Future<void> connectWrapper(
+    String site, {
+    String ip = '127.0.0.1',
+    String port = '43110',
+  }) =>
+      Future.value();
+
   void cmd(
     String cmdStr, {
     params = const {},
