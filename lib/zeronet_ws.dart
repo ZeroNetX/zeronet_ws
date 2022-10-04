@@ -46,6 +46,18 @@ class ZeroNet {
     );
   }
 
+  Future<void> connectWrapper(
+    String site, {
+    String ip = '127.0.0.1',
+    String port = '43110',
+  }) async {
+    return await ZeroNetWSInterface.instance.connectWrapper(
+      site,
+      ip: ip,
+      port: port,
+    );
+  }
+
   Future<Map<String, dynamic>?> cmdFuture(
     String cmdStr, {
     dynamic params = const {},
@@ -55,6 +67,20 @@ class ZeroNet {
       cmdStr,
       params: params,
       isWrapperCmd: isWrapperCmd,
+    );
+  }
+
+  void respond({
+    int to = 1,
+    int result = 1,
+    int? id,
+    void Function(dynamic)? callback,
+  }) {
+    ZeroNetWSInterface.instance.respond(
+      to: to,
+      result: result,
+      id: id,
+      callback: callback,
     );
   }
 
