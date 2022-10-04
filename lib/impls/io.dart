@@ -29,6 +29,11 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
   bool isListening = false;
 
   int i = 1;
+
+  WebSocketChannel? wrapperChannel;
+  StreamSubscription<dynamic>? wrapperSubscription;
+  int iW = 1000000;
+
   final callbacks = <int, MessageCallback>{};
 
   final String _kCmdResponse = 'response';
@@ -105,6 +110,19 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
     }
     this.onEventMessage = onEventMessage;
     return channel;
+  }
+
+  @override
+  Future<void> connectWrapper(
+    String site, {
+    String ip = '127.0.0.1',
+    String port = '43110',
+  }) async {
+    var uri = Uri.parse(
+      'ws://$ip:$port/ZeroNet-Internal/Websocket?wrapper_key=$wrapperKey',
+    );
+    wrapperChannel ??= WebSocketChannel.connect(uri);
+    wrapperSubscription ??= wrapperChannel!.stream.listen(null);
   }
 
   @override
