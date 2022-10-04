@@ -44,10 +44,12 @@ abstract class ZeroNetWSInterface extends PlatformInterface {
     params = const {},
     int? id,
     MessageCallback? callback,
+    bool isWrapperCmd = false,
   });
 
   Future<Map<String, dynamic>?> cmdFuture(
     String cmdStr, {
     dynamic params = const {},
+    bool isWrapperCmd = false,
   });
 }
