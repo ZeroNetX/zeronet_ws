@@ -190,25 +190,26 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
     }
   }
 
+  @override
   void respond({
     int to = 1,
     int result = 1,
-    int id = 2,
+    int? id,
     MessageCallback? callback,
   }) {
+    var cmdId = id ?? i++;
+    if (callback != null) {
+      callbacks[to] = callback;
+    }
     channel!.sink.add(
       json.encode(
         response(
           to: to,
           result: result,
-          id: id,
+          id: cmdId,
         ),
       ),
     );
-    if (!isListening) {
-      isListening = true;
-      channel?.stream.listen(callback ?? onMessage);
-    }
   }
 
   void onMessage(message) {
