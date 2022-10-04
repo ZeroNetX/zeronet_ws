@@ -49,8 +49,13 @@ class ZeroNet {
   Future<Map<String, dynamic>?> cmdFuture(
     String cmdStr, {
     dynamic params = const {},
+    bool isWrapperCmd = false,
   }) {
-    return ZeroNetWSInterface.instance.cmdFuture(cmdStr, params: params);
+    return ZeroNetWSInterface.instance.cmdFuture(
+      cmdStr,
+      params: params,
+      isWrapperCmd: isWrapperCmd,
+    );
   }
 
   void cmd(
@@ -58,12 +63,14 @@ class ZeroNet {
     params = const {},
     int? id,
     MessageCallback? callback,
+    bool isWrapperCmd = false,
   }) {
     return ZeroNetWSInterface.instance.cmd(
       cmdStr,
       params: params,
       id: id,
       callback: callback,
+      isWrapperCmd: isWrapperCmd,
     );
   }
 
