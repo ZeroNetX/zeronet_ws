@@ -108,14 +108,21 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
   }
 
   @override
-  Future<Map<String, dynamic>?> cmdFuture(String cmdStr, {params = const {}}) {
+  Future<Map<String, dynamic>?> cmdFuture(
+    String cmdStr, {
+    params = const {},
+    bool isWrapperCmd = false,
+  }) {
     if (subscription == null) {
       throw Exception('Initalize ZeroNet Api First before calling any method');
     }
     Completer<Map<String, dynamic>?> completer = Completer();
-    cmd(cmdStr, params: params, callback: (message) {
+    cmd(cmdStr, params: params, isWrapperCmd: isWrapperCmd,
+        callback: (message) {
       var msg = json.decode(message);
       if (msg['cmd'] == _kCmdResponse) {
+        completer.complete(msg);
+      } else if (msg['cmd'] == 'confirm') {
         completer.complete(msg);
       } else {
         completer.complete(message);
@@ -130,13 +137,15 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
     params = const {},
     int? id,
     MessageCallback? callback,
+    bool isWrapperCmd = false,
   }) {
-    var cmdId = id ?? i++;
+    var cmdId = isWrapperCmd ? iW++ : id ?? i++;
     try {
       if (callback != null) {
         callbacks[cmdId] = callback;
       }
-      channel!.sink.add(
+      final vChannel = isWrapperCmd ? wrapperChannel : channel;
+      vChannel!.sink.add(
         json.encode({
           'cmd': cmdStr,
           'params': params,
@@ -144,14 +153,18 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
         }),
       );
     } catch (e) {
-      if (channel == null) {
+      if ((!isWrapperCmd && channel == null) ||
+          (isWrapperCmd && wrapperChannel == null)) {
         throw 'Initalize ZeroNet Api First before calling any method';
       }
     }
     if (callback != null) {
-      subscription?.onData((message) {
+      (isWrapperCmd ? wrapperSubscription : subscription)?.onData((message) {
         var msg = json.decode(message);
         var id = msg['to'];
+        if (msg['cmd'] == 'confirm') {
+          id = msg['id'];
+        }
         callbacks[id]?.call(message);
         callbacks.remove(id);
         onEventMessage?.call(message);
