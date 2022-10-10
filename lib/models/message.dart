@@ -13,7 +13,7 @@ class Message {
     this.id,
   );
 
-  Message.fromJson(Map<String, dynamic> json) {
+  Message.fromJson(JSONMap json) {
     cmd = json['cmd'];
     to = json['to'] ?? 0;
     result = json['result'];
@@ -21,13 +21,13 @@ class Message {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['cmd'] = this.cmd;
-    data['to'] = this.to;
-    if (this.result != null) {
-      data['result'] = json.encode(this.result);
+    final JSONMap data = {};
+    data['cmd'] = cmd;
+    data['to'] = to;
+    if (result != null) {
+      data['result'] = json.encode(result);
     }
-    data['id'] = this.id;
+    data['id'] = id;
     return data;
   }
 }
