@@ -44,7 +44,7 @@ extension UiServerExt on ZeroNet {
       Notification notification = result.last;
       //TODO!
       // ignore: unused_local_variable
-      var params = notification.params.first;
+      var params = notification.params?.first;
       var res = notification.params;
       //TODO!
       // ignore: unrelated_type_equality_checks
