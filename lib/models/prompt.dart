@@ -49,3 +49,47 @@ class Prompt extends _PromptImpl {
         json['params'] as List<String>,
       );
 }
+
+enum PromptType {
+  confirm,
+  notification,
+  progress,
+  prompt,
+  unknown,
+}
+
+class PromptResult {
+  final PromptType type;
+  final dynamic value;
+
+  PromptResult({
+    required this.type,
+    required this.value,
+  });
+
+  factory PromptResult.fromJson(JSONMap json) {
+    final cmd = json['cmd'] ?? json['error'];
+    switch (cmd) {
+      case 'notification':
+        return PromptResult(
+          type: PromptType.notification,
+          value: Notification.fromJson(json),
+        );
+      case 'confirm':
+        return PromptResult(
+          type: PromptType.confirm,
+          value: Confirm.fromJson(json),
+        );
+      case 'progress':
+        return PromptResult(
+          type: PromptType.progress,
+          value: Progress.fromJson(json),
+        );
+      default:
+        return PromptResult(
+          type: PromptType.confirm,
+          value: null,
+        );
+    }
+  }
+}
