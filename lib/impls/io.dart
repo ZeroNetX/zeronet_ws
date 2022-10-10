@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import '../models/models.dart';
 import '../interface.dart';
 
 class ZeroNetWSIO extends ZeroNetWSInterface {
@@ -126,7 +127,7 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
   }
 
   @override
-  Future<Map<String, dynamic>?> cmdFuture(
+  Future<ResponseResult> cmdFuture(
     String cmdStr, {
     params = const {},
     bool isWrapperCmd = false,
@@ -134,18 +135,17 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
     if (subscription == null) {
       throw Exception('Initalize ZeroNet Api First before calling any method');
     }
-    Completer<Map<String, dynamic>?> completer = Completer();
-    cmd(cmdStr, params: params, isWrapperCmd: isWrapperCmd,
-        callback: (message) {
-      var msg = json.decode(message);
-      if (msg['cmd'] == _kCmdResponse) {
-        completer.complete(msg);
-      } else if (msg['cmd'] == 'confirm') {
-        completer.complete(msg);
-      } else {
-        completer.complete(message);
-      }
-    });
+    Completer<ResponseResult> completer = Completer();
+    cmd(
+      cmdStr,
+      params: params,
+      isWrapperCmd: isWrapperCmd,
+      callback: (message) => completer.complete(
+        ResponseResult.fromJson(
+          json.decode(message),
+        ),
+      ),
+    );
     return completer.future;
   }
 

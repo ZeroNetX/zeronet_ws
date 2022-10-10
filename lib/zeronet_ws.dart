@@ -7,6 +7,7 @@
 
 import 'package:flutter/material.dart';
 
+import 'models/models.dart';
 import 'interface.dart';
 
 export ''
@@ -58,7 +59,7 @@ class ZeroNet {
     );
   }
 
-  Future<Map<String, dynamic>?> cmdFuture(
+  Future<ResponseResult> cmdFuture(
     String cmdStr, {
     dynamic params = const {},
     bool isWrapperCmd = false,

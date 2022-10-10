@@ -9,6 +9,7 @@ import 'bindings.dart' as bindings;
 
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
+import '../models/models.dart';
 import '../interface.dart';
 
 /// A web implementation of the ZeronetWsPlatform of the ZeronetWs plugin.
@@ -54,14 +55,14 @@ class ZeroNetWSWeb extends ZeroNetWSInterface {
       bindings.cmd(cmdStr, params);
 
   @override
-  Future<Map<String, dynamic>?> cmdFuture(
+  Future<ResponseResult> cmdFuture(
     String cmdStr, {
     dynamic params = const {},
     bool isWrapperCmd = false,
   }) async {
     final result = await html.promiseToFutureAsMap(bindings.cmdp(cmdStr));
     final value = {'cmd': cmdStr, 'id': -1, 'result': result};
-    return value;
+    return ResponseResult.fromJson(value);
   }
 
   @override

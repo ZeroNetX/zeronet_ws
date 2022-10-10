@@ -1,5 +1,7 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-import 'package:zeronet_ws/impls/io.dart';
+
+import 'impls/io.dart';
+import 'models/models.dart';
 
 typedef MessageCallback = void Function(dynamic);
 
@@ -47,7 +49,7 @@ abstract class ZeroNetWSInterface extends PlatformInterface {
     bool isWrapperCmd = false,
   });
 
-  Future<Map<String, dynamic>?> cmdFuture(
+  Future<ResponseResult> cmdFuture(
     String cmdStr, {
     dynamic params = const {},
     bool isWrapperCmd = false,
