@@ -1,4 +1,4 @@
-import 'dart:convert';
+part of 'models.dart';
 
 class Message {
   late String cmd;

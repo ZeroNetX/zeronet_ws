@@ -1,4 +1,4 @@
-import 'package:zeronet_ws/models/message.dart';
+part of 'models.dart';
 
 class ServerInfo extends Result {
   bool? ipExternal;
