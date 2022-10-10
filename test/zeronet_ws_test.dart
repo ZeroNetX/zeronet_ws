@@ -4,10 +4,8 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:zeronet_ws/extensions/callbacks.dart';
-import 'package:zeronet_ws/models/serverinfo.dart';
+import 'package:zeronet_ws/models/models.dart';
 import 'package:zeronet_ws/zeronet_ws.dart';
-import 'package:zeronet_ws/models/message.dart';
-import 'package:zeronet_ws/models/siteinfo.dart';
 
 void main() {
   var dashboard = '1HELLoE3sFD9569CLCbHEAVqvqV7U2Ri9d';

@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 
 import '../constants.dart';
-import '../models/message.dart';
+import '../models/models.dart';
 import '../zeronet_ws.dart';
 
 extension UiServerExt on ZeroNet {
