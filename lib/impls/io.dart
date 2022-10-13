@@ -105,11 +105,12 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
     var uri = Uri.parse('ws://$ip:$port/Websocket?wrapper_key=$wrapperKey');
     channel ??= WebSocketChannel.connect(uri);
     subscription ??= channel!.stream.listen(null);
+    this.onEventMessage ??= onEventMessage;
     if (override) {
       channel = WebSocketChannel.connect(uri);
       subscription = channel!.stream.listen(null);
+      if (onEventMessage != null) this.onEventMessage = onEventMessage;
     }
-    this.onEventMessage = onEventMessage;
     return channel;
   }
 
