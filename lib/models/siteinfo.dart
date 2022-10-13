@@ -88,79 +88,93 @@ class SiteInfo {
 }
 
 class Settings {
-  int? added;
+  int added;
+  List<String> permissions;
+  int sizeFilesOptional;
+  int sizeOptional;
+  bool serving;
+  Cache cache;
+  int optionalDownloaded;
+  bool own;
   String? ajaxKey;
+  int? downloaded;
+  int? size;
+  int? sizeLimit;
+  String? autodownloadoptional;
+
   int? bytesRecv;
   int? bytesSent;
-  Cache? cache;
-  int? downloaded;
   int? modified;
-  int? optionalDownloaded;
-  bool? own;
   int? peers;
-  List<String>? permissions;
-  bool? serving;
-  int? size;
-  int? sizeFilesOptional;
-  int? sizeOptional;
 
   Settings({
-    this.added,
+    required this.added,
+    required this.permissions,
+    required this.sizeFilesOptional,
+    required this.sizeOptional,
+    required this.serving,
+    required this.cache,
+    required this.optionalDownloaded,
+    required this.own,
     this.ajaxKey,
+    this.downloaded,
+    this.size,
+    this.sizeLimit,
+    this.autodownloadoptional,
+    //
     this.bytesRecv,
     this.bytesSent,
-    this.cache,
-    this.downloaded,
-    this.modified,
-    this.optionalDownloaded,
-    this.own,
     this.peers,
-    this.permissions,
-    this.serving,
-    this.size,
-    this.sizeFilesOptional,
-    this.sizeOptional,
-  });
+    this.modified,
+  }) {
+    downloaded ??= added;
+  }
 
-  Settings.fromJson(Map<String, dynamic> json) {
-    added = json['added'];
-    ajaxKey = json['ajax_key'];
-    bytesRecv = json['bytes_recv'];
-    bytesSent = json['bytes_sent'];
-    cache = json['cache'] != null ? Cache.fromJson(json['cache']) : null;
-    downloaded = json['downloaded'];
-    modified = (json['modified'] is double)
-        ? json['modified'].toInt()
-        : json['modified'];
-    optionalDownloaded = json['optional_downloaded'];
-    own = json['own'];
-    peers = json['peers'];
-    permissions = json['permissions'].cast<String>();
-    serving = json['serving'];
-    size = json['size'];
-    sizeFilesOptional = json['size_files_optional'];
-    sizeOptional = json['size_optional'];
+  factory Settings.fromJson(Map<String, dynamic> json) {
+    return Settings(
+      added: json['added'],
+      permissions: json['permissions'].cast<String>(),
+      sizeFilesOptional: json['size_files_optional'],
+      sizeOptional: json['size_optional'],
+      serving: json['serving'],
+      cache: Cache.fromJson(json['cache']),
+      optionalDownloaded: json['optional_downloaded'],
+      own: json['own'],
+      ajaxKey: json['ajax_key'],
+      downloaded: json['downloaded'],
+      size: json['size'],
+      sizeLimit: json['size_limit'],
+      autodownloadoptional: json['autodownloadoptional'],
+      //
+      bytesRecv: json['bytes_recv'],
+      bytesSent: json['bytes_sent'],
+      peers: json['peers'],
+      modified: (json['modified'] is double)
+          ? json['modified'].toInt()
+          : json['modified'],
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['added'] = this.added;
-    data['ajax_key'] = this.ajaxKey;
-    data['bytes_recv'] = this.bytesRecv;
-    data['bytes_sent'] = this.bytesSent;
-    if (this.cache != null) {
-      data['cache'] = this.cache!.toJson();
-    }
-    data['downloaded'] = this.downloaded;
-    data['modified'] = this.modified;
-    data['optional_downloaded'] = this.optionalDownloaded;
-    data['own'] = this.own;
-    data['peers'] = this.peers;
-    data['permissions'] = this.permissions;
-    data['serving'] = this.serving;
-    data['size'] = this.size;
-    data['size_files_optional'] = this.sizeFilesOptional;
-    data['size_optional'] = this.sizeOptional;
+    final data = <String, dynamic>{};
+    data['added'] = added;
+    data['permissions'] = permissions;
+    data['size_files_optional'] = sizeFilesOptional;
+    data['size_optional'] = sizeOptional;
+    data['serving'] = serving;
+    data['cache'] = cache.toJson();
+    data['optional_downloaded'] = optionalDownloaded;
+    data['own'] = own;
+    data['ajax_key'] = ajaxKey;
+    data['downloaded'] = downloaded;
+    data['size'] = size;
+    data['size_limit'] = sizeLimit;
+    data['autodownloadoptional'] = autodownloadoptional;
+    //
+    data['bytes_recv'] = bytesRecv;
+    data['bytes_sent'] = bytesSent;
+    data['peers'] = peers;
+    data['modified'] = modified;
     return data;
   }
 }
