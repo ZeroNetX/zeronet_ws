@@ -166,12 +166,24 @@ class Settings {
 }
 
 class Cache {
-  Cache();
+  Map<String, int> badFiles;
+  Map<String, int>? hashfield;
+  Cache({
+    required this.badFiles,
+    this.hashfield,
+  });
 
-  Cache.fromJson(Map<String, dynamic>? json) {}
+  factory Cache.fromJson(Map<String, dynamic> json) {
+    return Cache(
+      badFiles: json['bad_files'],
+      hashfield: json['hashfield'],
+    );
+  }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final data = <String, dynamic>{};
+    data['bad_files'] = badFiles;
+    data['hashfield'] = hashfield;
     return data;
   }
 }
