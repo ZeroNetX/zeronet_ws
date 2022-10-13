@@ -234,4 +234,18 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     assert(res.result is String);
     assert(res.result == 'ok');
   });
+
+  test('Admin::sitePause', () async {
+    await instance.connect(dashboard);
+    var res = await instance.sitePauseFuture(talk);
+    assert(res.isMsg);
+    assert(res.message!.result == 'Paused');
+  });
+
+  test('Admin::siteResume', () async {
+    await instance.connect(dashboard);
+    var res = await instance.siteResumeFuture(talk);
+    assert(res.isMsg);
+    assert(res.message!.result == 'Resumed');
+  });
 }

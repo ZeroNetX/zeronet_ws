@@ -137,12 +137,26 @@ extension AdminExt on ZeroNet {
   }
 
   ///Return: None
-  Future<void> sitePauseFuture(String address) async => await ZeroNet.instance
-      .cmdFuture(ZeroNetCmd.sitePause, params: {'address': address});
+  Future<MessageOrError> sitePauseFuture(String address) async {
+    final res = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.sitePause,
+      params: {
+        'address': address,
+      },
+    );
+    return res.toMsgOrErr;
+  }
 
   ///Return: None
-  Future<void> siteResumeFuture(String address) async => await ZeroNet.instance
-      .cmdFuture(ZeroNetCmd.siteResume, params: {'address': address});
+  Future<MessageOrError> siteResumeFuture(String address) async {
+    final res = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.siteResume,
+      params: {
+        'address': address,
+      },
+    );
+    return res.toMsgOrErr;
+  }
 }
 
 extension BigFileExt on ZeroNet {
