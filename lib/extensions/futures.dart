@@ -324,9 +324,9 @@ extension AdminExt on ZeroNet {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.as_,
       params: {
-        'site': site,
+        'address': site,
         'cmd': cmd,
-        'arguments': arguments,
+        'params': arguments,
       },
     );
     return resultStr.toMessage();
