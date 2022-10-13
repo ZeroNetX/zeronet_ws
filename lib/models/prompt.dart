@@ -24,11 +24,11 @@ class Confirm extends _PromptImpl {
 }
 
 class Notification extends _PromptImpl {
-  Notification(int id, List<String>? params) : super(id: id, params: params);
+  Notification(int id, List<dynamic>? params) : super(id: id, params: params);
 
   factory Notification.fromJson(Map<String, dynamic> json) => Notification(
         json['id'] as int,
-        json['params'] as List<String>,
+        json['params'] as List<dynamic>,
       );
 }
 
