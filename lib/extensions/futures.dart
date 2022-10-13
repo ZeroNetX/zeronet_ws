@@ -48,14 +48,7 @@ extension UiServerExt on ZeroNet {
     params['accept_any'] = accept_any;
     if (accepted_pattern != null) params['accepted_pattern'] = accepted_pattern;
 
-    //TODO!
-    // ignore: unused_local_variable
-    var resultStr = await ZeroNet.instance.cmdFuture(
-      ZeroNetCmd.certSelect,
-      params: params,
-    );
-    return;
-    // resultStr.toMsgOrNotification();
+    await ZeroNet.instance.cmdFuture(ZeroNetCmd.certSelect, params: params);
   }
 
   ///Return: None.
