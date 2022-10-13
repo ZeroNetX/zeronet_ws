@@ -214,4 +214,10 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     var res = await instance.siteSignFuture(inner_path: "content.json");
     assert(res.isErr);
   });
+
+  test('siteUpdate', () async {
+    await instance.connect(dashboard);
+    var res = await instance.siteUpdateFuture(dashboard);
+    assert(res.isMsg);
+  });
 }

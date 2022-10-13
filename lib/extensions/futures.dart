@@ -270,14 +270,22 @@ extension UiServerExt on ZeroNet {
 
   ///Return: None.
   ///TODO! Add check_files, since, announce parameters
-  Future<Message> siteUpdateFuture(String address) async {
+  Future<MessageOrError> siteUpdateFuture(
+    String address, {
+    bool checkFiles = false,
+    bool announce = false,
+    int? since,
+  }) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.siteUpdate,
       params: {
         'address': address,
+        'check_files': checkFiles,
+        'announce': announce,
+        'since': since,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.toMsgOrErr;
   }
 
   ///Return: The user specific site's settings saved using userSetSettings.
