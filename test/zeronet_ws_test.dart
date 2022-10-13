@@ -13,8 +13,8 @@ void main() {
   var instance = ZeroNet.instance;
   test('announcerInfo', () async {
     await instance.connect(dashboard);
-    var res = await instance.announcerInfoFuture();
-    var result = res?.result;
+    final res = await instance.announcerInfoFuture();
+    final result = res?.result;
     assert(result is Map);
     assert(result['address'] == dashboard);
   });
