@@ -1,7 +1,7 @@
 part of 'models.dart';
 
 abstract class _PromptImpl<T> {
-  final List<String>? params;
+  final List<dynamic>? params;
   final int id;
   _PromptImpl({
     required this.id,
@@ -15,11 +15,11 @@ abstract class _PromptImpl<T> {
 }
 
 class Confirm extends _PromptImpl {
-  Confirm(int id, List<String>? params) : super(id: id, params: params);
+  Confirm(int id, List<dynamic>? params) : super(id: id, params: params);
 
   factory Confirm.fromJson(Map<String, dynamic> json) => Confirm(
         json['id'] as int,
-        json['params'] as List<String>,
+        json['params'] as List<dynamic>,
       );
 }
 
