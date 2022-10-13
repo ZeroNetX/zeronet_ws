@@ -164,7 +164,7 @@ extension UiServerExt on ZeroNet {
         'query': query,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.message!;
   }
 
   ///Return: Matched content as an array.
