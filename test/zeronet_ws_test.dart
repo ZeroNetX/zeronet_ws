@@ -202,4 +202,10 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     assert(siteInfo.address == dashboard);
     assert(siteInfo.event![1] == 'index.html');
   });
+
+  test('sitePublish', () async {
+    await instance.connect(dashboard);
+    var res = await instance.sitePublishFuture(inner_path: 'index.html');
+    assert(res.isErr);
+  });
 }

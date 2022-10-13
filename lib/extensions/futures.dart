@@ -221,7 +221,7 @@ extension UiServerExt on ZeroNet {
   }
 
   ///Return: "ok" on success, the error message otherwise.
-  Future<Message> sitePublishFuture({
+  Future<MessageOrPromptOrError> sitePublishFuture({
     String? privatekey,
     String? inner_path,
     bool sign = true,
@@ -238,7 +238,7 @@ extension UiServerExt on ZeroNet {
       ZeroNetCmd.sitePublish,
       params: params,
     );
-    return resultStr.toMessage();
+    return resultStr.toMsgOrPromptOrErr;
   }
 
   ///Return: "ok" on success
