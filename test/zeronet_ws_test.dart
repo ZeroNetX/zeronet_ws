@@ -11,11 +11,12 @@ void main() {
   var dashboard = '1HELLoE3sFD9569CLCbHEAVqvqV7U2Ri9d';
   var talk = '1TaLkFrMwvbNsooF4ioKAY9EuxTBTjipT';
   var instance = ZeroNet.instance;
-  test('serverInfo', () async {
+  test('announcerInfo', () async {
     await instance.connect(dashboard);
-    var res = await instance.serverInfoFuture();
-    var serverInfo = res.serverInfo;
-    assert(serverInfo.version != null);
+    var res = await instance.announcerInfoFuture();
+    var result = res?.result;
+    assert(result is Map);
+    assert(result['address'] == dashboard);
   });
 
   test('siteInfo', () async {

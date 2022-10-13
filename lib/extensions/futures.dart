@@ -11,9 +11,9 @@ import '../zeronet_ws.dart';
 
 extension UiServerExt on ZeroNet {
   ///Return stats for current Site
-  Future<Message> announcerInfoFuture() async {
+  Future<Message?> announcerInfoFuture() async {
     var resultStr = await ZeroNetCmd.announcerInfo.callFuture();
-    return resultStr.toMessage();
+    return resultStr.message;
   }
 
   ///Returns "ok", "Not changed" or {"error": error_message}.
