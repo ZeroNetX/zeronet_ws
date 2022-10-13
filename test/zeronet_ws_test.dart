@@ -9,6 +9,14 @@ void main() {
   var dashboard = '1HELLoE3sFD9569CLCbHEAVqvqV7U2Ri9d';
   var talk = '1TaLkFrMwvbNsooF4ioKAY9EuxTBTjipT';
   var instance = ZeroNet.instance;
+  test('ping', () async {
+    await instance.connect(dashboard);
+    final res = await instance.pingFuture();
+    final result = res.result;
+    assert(result is String);
+    assert(result == 'pong');
+  });
+
   test('announcerInfo', () async {
     await instance.connect(dashboard);
     final res = await instance.announcerInfoFuture();

@@ -198,7 +198,7 @@ extension UiServerExt on ZeroNet {
   ///Return: pong
   Future<Message> pingFuture() async {
     final resultStr = await ZeroNetCmd.ping.callFuture();
-    return resultStr.toMessage();
+    return resultStr.message!;
   }
 
   //Return: All information about the site
