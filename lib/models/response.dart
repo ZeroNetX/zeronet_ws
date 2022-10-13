@@ -40,10 +40,20 @@ class ResponseResult {
     //TODO! Add handlers for injectScript & redirect
     switch (cmd) {
       case 'response':
+        final msg = Message.fromJson(json);
+        if (msg.result is Map) {
+          if (msg.result['error'] != null) {
+            return ResponseResult(
+              id: id,
+              type: ResponseType.error,
+              error: Error.fromJson(msg.result),
+            );
+          }
+        }
         return ResponseResult(
           id: id,
           type: ResponseType.message,
-          message: Message.fromJson(json),
+          message: msg,
         );
       case 'error':
         return ResponseResult(
