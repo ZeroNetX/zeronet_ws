@@ -208,4 +208,10 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     var res = await instance.sitePublishFuture(inner_path: 'index.html');
     assert(res.isErr);
   });
+
+  test('siteSign', () async {
+    await instance.connect(dashboard);
+    var res = await instance.siteSignFuture(inner_path: "content.json");
+    assert(res.isErr);
+  });
 }

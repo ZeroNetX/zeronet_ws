@@ -248,22 +248,24 @@ extension UiServerExt on ZeroNet {
   }
 
   ///Return: "ok" on success, the error message otherwise.
-  Future<Message> siteSignFuture({
+  Future<MessageOrPromptOrError> siteSignFuture({
     String? privatekey,
     String? inner_path,
     bool remove_missing_optional = false,
     bool update_changed_files = false,
+    bool response_ok = true,
   }) async {
     var params = {};
     if (inner_path != null) params['inner_path'] = inner_path;
     if (privatekey != null) params['privatekey'] = privatekey;
     params['remove_missing_optional'] = remove_missing_optional;
     params['update_changed_files'] = update_changed_files;
+    params['response_ok'] = response_ok;
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.siteSign,
       params: params,
     );
-    return resultStr.toMessage();
+    return resultStr.toMsgOrPromptOrErr;
   }
 
   ///Return: None.
