@@ -52,13 +52,14 @@ extension UiServerExt on ZeroNet {
   }
 
   ///Return: None.
-  Future<void> channelJoinFuture(String channel) async {
-    await ZeroNet.instance.cmdFuture(
+  Future<Message> channelJoinFuture(List<String> channels) async {
+    final result = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.channelJoin,
       params: {
-        'channel': channel,
+        'channels': channels,
       },
     );
+    return result.message!;
   }
 
   ///Return: Result of the query as an array.

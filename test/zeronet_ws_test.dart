@@ -54,4 +54,13 @@ void main() {
     final res = await certSelectFuture();
     assert(res == true);
   });
+
+  test('channelJoin', () async {
+    await instance.connect(dashboard);
+    final res = await instance.channelJoinFuture(['sitesChanged']);
+    final result = res.result;
+    assert(result is String);
+    assert(result == 'ok');
+  });
+
 }
