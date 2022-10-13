@@ -179,7 +179,7 @@ extension UiServerExt on ZeroNet {
   }
 
   ///Return: "ok" on success, the error message otherwise.
-  Future<Message> fileWriteFuture(
+  Future<MessageOrPromptOrError> fileWriteFuture(
     String inner_path,
     String content_base64, [
     bool ignore_bad_files = false,
@@ -192,7 +192,7 @@ extension UiServerExt on ZeroNet {
         'ignore_bad_files': ignore_bad_files,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.toMsgOrPromptOrErr;
   }
 
   ///Return: pong

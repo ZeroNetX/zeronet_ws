@@ -169,4 +169,10 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     assert(res.result is Map);
     assert(res.result['signers'] is List);
   });
+
+  test('fileWrite', () async {
+    await instance.connect(talk);
+    final res = await instance.fileWriteFuture('js/all.js', '');
+    assert(res.isErr);
+  });
 }
