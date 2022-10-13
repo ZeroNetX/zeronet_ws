@@ -104,7 +104,7 @@ extension UiServerExt on ZeroNet {
   }
 
   ///Return: The content of the file.
-  Future<Message> fileGetFuture(
+  Future<MessageOrError> fileGetFuture(
     String inner_path, {
     bool required_ = true,
     String format = 'text',
@@ -121,7 +121,7 @@ extension UiServerExt on ZeroNet {
         'priority': priority,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.toMsgOrErr;
   }
 
   ///Return: List of files in the directory (recursive).
