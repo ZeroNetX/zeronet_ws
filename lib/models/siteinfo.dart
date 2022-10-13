@@ -203,79 +203,85 @@ class Cache {
 }
 
 class Content {
-  String? address;
+  String address;
+  String innerPath;
+  int signsRequired;
+  int files;
+  int filesOptional;
+  int includes;
+  String title;
+  String description;
+  String ignore;
+  num modified;
+  String? zeronetVersion;
+
   String? backgroundColor;
   String? backgroundColorDark;
-  String? description;
-  int? files;
-  String? ignore;
-  String? innerPath;
-  int? modified;
   bool? postmessageNonceSecurity;
-  int? signsRequired;
-  String? title;
   List<String>? translate;
   String? viewport;
-  String? zeronetVersion;
-  int? filesOptional;
-  int? includes;
 
   Content({
-    this.address,
+    required this.address,
+    required this.innerPath,
+    required this.signsRequired,
+    required this.files,
+    required this.filesOptional,
+    required this.includes,
+    required this.title,
+    required this.description,
+    required this.ignore,
+    required this.modified,
+    required this.zeronetVersion,
+    //
     this.backgroundColor,
     this.backgroundColorDark,
-    this.description,
-    this.files,
-    this.ignore,
-    this.innerPath,
-    this.modified,
     this.postmessageNonceSecurity,
-    this.signsRequired,
-    this.title,
     this.translate,
     this.viewport,
-    this.zeronetVersion,
-    this.filesOptional,
-    this.includes,
   });
 
-  Content.fromJson(Map<String, dynamic> json) {
-    address = json['address'];
-    backgroundColor = json['background-color'];
-    backgroundColorDark = json['background-color-dark'];
-    description = json['description'];
-    files = json['files'];
-    ignore = json['ignore'];
-    innerPath = json['inner_path'];
-    modified = json['modified'];
-    postmessageNonceSecurity = json['postmessage_nonce_security'];
-    signsRequired = json['signs_required'];
-    title = json['title'];
-    translate = json['translate']?.cast<String>();
-    viewport = json['viewport'];
-    zeronetVersion = json['zeronet_version'];
-    filesOptional = json['files_optional'];
-    includes = json['includes'];
+  factory Content.fromJson(Map<String, dynamic> json) {
+    return Content(
+      address: json['address'],
+      innerPath: json['inner_path'],
+      signsRequired: json['signs_required'],
+      files: json['files'],
+      filesOptional: json['files_optional'],
+      includes: json['includes'],
+      title: json['title'],
+      description: json['description'],
+      ignore: json['ignore'],
+      modified: json['modified'],
+      zeronetVersion: json['zeronet_version'],
+      //
+      backgroundColor: json['background-color'],
+      backgroundColorDark: json['background-color-dark'],
+      postmessageNonceSecurity: json['postmessage_nonce_security'],
+      translate: json['translate']?.cast<String>(),
+      viewport: json['viewport'],
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['address'] = this.address;
-    data['background-color'] = this.backgroundColor;
-    data['background-color-dark'] = this.backgroundColorDark;
-    data['description'] = this.description;
-    data['files'] = this.files;
-    data['ignore'] = this.ignore;
-    data['inner_path'] = this.innerPath;
-    data['modified'] = this.modified;
-    data['postmessage_nonce_security'] = this.postmessageNonceSecurity;
-    data['signs_required'] = this.signsRequired;
-    data['title'] = this.title;
-    data['translate'] = this.translate;
-    data['viewport'] = this.viewport;
-    data['zeronet_version'] = this.zeronetVersion;
-    data['files_optional'] = this.filesOptional;
-    data['includes'] = this.includes;
+    final data = <String, dynamic>{};
+    data['address'] = address;
+    data['inner_path'] = innerPath;
+    data['signs_required'] = signsRequired;
+    data['files'] = files;
+    data['files_optional'] = filesOptional;
+    data['includes'] = includes;
+    data['title'] = title;
+    data['description'] = description;
+    data['ignore'] = ignore;
+    data['modified'] = modified;
+    data['zeronet_version'] = zeronetVersion;
+    //
+    data['background-color'] = backgroundColor;
+    data['background-color-dark'] = backgroundColorDark;
+    data['postmessage_nonce_security'] = postmessageNonceSecurity;
+    data['translate'] = translate;
+    data['viewport'] = viewport;
     return data;
   }
 }
