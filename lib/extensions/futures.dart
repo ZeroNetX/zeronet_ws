@@ -63,7 +63,7 @@ extension UiServerExt on ZeroNet {
   }
 
   ///Return: Result of the query as an array.
-  Future<Message> dbQueryFuture(
+  Future<MessageOrError> dbQueryFuture(
     String query, [
     Map sqlparams = const {},
   ]) async {
@@ -74,7 +74,7 @@ extension UiServerExt on ZeroNet {
         'params': sqlparams,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.toMsgOrErr;
   }
 
   ///Return: List of file and directory names
