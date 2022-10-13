@@ -145,4 +145,13 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     assert(res.message!.result != null);
     assert(res.message!.result is List);
   });
+
+  test('fileNeed', () async {
+    await instance.connect(talk);
+    final res = await instance.fileNeedFuture('js/all.js');
+    assert(res.isMsg);
+    assert(res.message!.result != null);
+    assert(res.message!.result is String);
+    assert(res.message!.result == 'ok');
+  });
 }

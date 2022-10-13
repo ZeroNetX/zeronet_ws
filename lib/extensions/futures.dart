@@ -136,7 +136,7 @@ extension UiServerExt on ZeroNet {
   }
 
   ///Return: "ok" on successful download.
-  Future<Message> fileNeedFuture(
+  Future<MessageOrError> fileNeedFuture(
     String inner_path, {
     int timeout = 300,
     int priority = 6,
@@ -149,7 +149,7 @@ extension UiServerExt on ZeroNet {
         'priority': priority,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.toMsgOrErr;
   }
 
   ///Return: Matched content as an array.
