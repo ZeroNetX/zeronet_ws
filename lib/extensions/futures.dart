@@ -17,7 +17,7 @@ extension UiServerExt on ZeroNet {
   }
 
   ///Returns "ok", "Not changed" or {"error": error_message}.
-  Future<bool> certAddFuture(
+  Future<MessageOrPromptOrError> certAddFuture(
     String domain,
     String auth_type,
     String auth_user_name,
@@ -32,29 +32,7 @@ extension UiServerExt on ZeroNet {
         'cert': cert,
       },
     );
-    var result = resultStr.toMsgOrNotification();
-    if (result.first == 'message') {
-      Message message = result.last;
-      if (message.result == 'ok' || message.result == 'Not changed') {
-        return true;
-      } else {
-        assert(false);
-      }
-    } else {
-      Notification notification = result.last;
-      //TODO!
-      // ignore: unused_local_variable
-      var params = notification.params?.first;
-      var res = notification.params;
-      //TODO!
-      // ignore: unrelated_type_equality_checks
-      if (res == 'ok') {
-        return true;
-      } else {
-        assert(false);
-      }
-    }
-    return false;
+    return resultStr.toMsgOrPromptOrErr;
   }
 
   ///Return: None.
