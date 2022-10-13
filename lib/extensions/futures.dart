@@ -125,14 +125,14 @@ extension UiServerExt on ZeroNet {
   }
 
   ///Return: List of files in the directory (recursive).
-  Future<Message> fileListFuture(String inner_path) async {
+  Future<MessageOrError> fileListFuture(String inner_path) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.fileList,
       params: {
         'inner_path': inner_path,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.toMsgOrErr;
   }
 
   ///Return: "ok" on successful download.
