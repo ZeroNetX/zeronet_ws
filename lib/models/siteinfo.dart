@@ -1,88 +1,90 @@
 part of 'models.dart';
 
 class SiteInfo {
-  String? authKey;
-  String? authAddress;
-  String? certUserId;
-  String? address;
-  String? addressShort;
-  Settings? settings;
+  String authAddress;
+  String certUserId;
+  String address;
+  String addressShort;
+  String addressHash;
+  Settings settings;
   dynamic contentUpdated;
-  int? badFiles;
-  int? sizeLimit;
-  int? nextSizeLimit;
-  int? peers;
-  int? startedTaskNum;
-  int? tasks;
-  int? workers;
-  Content? content;
-  int? feedFollowNum;
+  int badFiles;
+  int sizeLimit;
+  int nextSizeLimit;
+  int peers;
+  int startedTaskNum;
+  int tasks;
+  int workers;
+  Content content;
+
+  // String? authKey;
+  //TODO! Handle Saved Plugin Data
+  // int? feedFollowNum;
 
   SiteInfo({
-    this.authKey,
-    this.authAddress,
-    this.certUserId,
-    this.address,
-    this.addressShort,
-    this.settings,
-    this.contentUpdated,
-    this.badFiles,
-    this.sizeLimit,
-    this.nextSizeLimit,
-    this.peers,
-    this.startedTaskNum,
-    this.tasks,
-    this.workers,
-    this.content,
-    this.feedFollowNum,
+    required this.authAddress,
+    required this.certUserId,
+    required this.address,
+    required this.addressShort,
+    required this.addressHash,
+    required this.settings,
+    required this.contentUpdated,
+    required this.badFiles,
+    required this.sizeLimit,
+    required this.nextSizeLimit,
+    required this.peers,
+    required this.startedTaskNum,
+    required this.tasks,
+    required this.workers,
+    required this.content,
+
+    // this.authKey,
+    // this.feedFollowNum,
   });
 
-  SiteInfo.fromJson(Map<String, dynamic> json) {
-    address = json['address'];
-    addressShort = json['address_short'];
-    if (json.containsKey('auth_key')) authKey = json['auth_key'];
-    authAddress = json['auth_address'];
-    certUserId = json['cert_user_id'];
-    settings =
-        json['settings'] != null ? Settings.fromJson(json['settings']) : null;
-    contentUpdated = json['content_updated'];
-    badFiles = json['bad_files'];
-    sizeLimit = json['size_limit'];
-    nextSizeLimit = json['next_size_limit'];
-    peers = json['peers'];
-    startedTaskNum = json['started_task_num'];
-    tasks = json['tasks'];
-    workers = json['workers'];
-    content = json['content'] != null
-        ? Content.fromJson(
-            json['content'],
-          )
-        : null;
-    feedFollowNum = json['feed_follow_num'];
+  factory SiteInfo.fromJson(Map<String, dynamic> json) {
+    return SiteInfo(
+      authAddress: json['auth_address'],
+      certUserId: json['cert_user_id'],
+      address: json['address'],
+      addressShort: json['address_short'],
+      addressHash: json['address_hash'],
+      settings: Settings.fromJson(json['settings']),
+      contentUpdated: json['content_updated'],
+      badFiles: json['bad_files'],
+      sizeLimit: json['size_limit'],
+      nextSizeLimit: json['next_size_limit'],
+      peers: json['peers'],
+      startedTaskNum: json['started_task_num'],
+      tasks: json['tasks'],
+      workers: json['workers'],
+      content: Content.fromJson(json['content']),
+
+      // if (json.containsKey('auth_key')) authKey : json['auth_key'],
+      // feedFollowNum: json['feed_follow_num'],
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['auth_key'] = this.authKey;
-    data['auth_address'] = this.authAddress;
-    data['cert_user_id'] = this.certUserId;
-    data['address'] = this.address;
-    data['address_short'] = this.addressShort;
-    if (this.settings != null) {
-      data['settings'] = this.settings!.toJson();
-    }
-    data['content_updated'] = this.contentUpdated;
-    data['bad_files'] = this.badFiles;
-    data['size_limit'] = this.sizeLimit;
-    data['next_size_limit'] = this.nextSizeLimit;
-    data['peers'] = this.peers;
-    data['started_task_num'] = this.startedTaskNum;
-    data['tasks'] = this.tasks;
-    data['workers'] = this.workers;
-    if (this.content != null) {
-      data['content'] = this.content!.toJson();
-    }
-    data['feed_follow_num'] = this.feedFollowNum;
+    final data = <String, dynamic>{};
+    data['auth_address'] = authAddress;
+    data['cert_user_id'] = certUserId;
+    data['address'] = address;
+    data['address_short'] = addressShort;
+    data['address_hash'] = addressHash;
+    data['settings'] = settings.toJson();
+    data['content_updated'] = contentUpdated;
+    data['bad_files'] = badFiles;
+    data['size_limit'] = sizeLimit;
+    data['next_size_limit'] = nextSizeLimit;
+    data['peers'] = peers;
+    data['started_task_num'] = startedTaskNum;
+    data['tasks'] = tasks;
+    data['workers'] = workers;
+    data['content'] = content.toJson();
+
+    // data['auth_key'] = authKey;
+    // data['feed_follow_num'] = feedFollowNum;
     return data;
   }
 }
@@ -287,6 +289,6 @@ class Content {
 
 extension SiteInfoMessageExt on Message {
   SiteInfo get siteInfo {
-    return SiteInfo.fromJson(this.result);
+    return SiteInfo.fromJson(result);
   }
 }
