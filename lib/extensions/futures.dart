@@ -93,14 +93,14 @@ extension UiServerExt on ZeroNet {
   }
 
   ///Return: "ok" on success, the error message otherwise.
-  Future<Message> fileDeleteFuture(String inner_path) async {
+  Future<MessageOrError> fileDeleteFuture(String inner_path) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.fileDelete,
       params: {
         'inner_path': inner_path,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.toMsgOrErr;
   }
 
   ///Return: The content of the file.

@@ -122,4 +122,11 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     assert(res.message!.result != null);
     assert(res.message!.result is List);
   });
+
+  test('fileDelete', () async {
+    await instance.connect(talk);
+    final res = await instance.fileDeleteFuture('js/all.js');
+    assert(!res.isMsg);
+    assert(res.error != null);
+  });
 }
