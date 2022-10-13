@@ -2,6 +2,7 @@ import 'dart:convert';
 
 part 'error.dart';
 part 'event.dart';
+part 'extensions.dart';
 part 'message.dart';
 part 'prompt.dart';
 part 'response.dart';
