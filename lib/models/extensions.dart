@@ -62,7 +62,7 @@ extension MsgOrPromptOrErr on ResponseResult {
     } else if (isPrompt) {
       return MessageOrPromptOrError(prompt: prompt);
     } else {
-      return MessageOrPromptOrError(prompt: prompt);
+      return MessageOrPromptOrError(error: error);
     }
   }
 }
