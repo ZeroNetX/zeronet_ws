@@ -83,37 +83,38 @@ class ServerInfo extends Result {
     libVerifyBest = json['lib_verify_best'];
   }
 
+  @override
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['ip_external'] = this.ipExternal;
-    if (this.portOpened != null) {
-      data['port_opened'] = this.portOpened!.toJson();
+    final data = <String, dynamic>{};
+    data['ip_external'] = ipExternal;
+    if (portOpened != null) {
+      data['port_opened'] = portOpened!.toJson();
     }
-    data['platform'] = this.platform;
-    data['fileserver_ip'] = this.fileserverIp;
-    data['fileserver_port'] = this.fileserverPort;
-    data['tor_enabled'] = this.torEnabled;
-    data['tor_status'] = this.torStatus;
-    data['tor_has_meek_bridges'] = this.torHasMeekBridges;
-    data['tor_use_bridges'] = this.torUseBridges;
-    data['ui_ip'] = this.uiIp;
-    data['ui_port'] = this.uiPort;
-    data['version'] = this.version;
-    data['rev'] = this.rev;
-    data['timecorrection'] = this.timecorrection;
-    data['language'] = this.language;
-    data['debug'] = this.debug;
-    data['offline'] = this.offline;
-    data['plugins'] = this.plugins;
-    if (this.pluginsRev != null) {
-      data['plugins_rev'] = this.pluginsRev!.toJson();
+    data['platform'] = platform;
+    data['fileserver_ip'] = fileserverIp;
+    data['fileserver_port'] = fileserverPort;
+    data['tor_enabled'] = torEnabled;
+    data['tor_status'] = torStatus;
+    data['tor_has_meek_bridges'] = torHasMeekBridges;
+    data['tor_use_bridges'] = torUseBridges;
+    data['ui_ip'] = uiIp;
+    data['ui_port'] = uiPort;
+    data['version'] = version;
+    data['rev'] = rev;
+    data['timecorrection'] = timecorrection;
+    data['language'] = language;
+    data['debug'] = debug;
+    data['offline'] = offline;
+    data['plugins'] = plugins;
+    if (pluginsRev != null) {
+      data['plugins_rev'] = pluginsRev!.toJson();
     }
-    if (this.userSettings != null) {
-      data['user_settings'] = this.userSettings!.toJson();
+    if (userSettings != null) {
+      data['user_settings'] = userSettings!.toJson();
     }
-    data['updatesite'] = this.updatesite;
-    data['dist_type'] = this.distType;
-    data['lib_verify_best'] = this.libVerifyBest;
+    data['updatesite'] = updatesite;
+    data['dist_type'] = distType;
+    data['lib_verify_best'] = libVerifyBest;
     return data;
   }
 }
@@ -133,9 +134,9 @@ class PortOpened {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['ipv4'] = this.ipv4;
-    data['ipv6'] = this.ipv6;
+    final data = <String, dynamic>{};
+    data['ipv4'] = ipv4;
+    data['ipv6'] = ipv6;
     return data;
   }
 }
@@ -146,7 +147,7 @@ class PluginsRev {
   PluginsRev.fromJson(Map<String, dynamic>? json);
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final data = <String, dynamic>{};
     return data;
   }
 }
@@ -166,9 +167,9 @@ class UserSettings {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['theme'] = this.theme;
-    data['use_system_theme'] = this.useSystemTheme;
+    final data = <String, dynamic>{};
+    data['theme'] = theme;
+    data['use_system_theme'] = useSystemTheme;
     return data;
   }
 }
@@ -181,6 +182,6 @@ abstract class Result {
 
 extension ServerInfoMessage on Message {
   ServerInfo get serverInfo {
-    return ServerInfo.fromJson(this.result);
+    return ServerInfo.fromJson(result);
   }
 }
