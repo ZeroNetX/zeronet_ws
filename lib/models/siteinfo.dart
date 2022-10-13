@@ -101,11 +101,12 @@ class Settings {
   int? size;
   int? sizeLimit;
   String? autodownloadoptional;
+  num? modified;
 
-  int? bytesRecv;
-  int? bytesSent;
-  int? modified;
-  int? peers;
+  //TODO! Handle Stored Plugin Data
+  // int? bytesRecv;
+  // int? bytesSent;
+  // int? peers;
 
   Settings({
     required this.added,
@@ -121,11 +122,11 @@ class Settings {
     this.size,
     this.sizeLimit,
     this.autodownloadoptional,
-    //
-    this.bytesRecv,
-    this.bytesSent,
-    this.peers,
     this.modified,
+    //
+    // this.bytesRecv,
+    // this.bytesSent,
+    // this.peers,
   }) {
     downloaded ??= added;
   }
@@ -145,13 +146,11 @@ class Settings {
       size: json['size'],
       sizeLimit: json['size_limit'],
       autodownloadoptional: json['autodownloadoptional'],
-      //
-      bytesRecv: json['bytes_recv'],
-      bytesSent: json['bytes_sent'],
-      peers: json['peers'],
-      modified: (json['modified'] is double)
-          ? json['modified'].toInt()
-          : json['modified'],
+      modified: json['modified'],
+
+      // bytesRecv: json['bytes_recv'],
+      // bytesSent: json['bytes_sent'],
+      // peers: json['peers'],
     );
   }
 
@@ -170,11 +169,11 @@ class Settings {
     data['size'] = size;
     data['size_limit'] = sizeLimit;
     data['autodownloadoptional'] = autodownloadoptional;
-    //
-    data['bytes_recv'] = bytesRecv;
-    data['bytes_sent'] = bytesSent;
-    data['peers'] = peers;
     data['modified'] = modified;
+    //
+    // data['bytes_recv'] = bytesRecv;
+    // data['bytes_sent'] = bytesSent;
+    // data['peers'] = peers;
     return data;
   }
 }
