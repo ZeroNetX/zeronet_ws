@@ -115,4 +115,11 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     }
   });
 
+  test('dirList', () async {
+    await instance.connect(talk);
+    final res = await instance.dirListFuture('js');
+    assert(res.isMsg);
+    assert(res.message!.result != null);
+    assert(res.message!.result is List);
+  });
 }

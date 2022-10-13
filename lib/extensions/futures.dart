@@ -78,14 +78,18 @@ extension UiServerExt on ZeroNet {
   }
 
   ///Return: List of file and directory names
-  Future<Message> dirListFuture(String inner_path) async {
+  Future<MessageOrError> dirListFuture(
+    String inner_path, {
+    bool stats = false,
+  }) async {
     var resultsStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.dirList,
       params: {
         'inner_path': inner_path,
+        'stats': stats,
       },
     );
-    return resultsStr.toMessage();
+    return resultsStr.toMsgOrErr;
   }
 
   ///Return: "ok" on success, the error message otherwise.
