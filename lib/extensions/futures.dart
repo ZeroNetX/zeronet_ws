@@ -175,7 +175,7 @@ extension UiServerExt on ZeroNet {
         'inner_path': inner_path,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.message!;
   }
 
   ///Return: "ok" on success, the error message otherwise.

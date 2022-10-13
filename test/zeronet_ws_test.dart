@@ -161,4 +161,12 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     assert(res.result != null);
     assert(res.result is List);
   });
+
+  test('fileRules', () async {
+    await instance.connect(talk);
+    final res = await instance.fileRulesFuture('js/all.js');
+    assert(res.result != null);
+    assert(res.result is Map);
+    assert(res.result['signers'] is List);
+  });
 }
