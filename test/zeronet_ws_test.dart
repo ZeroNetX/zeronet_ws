@@ -175,4 +175,23 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     final res = await instance.fileWriteFuture('js/all.js', '');
     assert(res.isErr);
   });
+
+  test('serverInfo', () async {
+    await instance.connect(dashboard);
+    var serverInfo = await instance.serverInfoFuture();
+    assert(serverInfo.version.isNotEmpty);
+  });
+
+  test('siteInfo', () async {
+    await instance.connect(dashboard);
+    var siteInfo = await instance.siteInfoFuture();
+    assert(siteInfo.address == dashboard);
+  });
+
+  test('siteInfoWithFilePath', () async {
+    await instance.connect(dashboard);
+    var siteInfo = await instance.siteInfoFuture(file_status: 'index.html');
+    assert(siteInfo.address == dashboard);
+    assert(siteInfo.event![1] == 'index.html');
+  });
 }

@@ -201,16 +201,23 @@ extension UiServerExt on ZeroNet {
     return resultStr.toMessage();
   }
 
-  ///Return: All information about the Site as a JavaScript object.
-  Future<Message> siteInfoFuture() async {
-    final resultStr = await ZeroNetCmd.siteInfo.callFuture();
-    return resultStr.toMessage();
+  //Return: All information about the site
+  Future<SiteInfo> siteInfoFuture({
+    String? file_status,
+  }) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.siteInfo,
+      params: {
+        'file_status': file_status,
+      },
+    );
+    return resultStr.message!.siteInfo;
   }
 
-  //Return: All information about the server as a JavaScript object.
-  Future<Message> serverInfoFuture() async {
+  //Return: All information about the server
+  Future<ServerInfo> serverInfoFuture() async {
     final resultStr = await ZeroNetCmd.serverInfo.callFuture();
-    return resultStr.toMessage();
+    return resultStr.message!.serverInfo;
   }
 
   ///Return: "ok" on success, the error message otherwise.

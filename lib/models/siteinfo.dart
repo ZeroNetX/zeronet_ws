@@ -2,7 +2,7 @@ part of 'models.dart';
 
 class SiteInfo {
   String authAddress;
-  String certUserId;
+  String? certUserId;
   String address;
   String addressShort;
   String addressHash;
@@ -16,6 +16,7 @@ class SiteInfo {
   int tasks;
   int workers;
   Content content;
+  List<String>? event;
 
   // String? authKey;
   //TODO! Handle Saved Plugin Data
@@ -37,7 +38,7 @@ class SiteInfo {
     required this.tasks,
     required this.workers,
     required this.content,
-
+    this.event,
     // this.authKey,
     // this.feedFollowNum,
   });
@@ -59,6 +60,8 @@ class SiteInfo {
       tasks: json['tasks'],
       workers: json['workers'],
       content: Content.fromJson(json['content']),
+
+      event: json['event'].cast<String>(),
 
       // if (json.containsKey('auth_key')) authKey : json['auth_key'],
       // feedFollowNum: json['feed_follow_num'],
@@ -190,7 +193,7 @@ class Cache {
 
   factory Cache.fromJson(Map<String, dynamic> json) {
     return Cache(
-      badFiles: json['bad_files'],
+      badFiles: json['bad_files'] ?? {},
       hashfield: json['hashfield'],
     );
   }
