@@ -220,4 +220,18 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     var res = await instance.siteUpdateFuture(dashboard);
     assert(res.isMsg);
   });
+
+  test('userGetSettings', () async {
+    await instance.connect(dashboard);
+    var res = await instance.userGetSettingsFuture();
+    assert(res.result != null);
+  });
+
+  test('userSetSettings', () async {
+    await instance.connect(dashboard);
+    var settings = await instance.userGetSettingsFuture();
+    var res = await instance.userSetSettingsFuture(settings.result);
+    assert(res.result is String);
+    assert(res.result == 'ok');
+  });
 }
