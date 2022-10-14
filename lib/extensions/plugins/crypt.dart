@@ -1,18 +1,24 @@
 part of '../futures.dart';
 
 extension CryptMessageExt on ZeroNet {
-  ///Return: Base64-encoded public key.
-  Future<Message> userPublickeyFuture({int? index}) async {
+  /// Returns user's public key unique to site
+  ///
+  /// Return: Public key
+  Future<Message> userPublickeyFuture({
+    int index = 0,
+  }) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.userPublickey,
       params: {
-        'index': index ?? 0,
+        'index': index,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.message!;
   }
 
-  ///Encrypted text in base64 format or [Encrypted text in base64 format, AES key in base64 format].
+  /// Encrypt a text using the publickey or user's sites unique publickey
+  ///
+  /// Return: Encrypted text using base64 encoding
   Future<Message> eciesEncryptFuture(
     String text, {
     dynamic publicKey = 0,
@@ -26,10 +32,12 @@ extension CryptMessageExt on ZeroNet {
         'return_aes_key': returnAesKey,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.message!;
   }
 
-  ///Decrypted text or array of decrypted texts (null for failed decodings).
+  /// Decrypt a text using privatekey or the user's site unique private key
+  ///
+  /// Return: Decrypted text or list of decrypted texts
   Future<Message> eciesDecryptFuture(
     dynamic params, {
     int privateKey = 0,
@@ -41,11 +49,16 @@ extension CryptMessageExt on ZeroNet {
         'privatekey': privateKey,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.message!;
   }
 
-  ///Return: [base64 encoded key, base64 encoded iv, base64 encoded encrypted text].
-  Future<Message> aesEncryptFuture(String text, {String? key}) async {
+  /// Encrypt a text using AES
+  ///
+  /// Return: Iv, AES key, Encrypted text
+  Future<Message> aesEncryptFuture(
+    String text, {
+    String? key,
+  }) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.aesEncrypt,
       params: {
@@ -53,10 +66,12 @@ extension CryptMessageExt on ZeroNet {
         'key': key,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.message!;
   }
 
-  ///Return: Decoded text
+  /// Decrypt a text using AES
+  ///
+  /// Return: Decrypted text
   Future<Message> aesDecryptFuture(
     String? iv,
     String? encryptedText,
@@ -74,7 +89,7 @@ extension CryptMessageExt on ZeroNet {
       ZeroNetCmd.aesDecrypt,
       params: params,
     );
-    return resultStr.toMessage();
+    return resultStr.message!;
   }
 
   ///Return: Decoded array of decoded texts.
@@ -89,6 +104,68 @@ extension CryptMessageExt on ZeroNet {
         'keys': keys,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.message!;
+  }
+
+  /// Sign data using ECDSA
+  ///
+  /// Return: Signature
+  Future<Message> ecdsaSignFuture(
+    String data,
+    String? privatekey,
+  ) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.ecdsaSign,
+      params: {
+        'data': data,
+        'privatekey': privatekey,
+      },
+    );
+    return resultStr.message!;
+  }
+
+  /// Verify data using ECDSA (address is either a address or array of addresses)
+  ///
+  /// Return: Signature
+  Future<Message> ecdsaVerifyFuture(
+    String data,
+    List<String> address,
+    String signature,
+  ) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.ecdsaVerify,
+      params: {
+        'data': data,
+        'address': address,
+        'signature': signature,
+      },
+    );
+    return resultStr.message!;
+  }
+
+  /// Gets the publickey of a given privatekey
+  Future<Message> eccPrivToPubFuture(
+    String privateKey,
+  ) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.eccPrivToPub,
+      params: {
+        'privateKey': privateKey,
+      },
+    );
+    return resultStr.message!;
+  }
+
+  /// Gets the address of a given publickey
+  Future<Message> eccPubToAddrFuture(
+    String publickey,
+  ) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.eccPubToAddr,
+      params: {
+        'publickey': publickey,
+      },
+    );
+    return resultStr.message!;
   }
 }

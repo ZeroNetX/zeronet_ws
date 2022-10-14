@@ -56,6 +56,10 @@ class ZeroNetCmd {
   static const String eciesDecrypt = 'eciesDecrypt';
   static const String aesEncrypt = 'aesEncrypt';
   static const String aesDecrypt = 'aesDecrypt';
+  static const String ecdsaSign = 'ecdsaSign';
+  static const String ecdsaVerify = 'ecdsaVerify';
+  static const String eccPrivToPub = 'eccPrivToPub';
+  static const String eccPubToAddr = 'eccPubToAddr';
   //Newsfeed
   static const String feedFollow = 'feedFollow';
   static const String feedListFollow = 'feedListFollow';
