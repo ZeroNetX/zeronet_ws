@@ -1,36 +1,37 @@
 part of '../futures.dart';
 
 extension MergerSiteExt on ZeroNet {
-  ///Return: None
-  Future<Message> mergerSiteAddFuture(List<String> addresses) async {
+  /// Download new site
+  Future<MessageOrPromptOrError> mergerSiteAddFuture(
+      List<String> addresses) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.mergerSiteAdd,
       params: {
         'addresses': addresses,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.toMsgOrPromptOrErr;
   }
 
-  ///Return: None
-  Future<Message> mergerSiteDeleteFuture(String address) async {
+  /// Delete a merged site
+  Future<MessageOrError> mergerSiteDeleteFuture(String address) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.mergerSiteDelete,
       params: {
         'address': address,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.toMsgOrErr;
   }
 
-  ///Return: None
-  Future<Message> mergerSiteListFuture(bool querySiteInfo) async {
+  ///  Lists merged sites
+  Future<MessageOrError> mergerSiteListFuture(bool querySiteInfo) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.mergerSiteList,
       params: {
         'query_site_info': querySiteInfo,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.toMsgOrErr;
   }
 }
