@@ -1,10 +1,12 @@
 part of '../futures.dart';
 
 extension OptionalFileExt on ZeroNet {
-  Future<Message> optionalFileListFuture({
+  Future<MessageOrError> optionalFileListFuture({
     String? address,
-    String orderBy = 'DESC',
+    String orderBy = 'time_downloaded DESC',
     int limit = 10,
+    String filter = 'downloaded',
+    String? filterInnerPath,
   }) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.optionalFileList,
@@ -12,9 +14,11 @@ extension OptionalFileExt on ZeroNet {
         'address': address,
         'orderby': orderBy,
         'limit': limit,
+        'filter': filter,
+        'filter_inner_path': filterInnerPath,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.toMsgOrErr;
   }
 
   Future<Message> optionalFileInfoFuture(
@@ -26,24 +30,38 @@ extension OptionalFileExt on ZeroNet {
         'inner_path': innerPath,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.message!;
   }
 
   Future<Message> optionalFilePinFuture(
-    String innerPath, {
+    List<String> innerPaths, {
     String? address,
   }) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.optionalFilePin,
       params: {
-        'inner_path': innerPath,
+        'inner_path': innerPaths,
         'address': address,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.message!;
   }
 
-  Future<Message> optionalFileDeleteFuture(
+  Future<Message> optionalFileUnPinFuture(
+    List<String> innerPaths, {
+    String? address,
+  }) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.optionalFileUnpin,
+      params: {
+        'inner_path': innerPaths,
+        'address': address,
+      },
+    );
+    return resultStr.message!;
+  }
+
+  Future<MessageOrError> optionalFileDeleteFuture(
     String innerPath, {
     String? address,
   }) async {
@@ -54,12 +72,12 @@ extension OptionalFileExt on ZeroNet {
         'address': address,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.toMsgOrErr;
   }
 
   Future<Message> optionalLimitStatsFuture() async {
     var resultStr = await ZeroNetCmd.optionalLimitStats.callFuture();
-    return resultStr.toMessage();
+    return resultStr.message!;
   }
 
   Future<Message> optionalLimitSetFuture({
@@ -68,10 +86,10 @@ extension OptionalFileExt on ZeroNet {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.optionalLimitSet,
       params: {
-        'address': limit,
+        'limit': limit,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.message!;
   }
 
   Future<Message> optionalHelpListFuture({
@@ -83,12 +101,12 @@ extension OptionalFileExt on ZeroNet {
         'address': address,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.message!;
   }
 
   Future<Message> optionalHelpFuture(
-    String directory, {
-    String? title,
+    String directory,
+    String title, {
     String? address,
   }) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
@@ -99,7 +117,7 @@ extension OptionalFileExt on ZeroNet {
         'address': address,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.message!;
   }
 
   Future<Message> optionalHelpRemoveFuture(
@@ -113,10 +131,10 @@ extension OptionalFileExt on ZeroNet {
         'address': address,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.message!;
   }
 
-  Future<Message> optionalHelpAllFuture(
+  Future<MessageOrPromptOrError> optionalHelpAllFuture(
     String value, {
     String? address,
   }) async {
@@ -127,6 +145,6 @@ extension OptionalFileExt on ZeroNet {
         'address': address,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.toMsgOrPromptOrErr;
   }
 }
