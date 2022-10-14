@@ -68,11 +68,16 @@ extension AdminExt on ZeroNet {
     return resultStr.message;
   }
 
-  ///Return: None
-  Future<void> certSetFuture(String domain) async => ZeroNet.instance.cmdFuture(
-        ZeroNetCmd.certSet,
-        params: {'domain': domain},
-      );
+  ///Return: Message
+  Future<Message> certSetFuture(String domain) async {
+    final res = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.certSet,
+      params: {
+        'domain': domain,
+      },
+    );
+    return res.message!;
+  }
 
   ///Return: None
   Future<void> channelJoinAllSiteFuture(String channel) async {

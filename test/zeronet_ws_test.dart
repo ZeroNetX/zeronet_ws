@@ -325,6 +325,12 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     }
   });
 
+  test('Admin::certSet', () async {
+    await instance.connect(dashboard);
+    final res = await instance.certSetFuture('zeroid.bit');
+    assert(res.result == 'ok');
+  });
+
   test('Admin::permissionDetails', () async {
     await instance.connect(dashboard);
     final res = await instance.permissionDetailsFuture('ADMIN');
