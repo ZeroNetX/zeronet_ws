@@ -255,6 +255,30 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     assert(res.message!.result == 'Resumed');
   });
 
+  test('Admin::siteCloneWithFakeSite', () async {
+    await instance.connect(dashboard);
+    var res = await instance.siteCloneFuture('FAKE SITE', '');
+    assert(res.isErr);
+    assert(res.error!.error == 'Not a site: FAKE SITE');
+  });
+
+  test('Admin::siteCloneWithAdminSite', () async {
+    await instance.connect(dashboard);
+    var res = await instance.siteCloneFuture(dashboard, 'template-new');
+    assert(res.isMsg);
+    assert(res.message!.result is Map);
+    assert(res.message!.result['address'] is String);
+  });
+
+  test('Admin::siteCloneWithNonAdminSite', () async {
+    await instance.connect(talk);
+    var res = await instance.siteCloneFuture(dashboard, '');
+    assert(res.isPrompt);
+    assert(res.prompt!.type == PromptType.confirm);
+    assert(res.prompt!.value.params[1] is String);
+    assert(res.prompt!.value.params[1] == 'Clone');
+  });
+
   test('Admin::serverUpdate', () async {
     await instance.connect(dashboard);
     var res = await instance.serverUpdateFuture();

@@ -115,7 +115,7 @@ extension AdminExt on ZeroNet {
   }
 
   ///Return: None, automatically redirects to new site on completion
-  Future<Message> siteCloneFuture(
+  Future<MessageOrPromptOrError> siteCloneFuture(
     String address,
     String root_inner_path,
   ) async {
@@ -126,7 +126,7 @@ extension AdminExt on ZeroNet {
         'root_inner_path': root_inner_path,
       },
     );
-    return await respondFuture(result!['id']);
+    return result.toMsgOrPromptOrErr;
   }
 
   ///Return: SiteInfo list of all downloaded sites
