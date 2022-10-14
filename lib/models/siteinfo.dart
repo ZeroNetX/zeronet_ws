@@ -1,7 +1,7 @@
 part of 'models.dart';
 
 class SiteInfo {
-  String authAddress;
+  String? authAddress;
   String? certUserId;
   String address;
   String addressShort;
