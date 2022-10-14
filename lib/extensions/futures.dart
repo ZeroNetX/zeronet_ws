@@ -33,17 +33,23 @@ extension AdminExt on ZeroNet {
   Future<Message> permissionAddFuture(String permission) async {
     final result = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.permissionAdd,
-      params: {'permission': permission},
+      params: {
+        'permission': permission,
+      },
     );
-    return result.toMessage();
+    return result.message!;
   }
 
   ///Return: ok
-  Future<void> permissionRemoveFuture(String permission) async =>
-      ZeroNet.instance.cmdFuture(
-        ZeroNetCmd.permissionRemove,
-        params: {'permission': permission},
-      );
+  Future<Message> permissionRemoveFuture(String permission) async {
+    final result = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.permissionRemove,
+      params: {
+        'permission': permission,
+      },
+    );
+    return result.message!;
+  }
 
   ///Return: ok
   Future<void> permissionDetailsFuture(String permission) async =>

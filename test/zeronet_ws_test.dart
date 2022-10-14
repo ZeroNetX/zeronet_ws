@@ -290,4 +290,16 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
       assert(res?.result.first is Map);
     }
   });
+
+  test('Admin::permissionAdd', () async {
+    await instance.connect(dashboard);
+    final res = await instance.permissionAddFuture('ADMIN');
+    assert(res.result == 'ok');
+  });
+
+  test('Admin::permissionRemove', () async {
+    await instance.connect(dashboard);
+    final res = await instance.permissionRemoveFuture('ADMIN');
+    assert(res.result == 'ok');
+  });
 }
