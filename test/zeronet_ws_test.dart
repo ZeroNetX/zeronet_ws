@@ -235,6 +235,13 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     assert(res.result == 'ok');
   });
 
+  test('Admin::channelJoinAllsite', () async {
+    await instance.connect(dashboard);
+    var res = await instance.channelJoinAllSiteFuture('siteChanged');
+    assert(res.result is String);
+    assert(res.result == 'ok');
+  });
+
   test('Admin::siteList', () async {
     await instance.connect(dashboard);
     var res = await instance.siteListFuture();

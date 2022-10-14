@@ -79,12 +79,15 @@ extension AdminExt on ZeroNet {
     return res.message!;
   }
 
-  ///Return: None
-  Future<void> channelJoinAllSiteFuture(String channel) async {
-    await ZeroNet.instance.cmdFuture(
+  ///Return: Message
+  Future<Message> channelJoinAllSiteFuture(String channel) async {
+    final res = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.channelJoinAllsite,
-      params: {'channel': channel},
+      params: {
+        'channel': channel,
+      },
     );
+    return res.message!;
   }
 
   ///Return: ok
