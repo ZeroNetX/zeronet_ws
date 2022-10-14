@@ -279,6 +279,16 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     assert(res.prompt!.value.params[1] == 'Clone');
   });
 
+  test('Admin::serverConfigSet', () async {
+    await instance.connect(dashboard);
+    var res = await instance.configSetFuture('open_browser', 'False');
+    assert(res.isMsg);
+    assert(res.message!.result == 'ok');
+    res = await instance.configSetFuture('open_browser', 'default_browser');
+    assert(res.isMsg);
+    assert(res.message!.result == 'ok');
+  });
+
   test('Admin::serverUpdate', () async {
     await instance.connect(dashboard);
     var res = await instance.serverUpdateFuture();

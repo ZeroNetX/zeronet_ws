@@ -79,7 +79,7 @@ extension AdminExt on ZeroNet {
   }
 
   ///Return: ok
-  Future<Message> configSetFuture(String key, String value) async {
+  Future<MessageOrError> configSetFuture(String key, String value) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.configSet,
       params: {
@@ -87,7 +87,7 @@ extension AdminExt on ZeroNet {
         'value': value,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.toMsgOrErr;
   }
 
   ///Return: True (port opened) or False (port closed).
