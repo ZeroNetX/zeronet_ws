@@ -85,9 +85,12 @@ extension AdminExt on ZeroNet {
   }
 
   ///Return: True (port opened) or False (port closed).
-  Future<Message> serverPortcheckFuture() async {
+  Future<PortOpened?> serverPortcheckFuture() async {
     final resultStr = await ZeroNetCmd.serverPortcheck.callFuture();
-    return resultStr.toMessage();
+    if (resultStr.isMessage) {
+      return PortOpened.fromJson(resultStr.message!.result);
+    }
+    return null;
   }
 
   ///Return: None

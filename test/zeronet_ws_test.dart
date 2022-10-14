@@ -268,4 +268,11 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     assert(res?.type == PromptType.confirm);
     assert(res?.value.params[1] == 'Restart');
   });
+
+  test('Admin::serverPortCheck', () async {
+    await instance.connect(dashboard);
+    var res = await instance.serverPortcheckFuture();
+    assert(res?.ipv4 is bool || res?.ipv4 == null);
+    assert(res?.ipv6 is bool || res?.ipv6 == null);
+  });
 }
