@@ -1,4 +1,8 @@
-## [0.0.8]
+## [1.0.0]
+ - Implemented Full Core & Main Plugin API with Proper return type
+ - Full Changelog https://github.com/ZeroNetX/zeronet_ws/compare/4e97bfb7...73e9d309
+
+ ## [0.0.8]
  - Add Support for Flutter Web Apps, See README.md for more Info on config needed.
  - Added flutter_lint and implement suggession.
  - Full Changelog https://github.com/ZeroNetX/zeronet_ws/compare/73e9d309...715ddb4e
