@@ -129,17 +129,6 @@ extension AdminExt on ZeroNet {
     return await respondFuture(result!['id']);
   }
 
-  Future<Message> respondFuture(int to) async {
-    Completer<String> completer = Completer();
-    ZeroNet.instance.respond(
-      to: to,
-      callback: (msg) {
-        completer.complete(msg);
-      },
-    );
-    return (await completer.future).toMessage();
-  }
-
   ///Return: SiteInfo list of all downloaded sites
   Future<List<SiteInfo>> siteListFuture({bool connectingSites = false}) async {
     final res = await ZeroNet.instance.cmdFuture(
@@ -560,5 +549,18 @@ extension ToMessageExt on Map<String, dynamic>? {
       var msg = toMessage();
       return ['message', msg];
     }
+  }
+}
+
+extension RespondExt on ZeroNet {
+  Future<Message> respondFuture(int to) async {
+    Completer<String> completer = Completer();
+    ZeroNet.instance.respond(
+      to: to,
+      callback: (msg) {
+        completer.complete(msg);
+      },
+    );
+    return (await completer.future).toMessage();
   }
 }
