@@ -91,10 +91,12 @@ extension AdminExt on ZeroNet {
   }
 
   ///Return: None
-  ///TODO! Add restart parameter
-  Future<Message> serverShutdownFuture() async {
-    final resultStr = await ZeroNetCmd.serverShutdown.callFuture();
-    return resultStr.toMessage();
+  Future<PromptResult?> serverShutdownFuture({bool restart = false}) async {
+    final resultStr =
+        await ZeroNet.instance.cmdFuture(ZeroNetCmd.serverShutdown, params: {
+      'restart': restart,
+    });
+    return resultStr.prompt;
   }
 
   ///Return: None

@@ -254,4 +254,18 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     var res = await instance.serverUpdateFuture();
     assert(res?.type == PromptType.confirm);
   });
+
+  test('Admin::serverShutdown', () async {
+    await instance.connect(dashboard);
+    var res = await instance.serverShutdownFuture();
+    assert(res?.type == PromptType.confirm);
+    assert(res?.value.params[1] == 'Shut down');
+  });
+
+  test('Admin::serverRestart', () async {
+    await instance.connect(dashboard);
+    var res = await instance.serverShutdownFuture(restart: true);
+    assert(res?.type == PromptType.confirm);
+    assert(res?.value.params[1] == 'Restart');
+  });
 }
