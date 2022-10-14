@@ -61,7 +61,7 @@ class SiteInfo {
       workers: json['workers'],
       content: Content.fromJson(json['content']),
 
-      event: json['event'].cast<String>(),
+      event: json['event']?.cast<String>(),
 
       // if (json.containsKey('auth_key')) authKey : json['auth_key'],
       // feedFollowNum: json['feed_follow_num'],
