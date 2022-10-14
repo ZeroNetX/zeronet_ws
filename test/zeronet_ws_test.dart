@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zeronet_ws/constants.dart';
 import 'package:zeronet_ws/models/models.dart';
 import 'package:zeronet_ws/zeronet_ws.dart';
 
@@ -354,5 +355,12 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     await instance.connect(dashboard);
     final res = await instance.permissionRemoveFuture('ADMIN');
     assert(res.result == 'ok');
+  });
+
+  //TODO! Add more tests for as
+  test('Admin::as', () async {
+    await instance.connect(dashboard);
+    final res = await instance.asFuture(site: talk, cmd: ZeroNetCmd.siteInfo);
+    assert(res.isMsg);
   });
 }

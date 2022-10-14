@@ -13,11 +13,11 @@ part 'futures/ui_server.dart';
 
 extension AdminExt on ZeroNet {
   ///Return: Command's return value.
-  Future<Message> asFuture(
-    String site,
-    String cmd,
-    List arguments,
-  ) async {
+  Future<MessageOrPromptOrError> asFuture({
+    required String site,
+    required String cmd,
+    List? arguments,
+  }) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.as_,
       params: {
@@ -26,7 +26,7 @@ extension AdminExt on ZeroNet {
         'params': arguments,
       },
     );
-    return resultStr.toMessage();
+    return resultStr.toMsgOrPromptOrErr;
   }
 
   ///Return: ok
