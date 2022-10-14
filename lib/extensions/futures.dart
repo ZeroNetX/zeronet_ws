@@ -17,7 +17,7 @@ part 'plugins/chart.dart';
 part 'plugins/cors.dart';
 part 'plugins/crypt.dart';
 part 'plugins/merger.dart';
-part 'plugins/mute.dart';
+part 'plugins/content_filter.dart';
 part 'plugins/optional.dart';
 
 extension ToMessage on String {

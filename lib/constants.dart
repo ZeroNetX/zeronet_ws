@@ -72,6 +72,14 @@ class ZeroNetCmd {
   static const String muteAdd = 'muteAdd';
   static const String muteRemove = 'muteRemove';
   static const String muteList = 'muteList';
+  static const String filterIncludeAdd = 'filterIncludeAdd';
+  static const String filterIncludeRemove = 'filterIncludeRemove';
+  static const String filterIncludeList = 'filterIncludeList';
+  static const String siteblockIgnoreAddSite = 'siteblockIgnoreAddSite';
+  static const String siteblockAdd = 'siteblockAdd';
+  static const String siteblockRemove = 'siteblockRemove';
+  static const String siteblockList = 'siteblockList';
+  static const String siteblockGet = 'siteblockGet';
   //OptionalManager
   static const String optionalFileList = 'optionalFileList';
   static const String optionalFileInfo = 'optionalFileInfo';
