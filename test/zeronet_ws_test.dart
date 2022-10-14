@@ -235,6 +235,12 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     assert(res.result == 'ok');
   });
 
+  test('Admin::siteList', () async {
+    await instance.connect(dashboard);
+    var res = await instance.siteListFuture();
+    assert(res.isNotEmpty);
+  });
+
   test('Admin::sitePause', () async {
     await instance.connect(dashboard);
     var res = await instance.sitePauseFuture(talk);

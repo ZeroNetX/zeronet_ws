@@ -135,10 +135,16 @@ extension AdminExt on ZeroNet {
   }
 
   ///Return: SiteInfo list of all downloaded sites
-  ///TODO! Add connecting_sites parameter
-  Future<Message> siteListFuture() async {
-    final resultStr = await ZeroNetCmd.siteList.callFuture();
-    return resultStr.toMessage();
+  Future<List<SiteInfo>> siteListFuture({bool connectingSites = false}) async {
+    final res = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.siteList,
+      params: {
+        'connecting_sites': connectingSites,
+      },
+    );
+    final result = (res.message!.result as List);
+    final list = result.map((e) => SiteInfo.fromJson(e)).toList();
+    return list;
   }
 
   ///Return: None
