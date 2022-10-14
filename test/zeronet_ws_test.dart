@@ -248,4 +248,10 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     assert(res.isMsg);
     assert(res.message!.result == 'Resumed');
   });
+
+  test('Admin::serverUpdate', () async {
+    await instance.connect(dashboard);
+    var res = await instance.serverUpdateFuture();
+    assert(res?.type == PromptType.confirm);
+  });
 }

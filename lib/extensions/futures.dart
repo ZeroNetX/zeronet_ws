@@ -98,9 +98,9 @@ extension AdminExt on ZeroNet {
   }
 
   ///Return: None
-  Future<Message> serverUpdateFuture() async {
+  Future<PromptResult?> serverUpdateFuture() async {
     final resultStr = await ZeroNetCmd.serverUpdate.callFuture();
-    return resultStr.toMessage();
+    return resultStr.prompt;
   }
 
   ///Return: None, automatically redirects to new site on completion
