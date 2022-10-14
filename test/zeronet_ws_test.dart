@@ -325,6 +325,12 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     }
   });
 
+  test('Admin::permissionDetails', () async {
+    await instance.connect(dashboard);
+    final res = await instance.permissionDetailsFuture('ADMIN');
+    assert(res.result is String);
+  });
+
   test('Admin::permissionAdd', () async {
     await instance.connect(dashboard);
     final res = await instance.permissionAddFuture('ADMIN');

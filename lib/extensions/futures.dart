@@ -52,11 +52,15 @@ extension AdminExt on ZeroNet {
   }
 
   ///Return: ok
-  Future<void> permissionDetailsFuture(String permission) async =>
-      ZeroNet.instance.cmdFuture(
-        ZeroNetCmd.permissionDetails,
-        params: {'permission': permission},
-      );
+  Future<Message> permissionDetailsFuture(String permission) async {
+    final res = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.permissionDetails,
+      params: {
+        'permission': permission,
+      },
+    );
+    return res.message!;
+  }
 
   ///Return: A list of objects each representing a certificate from an identity provider.
   Future<Message?> certListFuture() async {
