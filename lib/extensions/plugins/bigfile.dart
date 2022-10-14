@@ -1,15 +1,30 @@
 part of '../futures.dart';
 
 extension BigFileExt on ZeroNet {
-  Future<Message> bigFileUploadInitFuture(
+  Future<MessageOrError> bigFileUploadInitFuture(
     String innerPath,
-    int size,
-  ) async {
+    int size, {
+    String protocol = 'xhr',
+  }) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.bigfileUploadInit,
-      params: {'inner_path': innerPath, 'size': size},
+      params: {
+        'inner_path': innerPath,
+        'size': size,
+        'protocol': protocol,
+      },
     );
-    return resultStr.toMessage();
+    return resultStr.toMsgOrErr;
+  }
+
+  Future<MessageOrError> siteSetAutodownloadBigfileLimit(int limit) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.siteSetAutodownloadBigfileLimit,
+      params: {
+        'limit': limit,
+      },
+    );
+    return resultStr.toMsgOrErr;
   }
 
   ///TODO: Check for proper working

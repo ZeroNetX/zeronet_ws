@@ -43,6 +43,8 @@ class ZeroNetCmd {
   //Plugins
   //Bigfile
   static const String bigfileUploadInit = 'bigfileUploadInit';
+  static const String siteSetAutodownloadBigfileLimit =
+      'siteSetAutodownloadBigfileLimit';
   //chartDbQuery
   static const String chartDbQuery = 'chartDbQuery';
   static const String chartGetPeerLocations = 'chartGetPeerLocations';
