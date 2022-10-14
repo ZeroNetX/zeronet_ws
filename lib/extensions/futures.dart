@@ -9,7 +9,8 @@ import '../constants.dart';
 import '../models/models.dart';
 import '../zeronet_ws.dart';
 
-part 'futures/ui_server.dart';
+part 'core/ui_server.dart';
+part 'core/admin.dart';
 
 extension BigFileExt on ZeroNet {
   Future<Message> bigFileUploadInitFuture(
