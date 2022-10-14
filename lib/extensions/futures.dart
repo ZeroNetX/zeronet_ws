@@ -53,9 +53,9 @@ extension AdminExt on ZeroNet {
       );
 
   ///Return: A list of objects each representing a certificate from an identity provider.
-  Future<Message> certListFuture() async {
+  Future<Message?> certListFuture() async {
     final resultStr = await ZeroNetCmd.certList.callFuture();
-    return resultStr.toMessage();
+    return resultStr.message;
   }
 
   ///Return: None

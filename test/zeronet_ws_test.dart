@@ -275,4 +275,13 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     assert(res?.ipv4 is bool || res?.ipv4 == null);
     assert(res?.ipv6 is bool || res?.ipv6 == null);
   });
+
+  test('Admin::certList', () async {
+    await instance.connect(dashboard);
+    final res = await instance.certListFuture();
+    assert(res?.result is List);
+    if (res?.result is List && res?.result.isNotEmpty) {
+      assert(res?.result.first is Map);
+    }
+  });
 }
