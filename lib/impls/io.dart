@@ -185,7 +185,7 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
           id = msg['id'];
         }
         callbacks[id]?.call(message);
-        callbacks.remove(id);
+        if (cmdStr != 'channelJoin') callbacks.remove(id);
         onEventMessage?.call(message);
       });
     }
