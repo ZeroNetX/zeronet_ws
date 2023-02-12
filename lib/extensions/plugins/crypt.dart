@@ -81,7 +81,7 @@ extension CryptMessageExt on ZeroNet {
   }) async {
     var params = [];
     if (encryptedText != null) {
-      params = [iv, encryptedText, keys];
+      params = [iv, encryptedText, key];
     } else {
       params = [encryptedTexts, keys];
     }
