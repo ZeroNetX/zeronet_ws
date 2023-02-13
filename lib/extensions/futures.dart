@@ -57,10 +57,11 @@ extension ToMessageExt on Map<String, dynamic>? {
 }
 
 extension RespondExt on ZeroNet {
-  Future<Message> respondFuture(int to) async {
+  Future<Message> respondFuture(int to, [dynamic result]) async {
     Completer<String> completer = Completer();
     ZeroNet.instance.respond(
       to: to,
+      result: result ?? 1,
       callback: (msg) {
         completer.complete(msg);
       },

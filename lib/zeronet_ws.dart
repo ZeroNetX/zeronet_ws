@@ -73,7 +73,7 @@ class ZeroNet {
 
   void respond({
     int to = 1,
-    int result = 1,
+    dynamic result = 1,
     int? id,
     void Function(dynamic)? callback,
   }) {
