@@ -208,34 +208,34 @@ void main() {
     test("aesDecryptFuture", () async {
       await instance.connect("1DCN2A5VqYrQSNds7Y3s9JLn65CfykPKJw");
       String text = "Testing Crypt_dart";
-      var keyResult = await instance.userPublickeyFuture();
 
-      String publicKey = keyResult.result as String;
       var enCrypStr = await instance.aesEncryptFuture(
         text,
       );
       assert(enCrypStr.result[0] is String);
-      var res = await instance.aesDecryptFuture(
-        enCrypStr.result[1],
-        enCrypStr.result[2],
-        enCrypStr.result[0],
-      );
+      final key = enCrypStr.result[0];
+      final iv = enCrypStr.result[1];
+      final en = enCrypStr.result[2];
+      var res = await instance.aesDecryptFuture(iv, en, key);
 
-      assert(res.result != null);
+      assert(res.result == text);
     });
 
     test("aesDecryptArrayFuture", () async {
       await instance.connect(talk);
       String text = "Testing Crypt_dart";
-      var keyResult = await instance.userPublickeyFuture();
 
-      String publicKey = keyResult.result as String;
-      assert(false); // loading ...
+      final keyResult = await instance.userPublickeyFuture();
+
+      final publicKey = keyResult.result as String;
+
+      /// Getting wrong public key length
+      assert(false); // test failed with public key param
       var aesEncryp = await instance.aesEncryptFuture(text, key: publicKey);
 
-      var res = await instance.aesDecryptArrayFuture(
+      final res = await instance.aesDecryptArrayFuture(
+        [aesEncryp.result[0]],
         [aesEncryp.result[2]],
-        [aesEncryp.result[1]],
       );
 
       assert(res.result is List);
