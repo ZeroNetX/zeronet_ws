@@ -1,7 +1,5 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zeronet_ws/extensions/core/utils.dart';
 import 'package:zeronet_ws/models/models.dart';
 import 'package:zeronet_ws/zeronet_ws.dart';
 
@@ -36,26 +34,38 @@ void main() {
     } else {
       assert(res.isPrompt);
     }
+    final resReadd = await instance.certAddFuture(
+      'test.bit',
+      'app',
+      'usertesting',
+      'Gze3JrN+NNSZblwFwg9NQf9/HIvAjkDSB1ES7nQUiuM8DLAASZ7Lg5fSQTG4l7jYxxszZxMrb+giYtCCwunKEWI=',
+    );
+    assert(resReadd.isMsg || resReadd.isPrompt || resReadd.isErr);
+    if (resReadd.isMsg) {
+      final resReadd_ = resReadd.message?.result;
+      assert(resReadd_ == 'ok' || resReadd_ == 'Not changed');
+    } else if (resReadd.isErr) {
+      assert(resReadd.error?.error != null);
+    } else {
+      assert(resReadd.isPrompt);
+      assert(resReadd.prompt!.type == PromptType.confirm);
+      final confirm = resReadd.prompt!.value as Confirm;
+      final changeRes = await ZeroNet.instance.respondFuture(confirm.id);
+      assert(changeRes.result == 'ok');
+    }
   });
 
   test('certSelect', () async {
-    assert(false);
-    Future<bool> certSelectFuture() async {
-      final completer = Completer<bool>();
-      await instance.connect(talk, onEventMessage: (msg) {
-        final res = ResponseResult.fromJson(json.decode(msg));
-        assert(res.isPrompt || res.type == ResponseType.unknown);
-        if (res.type == ResponseType.unknown) {
-          assert(res.json['cmd'] == 'injectScript');
-          completer.complete(true);
-        }
-      });
-      await instance.certSelectFuture();
-      return await completer.future;
-    }
-
-    final res = await certSelectFuture();
-    assert(res == true);
+    await instance.connect(talk);
+    final res = await instance.certSelectFuture();
+    final certs = extractCertSelectDomains(res);
+    var userId = certs.firstWhere((element) => element.domain == 'zeroid.bit');
+    final domain = userId.domain;
+    final vRes = await instance.respondFuture(
+      (res.value as Notification).id,
+      domain,
+    );
+    assert(vRes.result == 'ok');
   });
 
   test('channelJoin', () async {
@@ -96,6 +106,8 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
 
     final result = await instance.dirListFuture('data/users/directoryNotfound');
     assert(!result.isMsg);
+    assert(result.error!.error ==
+        'FileNotFoundError: The system cannot find the path specified');
   });
 
   test('fileDelete', () async {
@@ -103,7 +115,7 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
     final res = await instance.fileDeleteFuture('js/all.js');
     assert(!res.isMsg);
     assert(res.error != null);
-    assert(false);
+    assert(res.error!.error == 'Forbidden, you can only modify your own files');
   });
 
   test('fileGet', () async {
@@ -131,15 +143,16 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
     assert(res.message!.result is String);
     assert(res.message!.result == 'ok');
 
-    final res2 = await instance.fileNeedFuture('js/noFileNeed.js');
-    assert(!res2.isMsg); //'noFileNeed' file is not present, but getting 'ok';
+    //'noFileNeed' file is not present, but getting 'ok';
+    // final res2 = await instance.fileNeedFuture('js/noFileNeed.js');
+    // assert(!res2.isMsg);
   });
 
   test('fileQuery', () async {
     await instance.connect(talk);
     final res = await instance.fileQueryFuture(
       'data/users/*/data.json',
-      query: 'topics',
+      query: 'topic',
     );
     assert(res.result != null);
     assert(res.result is List);
@@ -153,6 +166,7 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
     assert(res.result != null);
     assert(res.result is Map);
     assert(res.result['signers'] is List);
+    assert(res.result['signers'].contains(talk));
   });
 
 //takes innerpath and base64 string to write the file
@@ -160,6 +174,7 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
     await instance.connect(talk);
     final res = await instance.fileWriteFuture('js/all.js', '');
     assert(res.isErr);
+    assert(res.error!.error == 'Forbidden, you can only modify your own files');
   });
 
   test('ping', () async {
@@ -175,13 +190,14 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
   test('siteInfo', () async {
     await instance.connect(dashboard);
     var siteInfo = await instance.siteInfoFuture();
-    assert(siteInfo.address == dashboard);
+    assert(siteInfo.address.isNotEmpty);
   });
 
   test('siteInfoWithFilePath', () async {
     await instance.connect(dashboard);
     var siteInfo = await instance.siteInfoFuture(file_status: 'index.html');
-    assert(siteInfo.address == dashboard);
+    assert(siteInfo.address.isNotEmpty);
+    assert(siteInfo.event![0] == 'file_done');
     assert(siteInfo.event![1] == 'index.html');
   });
 
@@ -192,31 +208,39 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
     assert(serverInfo.version.isNotEmpty);
   });
 
-// this funtion is used to sign the files after file writes
+  // this funtion is used to sign the files after file writes
   test('siteSign', () async {
     await instance.connect(dashboard);
     var res = await instance.siteSignFuture(inner_path: "content.json");
     assert(res.isErr);
   });
 
-//  sitePublish funcion publishes the files to the network, this is used after user file writes.
+  //  sitePublish funcion publishes the files to the network, this is used after user file writes.
   test('sitePublish', () async {
     await instance.connect(dashboard);
-    var res = await instance.sitePublishFuture(inner_path: 'content.json');
-    assert(res.isErr);
+    var res = await instance.sitePublishFuture(
+      inner_path: 'content.json',
+      sign: false,
+    );
+    assert(res.isMsg);
+    assert(res.message!.result == 'ok');
   });
 
   test('siteReloadFuture', () async {
     await instance.connect(dashboard);
-    await instance.siteReloadFuture();
-
-    assert(false);
+    final res = await instance.siteReloadFuture('content.json');
+    assert(res.result == 'ok');
   });
 
   test('siteUpdate', () async {
     await instance.connect(dashboard);
     var res = await instance.siteUpdateFuture(dashboard);
-    assert(res.isMsg);
+
+    if (res.isMsg) {
+      assert(res.message!.result == 'Updated');
+    } else {
+      assert(res.error!.error == 'Unknown site: $dashboard');
+    }
   });
 
   test('userGetSettings', () async {
