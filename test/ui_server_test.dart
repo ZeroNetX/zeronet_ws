@@ -1,7 +1,5 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zeronet_ws/extensions/core/utils.dart';
 import 'package:zeronet_ws/models/models.dart';
 import 'package:zeronet_ws/zeronet_ws.dart';
 
@@ -58,23 +56,16 @@ void main() {
   });
 
   test('certSelect', () async {
-    assert(false);
-    Future<bool> certSelectFuture() async {
-      final completer = Completer<bool>();
-      await instance.connect(talk, onEventMessage: (msg) {
-        final res = ResponseResult.fromJson(json.decode(msg));
-        assert(res.isPrompt || res.type == ResponseType.unknown);
-        if (res.type == ResponseType.unknown) {
-          assert(res.json['cmd'] == 'injectScript');
-          completer.complete(true);
-        }
-      });
-      await instance.certSelectFuture();
-      return await completer.future;
-    }
-
-    final res = await certSelectFuture();
-    assert(res == true);
+    await instance.connect(talk);
+    final res = await instance.certSelectFuture();
+    final certs = extractCertSelectDomains(res);
+    var userId = certs.firstWhere((element) => element.domain == 'zeroid.bit');
+    final domain = userId.domain;
+    final vRes = await instance.respondFuture(
+      (res.value as Notification).id,
+      domain,
+    );
+    assert(vRes.result == 'ok');
   });
 
   test('channelJoin', () async {
