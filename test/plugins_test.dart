@@ -216,7 +216,20 @@ void main() {
       final key = enCrypStr.result[0];
       final iv = enCrypStr.result[1];
       final en = enCrypStr.result[2];
-      var res = await instance.aesDecryptFuture(iv, en, key);
+      final bulkTextDecrResult = await instance.aesDecryptFuture(
+        null,
+        null,
+        null,
+        encryptedTexts: [
+          [iv, en]
+        ],
+        keys: [key],
+      );
+      assert(bulkTextDecrResult.result is List);
+
+      assert(bulkTextDecrResult.result.first == text);
+
+      final res = await instance.aesDecryptFuture(iv, en, key);
 
       assert(res.result == text);
     });
@@ -311,6 +324,97 @@ void main() {
 
       assert(res.isMsg);
       assert(res.message!.result is List);
+    });
+  });
+
+  group('Plugin::OptionalFiles', () {
+    const storageAdd = '1UPLoADsqDWzMEyqLNin8GPcWoqiihu1g';
+
+    test('optionalFileListFuture', () async {
+      await instance.connect(storageAdd);
+      var res = await instance.optionalFileListFuture(limit: 1);
+      assert(res.isMsg);
+      assert(res.message!.result is List);
+    });
+
+    test('optionalFileInfoFuture', () async {
+      await instance.connect(storageAdd);
+      var res = await instance.optionalFileInfoFuture(
+        'data/users/13JuGiUNQFGijiA5NWsKsgv8YWBus5NvV1/1668771876-cryptocam_android.zip',
+      );
+
+      assert(res.result is Map);
+    });
+
+    test('optionalFilePinFuture', () async {
+      await instance.connect(storageAdd);
+      var res = await instance.optionalFilePinFuture([
+        'data/users/13JuGiUNQFGijiA5NWsKsgv8YWBus5NvV1/1668771876-cryptocam_android.zip',
+      ]);
+      assert(res.result == 'ok');
+    });
+
+    test('optionalFileUnPinFuture', () async {
+      await instance.connect(storageAdd);
+      var res = await instance.optionalFileUnPinFuture([
+        'data/users/13JuGiUNQFGijiA5NWsKsgv8YWBus5NvV1/1668771876-cryptocam_android.zip',
+      ]);
+      assert(res.result == 'ok');
+    });
+
+    test('optionalFileDeleteFuture', () async {
+      await instance.connect(storageAdd);
+      var res = await instance.optionalFileDeleteFuture(
+        'data/users/13JuGiUNQFGijiA5NWsKsgv8YWBus5NvV1/1668771876-cryptocam_android.zip',
+      );
+      assert(res.isMsg);
+    });
+
+    test('optionalLimitStatsFuture', () async {
+      await instance.connect(storageAdd);
+      assert(false);
+      var res = await instance.optionalLimitStatsFuture();
+    });
+
+    test('optionalLimitSetFuture', () async {
+      assert(false); // how to pass argument ??
+      await instance.connect(storageAdd);
+
+      var res = await instance.optionalLimitSetFuture();
+    });
+
+    /// enabled auto downlaoded feature to the provided directory
+    test('optionalHelpFuture', () async {
+      await instance.connect(storageAdd);
+      const dir = '1AmeB7f5wBfJm6iR7MRZfFh65xkJzaVCX7';
+      var res = await instance.optionalHelpFuture(
+          dir, 'title, enable auto downloading to this dir');
+
+      assert(res.result is Map);
+    });
+
+    /// returns the map of auto downloaded feature enabled directory name along with title
+    test('optionalHelpListFuture', () async {
+      await instance.connect(storageAdd);
+
+      var res = await instance.optionalHelpListFuture();
+      print(res.result.toString());
+      assert(res.result is Map);
+    });
+
+    test('optionalHelpRemoveFuture', () async {
+      await instance.connect(storageAdd);
+      const removeDir = '1AmeB7f5wBfJm6iR7MRZfFh65xkJzaVCX7';
+      var res = await instance.optionalHelpRemoveFuture(removeDir);
+      assert(res.result == 'ok');
+    });
+
+    test('optionalHelpAllFuture', () async {
+      assert(false);
+      await instance.connect(storageAdd);
+
+      var res = await instance.optionalHelpAllFuture('');
+      assert(res.isMsg);
     });
   });
 }
