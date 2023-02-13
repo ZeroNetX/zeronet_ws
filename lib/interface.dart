@@ -57,14 +57,14 @@ abstract class ZeroNetWSInterface extends PlatformInterface {
 
   void respond({
     int to = 1,
-    int result = 1,
+    dynamic result = 1,
     int? id,
     MessageCallback? callback,
   });
 
   Map response({
     int to = 1,
-    int result = 1,
+    dynamic result = 1,
     int id = 2,
   }) =>
       {

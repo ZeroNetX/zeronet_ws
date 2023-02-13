@@ -194,7 +194,7 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
   @override
   void respond({
     int to = 1,
-    int result = 1,
+    dynamic result = 1,
     int? id,
     MessageCallback? callback,
   }) {
