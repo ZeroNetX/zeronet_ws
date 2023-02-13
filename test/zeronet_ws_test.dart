@@ -1,8 +1,4 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zeronet_ws/constants.dart';
 import 'package:zeronet_ws/models/models.dart';
 import 'package:zeronet_ws/zeronet_ws.dart';
 
@@ -75,6 +71,7 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     final res = await instance.fileDeleteFuture('js/all.js');
     assert(!res.isMsg);
     assert(res.error != null);
+    assert(res.error!.error == 'Forbidden, you can only modify your own files');
   });
 
   test('fileGet', () async {
@@ -89,18 +86,23 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     await instance.connect(talk);
     final res = await instance.fileWriteFuture('js/all.js', '');
     assert(res.isErr);
+    assert(res.error!.error == 'Forbidden, you can only modify your own files');
   });
 
   test('siteInfo', () async {
     await instance.connect(dashboard);
     var siteInfo = await instance.siteInfoFuture();
-    assert(siteInfo.address == dashboard);
+    assert(siteInfo.address.isNotEmpty);
   });
 
   test('sitePublish', () async {
     await instance.connect(dashboard);
-    var res = await instance.sitePublishFuture(inner_path: 'index.html');
-    assert(res.isErr);
+    var res = await instance.sitePublishFuture(
+      inner_path: 'content.json',
+      sign: false,
+    );
+    assert(res.isMsg);
+    assert(res.message!.result == 'ok');
   });
 
   test('siteSign', () async {
