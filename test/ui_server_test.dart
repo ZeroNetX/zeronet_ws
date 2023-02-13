@@ -137,10 +137,13 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
 
   test('fileQuery', () async {
     await instance.connect(talk);
-    final res = await instance.fileQueryFuture('data');
+    final res = await instance.fileQueryFuture(
+      'data/users/*/data.json',
+      query: 'topics',
+    );
     assert(res.result != null);
     assert(res.result is List);
-    assert(false); // query ??
+    //  assert(false); // query ??
   });
 
   /// provides information about the files, file owners,
@@ -175,6 +178,13 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
     assert(siteInfo.address == dashboard);
   });
 
+  test('siteInfoWithFilePath', () async {
+    await instance.connect(dashboard);
+    var siteInfo = await instance.siteInfoFuture(file_status: 'index.html');
+    assert(siteInfo.address == dashboard);
+    assert(siteInfo.event![1] == 'index.html');
+  });
+
   /// provides information about the zeronet server i.e local client
   test('serverInfo', () async {
     await instance.connect(dashboard);
@@ -182,25 +192,25 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
     assert(serverInfo.version.isNotEmpty);
   });
 
-//  sitePublish funcion publishes the files to the network, this is used after user file writes.
-  test('sitePublish', () async {
-    await instance.connect(dashboard);
-    var res = await instance.sitePublishFuture(inner_path: 'index.html');
-    assert(res.isErr);
-  });
-
-  test('siteReloadFutute', () async {
-    await instance.connect(dashboard);
-    await instance.siteReloadFuture();
-
-    assert(false);
-  });
-
 // this funtion is used to sign the files after file writes
   test('siteSign', () async {
     await instance.connect(dashboard);
     var res = await instance.siteSignFuture(inner_path: "content.json");
     assert(res.isErr);
+  });
+
+//  sitePublish funcion publishes the files to the network, this is used after user file writes.
+  test('sitePublish', () async {
+    await instance.connect(dashboard);
+    var res = await instance.sitePublishFuture(inner_path: 'content.json');
+    assert(res.isErr);
+  });
+
+  test('siteReloadFuture', () async {
+    await instance.connect(dashboard);
+    await instance.siteReloadFuture();
+
+    assert(false);
   });
 
   test('siteUpdate', () async {
@@ -213,5 +223,13 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
     await instance.connect(dashboard);
     var res = await instance.userGetSettingsFuture();
     assert(res.result != null);
+  });
+
+  test('userSetSettings', () async {
+    await instance.connect(dashboard);
+    var settings = await instance.userGetSettingsFuture();
+    var res = await instance.userSetSettingsFuture(settings.result);
+    assert(res.result is String);
+    assert(res.result == 'ok');
   });
 }
