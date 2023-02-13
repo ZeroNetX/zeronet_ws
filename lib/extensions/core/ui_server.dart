@@ -233,9 +233,14 @@ extension UiServerExt on ZeroNet {
   }
 
   ///Return: "ok" on success
-  ///TODO! Add inner_path parameter
-  Future<void> siteReloadFuture() async {
-    await ZeroNetCmd.siteReload.callFuture();
+  Future<Message> siteReloadFuture([String? innerPath]) async {
+    final res = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.siteReload,
+      params: {
+        'inner_path': innerPath ?? 'content.json',
+      },
+    );
+    return res.message!;
   }
 
   ///Return: "ok" on success, the error message otherwise.
