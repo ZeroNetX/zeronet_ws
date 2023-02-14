@@ -181,7 +181,7 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
       (isWrapperCmd ? wrapperSubscription : subscription)?.onData((message) {
         var msg = json.decode(message);
         var id = msg['to'];
-        if (msg['cmd'] == 'confirm') {
+        if (msg['cmd'] == 'confirm' || msg['cmd'] == 'notification') {
           id = msg['id'];
         }
         callbacks[id]?.call(message);
@@ -194,7 +194,7 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
   @override
   void respond({
     int to = 1,
-    int result = 1,
+    dynamic result = 1,
     int? id,
     MessageCallback? callback,
   }) {

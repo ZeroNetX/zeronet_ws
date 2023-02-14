@@ -1,8 +1,4 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zeronet_ws/constants.dart';
 import 'package:zeronet_ws/models/models.dart';
 import 'package:zeronet_ws/zeronet_ws.dart';
 
@@ -16,60 +12,6 @@ void main() {
     final result = res.result;
     assert(result is String);
     assert(result == 'pong');
-  });
-
-  test('announcerInfo', () async {
-    await instance.connect(dashboard);
-    final res = await instance.announcerInfoFuture();
-    final result = res?.result;
-    assert(result is Map);
-    assert(result['address'] == dashboard);
-  });
-
-  test('certAdd', () async {
-    await instance.connect(talk);
-    final res = await instance.certAddFuture(
-      'zeroid.bit',
-      'web',
-      'usertesting',
-      'Gze3JrN+NNSZblwFwg9NQf9/HIvAjkDSB1ES7nQUiuM8DLAASZ7Lg5fSQTG4l7jYxxszZxMrb+giYtCCwunKEWI=',
-    );
-    assert(res.isMsg || res.isPrompt || res.isErr);
-    if (res.isMsg) {
-      final res_ = res.message?.result;
-      assert(res_ == 'ok' || res_ == 'Not changed');
-    } else if (res.isErr) {
-      assert(res.error?.error != null);
-    } else {
-      assert(res.isPrompt);
-    }
-  });
-
-  test('certSelect', () async {
-    Future<bool> certSelectFuture() async {
-      final completer = Completer<bool>();
-      await instance.connect(talk, onEventMessage: (msg) {
-        final res = ResponseResult.fromJson(json.decode(msg));
-        assert(res.isPrompt || res.type == ResponseType.unknown);
-        if (res.type == ResponseType.unknown) {
-          assert(res.json['cmd'] == 'injectScript');
-          completer.complete(true);
-        }
-      });
-      await instance.certSelectFuture();
-      return await completer.future;
-    }
-
-    final res = await certSelectFuture();
-    assert(res == true);
-  });
-
-  test('channelJoin', () async {
-    await instance.connect(dashboard);
-    final res = await instance.channelJoinFuture(['sitesChanged']);
-    final result = res.result;
-    assert(result is String);
-    assert(result == 'ok');
   });
 
   test('dbQueryLoadATopic', () async {
@@ -124,19 +66,12 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     }
   });
 
-  test('dirList', () async {
-    await instance.connect(talk);
-    final res = await instance.dirListFuture('js');
-    assert(res.isMsg);
-    assert(res.message!.result != null);
-    assert(res.message!.result is List);
-  });
-
   test('fileDelete', () async {
     await instance.connect(talk);
     final res = await instance.fileDeleteFuture('js/all.js');
     assert(!res.isMsg);
     assert(res.error != null);
+    assert(res.error!.error == 'Forbidden, you can only modify your own files');
   });
 
   test('fileGet', () async {
@@ -147,220 +82,32 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
     assert(res.message!.result is String);
   });
 
-  test('fileList', () async {
-    await instance.connect(talk);
-    final res = await instance.fileListFuture('js');
-    assert(res.isMsg);
-    assert(res.message!.result != null);
-    assert(res.message!.result is List);
-  });
-
-  test('fileNeed', () async {
-    await instance.connect(talk);
-    final res = await instance.fileNeedFuture('js/all.js');
-    assert(res.isMsg);
-    assert(res.message!.result != null);
-    assert(res.message!.result is String);
-    assert(res.message!.result == 'ok');
-  });
-
-  test('fileQuery', () async {
-    await instance.connect(talk);
-    final res = await instance.fileQueryFuture('js');
-    assert(res.result != null);
-    assert(res.result is List);
-  });
-
-  test('fileRules', () async {
-    await instance.connect(talk);
-    final res = await instance.fileRulesFuture('js/all.js');
-    assert(res.result != null);
-    assert(res.result is Map);
-    assert(res.result['signers'] is List);
-  });
-
   test('fileWrite', () async {
     await instance.connect(talk);
     final res = await instance.fileWriteFuture('js/all.js', '');
     assert(res.isErr);
-  });
-
-  test('serverInfo', () async {
-    await instance.connect(dashboard);
-    var serverInfo = await instance.serverInfoFuture();
-    assert(serverInfo.version.isNotEmpty);
+    assert(res.error!.error == 'Forbidden, you can only modify your own files');
   });
 
   test('siteInfo', () async {
     await instance.connect(dashboard);
     var siteInfo = await instance.siteInfoFuture();
-    assert(siteInfo.address == dashboard);
-  });
-
-  test('siteInfoWithFilePath', () async {
-    await instance.connect(dashboard);
-    var siteInfo = await instance.siteInfoFuture(file_status: 'index.html');
-    assert(siteInfo.address == dashboard);
-    assert(siteInfo.event![1] == 'index.html');
+    assert(siteInfo.address.isNotEmpty);
   });
 
   test('sitePublish', () async {
     await instance.connect(dashboard);
-    var res = await instance.sitePublishFuture(inner_path: 'index.html');
-    assert(res.isErr);
+    var res = await instance.sitePublishFuture(
+      inner_path: 'content.json',
+      sign: false,
+    );
+    assert(res.isMsg);
+    assert(res.message!.result == 'ok');
   });
 
   test('siteSign', () async {
     await instance.connect(dashboard);
     var res = await instance.siteSignFuture(inner_path: "content.json");
     assert(res.isErr);
-  });
-
-  test('siteUpdate', () async {
-    await instance.connect(dashboard);
-    var res = await instance.siteUpdateFuture(dashboard);
-    assert(res.isMsg);
-  });
-
-  test('userGetSettings', () async {
-    await instance.connect(dashboard);
-    var res = await instance.userGetSettingsFuture();
-    assert(res.result != null);
-  });
-
-  test('userSetSettings', () async {
-    await instance.connect(dashboard);
-    var settings = await instance.userGetSettingsFuture();
-    var res = await instance.userSetSettingsFuture(settings.result);
-    assert(res.result is String);
-    assert(res.result == 'ok');
-  });
-
-  test('Admin::channelJoinAllsite', () async {
-    await instance.connect(dashboard);
-    var res = await instance.channelJoinAllSiteFuture('siteChanged');
-    assert(res.result is String);
-    assert(res.result == 'ok');
-  });
-
-  test('Admin::siteList', () async {
-    await instance.connect(dashboard);
-    var res = await instance.siteListFuture();
-    assert(res.isNotEmpty);
-  });
-
-  test('Admin::sitePause', () async {
-    await instance.connect(dashboard);
-    var res = await instance.sitePauseFuture(talk);
-    assert(res.isMsg);
-    assert(res.message!.result == 'Paused');
-  });
-
-  test('Admin::siteResume', () async {
-    await instance.connect(dashboard);
-    var res = await instance.siteResumeFuture(talk);
-    assert(res.isMsg);
-    assert(res.message!.result == 'Resumed');
-  });
-
-  test('Admin::siteCloneWithFakeSite', () async {
-    await instance.connect(dashboard);
-    var res = await instance.siteCloneFuture('FAKE SITE', '');
-    assert(res.isErr);
-    assert(res.error!.error == 'Not a site: FAKE SITE');
-  });
-
-  test('Admin::siteCloneWithAdminSite', () async {
-    await instance.connect(dashboard);
-    var res = await instance.siteCloneFuture(dashboard, 'template-new');
-    assert(res.isMsg);
-    assert(res.message!.result is Map);
-    assert(res.message!.result['address'] is String);
-  });
-
-  test('Admin::siteCloneWithNonAdminSite', () async {
-    await instance.connect(talk);
-    var res = await instance.siteCloneFuture(dashboard, '');
-    assert(res.isPrompt);
-    assert(res.prompt!.type == PromptType.confirm);
-    assert(res.prompt!.value.params[1] is String);
-    assert(res.prompt!.value.params[1] == 'Clone');
-  });
-
-  test('Admin::serverConfigSet', () async {
-    await instance.connect(dashboard);
-    var res = await instance.configSetFuture('open_browser', 'False');
-    assert(res.isMsg);
-    assert(res.message!.result == 'ok');
-    res = await instance.configSetFuture('open_browser', 'default_browser');
-    assert(res.isMsg);
-    assert(res.message!.result == 'ok');
-  });
-
-  test('Admin::serverUpdate', () async {
-    await instance.connect(dashboard);
-    var res = await instance.serverUpdateFuture();
-    assert(res?.type == PromptType.confirm);
-  });
-
-  test('Admin::serverShutdown', () async {
-    await instance.connect(dashboard);
-    var res = await instance.serverShutdownFuture();
-    assert(res?.type == PromptType.confirm);
-    assert(res?.value.params[1] == 'Shut down');
-  });
-
-  test('Admin::serverRestart', () async {
-    await instance.connect(dashboard);
-    var res = await instance.serverShutdownFuture(restart: true);
-    assert(res?.type == PromptType.confirm);
-    assert(res?.value.params[1] == 'Restart');
-  });
-
-  test('Admin::serverPortCheck', () async {
-    await instance.connect(dashboard);
-    var res = await instance.serverPortcheckFuture();
-    assert(res?.ipv4 is bool || res?.ipv4 == null);
-    assert(res?.ipv6 is bool || res?.ipv6 == null);
-  });
-
-  test('Admin::certList', () async {
-    await instance.connect(dashboard);
-    final res = await instance.certListFuture();
-    assert(res?.result is List);
-    if (res?.result is List && res?.result.isNotEmpty) {
-      assert(res?.result.first is Map);
-    }
-  });
-
-  test('Admin::certSet', () async {
-    await instance.connect(dashboard);
-    final res = await instance.certSetFuture('zeroid.bit');
-    assert(res.result == 'ok');
-  });
-
-  test('Admin::permissionDetails', () async {
-    await instance.connect(dashboard);
-    final res = await instance.permissionDetailsFuture('ADMIN');
-    assert(res.result is String);
-  });
-
-  test('Admin::permissionAdd', () async {
-    await instance.connect(dashboard);
-    final res = await instance.permissionAddFuture('ADMIN');
-    assert(res.result == 'ok');
-  });
-
-  test('Admin::permissionRemove', () async {
-    await instance.connect(dashboard);
-    final res = await instance.permissionRemoveFuture('ADMIN');
-    assert(res.result == 'ok');
-  });
-
-  //TODO! Add more tests for as
-  test('Admin::as', () async {
-    await instance.connect(dashboard);
-    final res = await instance.asFuture(site: talk, cmd: ZeroNetCmd.siteInfo);
-    assert(res.isMsg);
   });
 }

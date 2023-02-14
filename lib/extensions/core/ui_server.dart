@@ -26,8 +26,8 @@ extension UiServerExt on ZeroNet {
     return resultStr.toMsgOrPromptOrErr;
   }
 
-  ///Return: None.
-  Future<void> certSelectFuture({
+  ///Return: Prompt with list of certs available.
+  Future<PromptResult> certSelectFuture({
     List<String>? accepted_domains,
     bool accept_any = false,
     String? accepted_pattern,
@@ -39,7 +39,11 @@ extension UiServerExt on ZeroNet {
     params['accept_any'] = accept_any;
     if (accepted_pattern != null) params['accepted_pattern'] = accepted_pattern;
 
-    await ZeroNet.instance.cmdFuture(ZeroNetCmd.certSelect, params: params);
+    var result = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.certSelect,
+      params: params,
+    );
+    return result.toMsgOrPrompt.prompt!;
   }
 
   ///Return: None.
@@ -233,9 +237,14 @@ extension UiServerExt on ZeroNet {
   }
 
   ///Return: "ok" on success
-  ///TODO! Add inner_path parameter
-  Future<void> siteReloadFuture() async {
-    await ZeroNetCmd.siteReload.callFuture();
+  Future<Message> siteReloadFuture([String? innerPath]) async {
+    final res = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.siteReload,
+      params: {
+        'inner_path': innerPath ?? 'content.json',
+      },
+    );
+    return res.message!;
   }
 
   ///Return: "ok" on success, the error message otherwise.
