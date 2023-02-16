@@ -192,8 +192,14 @@ class Cache {
   });
 
   factory Cache.fromJson(Map<String, dynamic> json) {
+    Map<String, int> badFiles = {};
+    try {
+      badFiles = json['bad_files'] ?? {};
+    } catch (e) {
+      badFiles = {};
+    }
     return Cache(
-      badFiles: json['bad_files'] ?? {},
+      badFiles: badFiles,
       hashfield: json['hashfield'],
     );
   }

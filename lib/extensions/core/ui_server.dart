@@ -196,8 +196,13 @@ extension UiServerExt on ZeroNet {
     return resultStr.message!;
   }
 
-  //Return: All information about the site
-  Future<SiteInfo> siteInfoFuture({
+  ///Return: All information about the site
+  /// If return value isMsg
+  /// you can convert result to siteInfo with siteInfo extension method
+  /// final siteInfo = result.message!.siteInfo;
+  /// or using SiteInfo.fromJson() method
+  /// final siteInfo = SiteInfo.fromJson(result.message!.result);
+  Future<MessageOrError> siteInfoFuture({
     String? file_status,
   }) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
@@ -206,7 +211,7 @@ extension UiServerExt on ZeroNet {
         'file_status': file_status,
       },
     );
-    return resultStr.message!.siteInfo;
+    return resultStr.toMsgOrErr;
   }
 
   //Return: All information about the server

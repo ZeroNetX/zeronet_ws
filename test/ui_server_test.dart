@@ -189,16 +189,22 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
 // by using site content obj you can laod site default settings
   test('siteInfo', () async {
     await instance.connect(dashboard);
-    var siteInfo = await instance.siteInfoFuture();
-    assert(siteInfo.address.isNotEmpty);
+    final res = await instance.siteInfoFuture();
+    if (res.isMsg) {
+      final siteInfo = res.message!.siteInfo;
+      assert(siteInfo.address.isNotEmpty);
+    }
   });
 
   test('siteInfoWithFilePath', () async {
     await instance.connect(dashboard);
-    var siteInfo = await instance.siteInfoFuture(file_status: 'index.html');
-    assert(siteInfo.address.isNotEmpty);
-    assert(siteInfo.event![0] == 'file_done');
-    assert(siteInfo.event![1] == 'index.html');
+    final res = await instance.siteInfoFuture(file_status: 'index.html');
+    if (res.isMsg) {
+      final siteInfo = res.message!.siteInfo;
+      assert(siteInfo.address.isNotEmpty);
+      assert(siteInfo.event![0] == 'file_done');
+      assert(siteInfo.event![1] == 'index.html');
+    }
   });
 
   /// provides information about the zeronet server i.e local client

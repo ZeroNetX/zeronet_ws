@@ -91,8 +91,11 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
 
   test('siteInfo', () async {
     await instance.connect(dashboard);
-    var siteInfo = await instance.siteInfoFuture();
-    assert(siteInfo.address.isNotEmpty);
+    final res = await instance.siteInfoFuture();
+    if (res.isMsg) {
+      final siteInfo = res.message!.siteInfo;
+      assert(siteInfo.address.isNotEmpty);
+    }
   });
 
   test('sitePublish', () async {
