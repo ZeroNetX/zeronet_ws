@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zeronet_ws/models/models.dart';
 import 'package:zeronet_ws/zeronet_ws.dart';
 
 void main() {
@@ -348,10 +349,18 @@ void main() {
 
     test('optionalFilePinFuture', () async {
       await instance.connect(storageAdd);
-      var res = await instance.optionalFilePinFuture([
-        'data/users/13JuGiUNQFGijiA5NWsKsgv8YWBus5NvV1/1668771876-cryptocam_android.zip',
-      ]);
-      assert(res.result == 'ok');
+      final res = await instance.optionalFilePinFuture(
+        [
+          'data/users/13JuGiUNQFGijiA5NWsKsgv8YWBus5NvV1/1668771876-cryptocam_android.zip',
+        ],
+        address: storageAdd,
+      );
+      if (res.isMsg) {
+        assert(res.message!.result == 'ok');
+      } else if (res.isPrompt) {
+        assert(res.prompt!.type == PromptType.notification);
+        assert((res.prompt!.value as Notification).params![0] == 'done');
+      }
     });
 
     test('optionalFileUnPinFuture', () async {

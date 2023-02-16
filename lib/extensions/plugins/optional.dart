@@ -33,18 +33,18 @@ extension OptionalFileExt on ZeroNet {
     return resultStr.message!;
   }
 
-  Future<Message> optionalFilePinFuture(
+  Future<MessageOrPromptOrError> optionalFilePinFuture(
     List<String> innerPaths, {
     String? address,
   }) async {
-    var resultStr = await ZeroNet.instance.cmdFuture(
+    final resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.optionalFilePin,
       params: {
         'inner_path': innerPaths,
         'address': address,
       },
     );
-    return resultStr.message!;
+    return resultStr.toMsgOrPromptOrErr;
   }
 
   Future<Message> optionalFileUnPinFuture(
