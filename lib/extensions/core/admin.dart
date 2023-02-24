@@ -5,7 +5,7 @@ extension AdminExt on ZeroNet {
   Future<MessageOrPromptOrError> asFuture({
     required String site,
     required String cmd,
-    List? arguments,
+    List? arguments = const [],
   }) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.as_,

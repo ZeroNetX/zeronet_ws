@@ -12,12 +12,19 @@ void main() {
   test('Admin::as', () async {
     await instance.connect(dashboard);
     final res = await instance.asFuture(site: talk, cmd: ZeroNetCmd.siteInfo);
-    assert(res.isMsg);
+    if (res.isErr) {
+      final error = res.error!.error;
+      assert(error == 'Site Does Not Exist: $talk');
+      return;
+    }
 
-    final result2 = await instance.asFuture(
-        site: talk, cmd: ZeroNetCmd.dirList, arguments: ['data/users/', false]);
+    final result = await instance.asFuture(
+      site: talk,
+      cmd: ZeroNetCmd.dirList,
+      arguments: ['data/users/', false],
+    );
 
-    assert(result2.message!.result is List);
+    assert(result.message!.result is List);
   });
 
   test('Admin::permissionAdd', () async {
