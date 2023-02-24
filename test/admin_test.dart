@@ -28,9 +28,6 @@ void main() {
   });
 
   test('Admin::permissionAdd', () async {
-    assert(false);
-
-    /// TODO for non admin sites
     await instance.connect(dashboard);
     final res = await instance.permissionAddFuture('ADMIN');
     assert(res.result == 'ok');
