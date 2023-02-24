@@ -6,11 +6,48 @@ List<UserID> extractCertSelectDomains(PromptResult promptResult) {
   final params = (promptResult.value as Notification).params;
   final htmlStr = params!.last as String;
   final domains = parseFragment(htmlStr).nodes;
+  final registrars = <UserID>[];
   domains.retainWhere(
     (Node node) {
       if (node is Element &&
-          node.localName == 'a' &&
-          node.className.contains('cert')) {
+          (node.localName == 'a' && node.className.contains('cert') ||
+              node.localName == 'div')) {
+        if (node.localName == 'div') {
+          final registers = parseFragment(node.innerHtml).nodes;
+          registers.retainWhere(
+            (node) =>
+                node is Element &&
+                node.localName == 'a' &&
+                node.className == 'select',
+          );
+          for (var element in registers) {
+            final keys = ['href', 'target', 'class'];
+            final result = element.attributes.keys.skipWhile(
+              (value) => keys.contains(value),
+            );
+            if (result.isEmpty) {
+              final domain = element.attributes['href']!;
+              final String domainString;
+              if (!domain.startsWith('/')) {
+                domainString = domain;
+              } else {
+                domainString = domain.substring(1);
+              }
+              final isEmpty = registrars
+                  .where((element) => element.domain == domainString)
+                  .isEmpty;
+              if (isEmpty) {
+                registrars.add(UserID(
+                  domainString,
+                  '',
+                  false,
+                  registered: false,
+                ));
+              }
+            }
+          }
+          return false;
+        }
         return true;
       }
       return false;
@@ -33,6 +70,7 @@ List<UserID> extractCertSelectDomains(PromptResult promptResult) {
       isActive,
     );
   }).toList();
+  mapped.addAll(registrars);
   return mapped;
 }
 
@@ -40,10 +78,12 @@ class UserID {
   final String domain;
   final String username;
   final bool active;
+  final bool registered;
 
   const UserID(
     this.domain,
     this.username,
-    this.active,
-  );
+    this.active, {
+    this.registered = true,
+  });
 }
