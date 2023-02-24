@@ -183,6 +183,9 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
         var id = msg['to'];
         if (msg['cmd'] == 'confirm' || msg['cmd'] == 'notification') {
           id = msg['id'];
+        } else if (msg['cmd'] == 'injectScript') {
+          // i = msg['id'];
+          i++;
         }
         callbacks[id]?.call(message);
         if (cmdStr != 'channelJoin') callbacks.remove(id);
