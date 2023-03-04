@@ -17,6 +17,7 @@ export 'extensions/futures.dart';
 
 class ZeroNet {
   static String wrapperKey = '';
+  static bool isInitialised = false;
 
   ZeroNet._();
 
@@ -36,8 +37,8 @@ class ZeroNet {
     bool override = false,
     String? wrapperKey_,
     MessageCallback? onEventMessage,
-  }) {
-    return ZeroNetWSInterface.instance.connect(
+  }) async {
+    await ZeroNetWSInterface.instance.connect(
       site,
       ip: ip,
       port: port,
@@ -45,6 +46,7 @@ class ZeroNet {
       override: override,
       onEventMessage: onEventMessage,
     );
+    isInitialised = true;
   }
 
   Future<void> connectWrapper(
