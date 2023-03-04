@@ -4,17 +4,17 @@ import 'package:zeronet_ws/models/models.dart';
 import 'package:zeronet_ws/zeronet_ws.dart';
 
 void main() {
-  var dashboard = '1HELLoE3sFD9569CLCbHEAVqvqV7U2Ri9d';
-  var talk = '1TaLkFrMwvbNsooF4ioKAY9EuxTBTjipT';
-  var testSite = '1DCN2A5VqYrQSNds7Y3s9JLn65CfykPKJw';
+  const dashboard = '1HELLoE3sFD9569CLCbHEAVqvqV7U2Ri9d';
+  const talk = '1TaLkFrMwvbNsooF4ioKAY9EuxTBTjipT';
+  const testSite = '1DCN2A5VqYrQSNds7Y3s9JLn65CfykPKJw';
 
-  var instance = ZeroNet.instance;
+  final instance = ZeroNet.instance;
   group('Plugin::BigFile', () {
     test("bigFileUpload", () async {
       await instance.connect("1DCN2A5VqYrQSNds7Y3s9JLn65CfykPKJw");
-      var file = File("RustDesk.exe");
-      var size = file.lengthSync();
-      var res = await instance.bigFileUploadInitFuture("RustDesk.exe", size);
+      final file = File("RustDesk.exe");
+      final size = file.lengthSync();
+      final res = await instance.bigFileUploadInitFuture("RustDesk.exe", size);
       assert(res.isMsg);
       assert(res.message!.result is Map);
       // assert(res.message!.result);
@@ -22,20 +22,19 @@ void main() {
 
     test("siteSetAutodownloadBigfileLimit", () async {
       await instance.connect(talk);
-      var res = await instance.siteSetAutodownloadBigfileLimit(0);
+      final res = await instance.siteSetAutodownloadBigfileLimit(0);
       assert(res.isMsg);
     });
 
     test("uploadFile", () async {
       await instance.connect('1DCN2A5VqYrQSNds7Y3s9JLn65CfykPKJw');
-      var file = File("test/RustDesk.exe");
-      var size = file.lengthSync();
-      var urlRes = await instance.bigFileUploadInitFuture("RustDesk.exe", size);
-
-      var map = urlRes.message!.result as Map;
-      print(map);
+      final file = File("test/RustDesk.exe");
+      final size = file.lengthSync();
+      final urlRes =
+          await instance.bigFileUploadInitFuture("RustDesk.exe", size);
+      final map = urlRes.message!.result as Map;
       final url = "http://127.0.0.1:43110${map['url']}";
-      var res =
+      final res =
           await instance.uploadFile(url, "RustDesk.exe", "test/RustDesk.exe");
       assert(res);
     });
@@ -46,9 +45,9 @@ void main() {
       await instance.connect(talk);
 
       final perRes = await instance.permissionAddFuture('ADMIN');
-      assert(perRes.result == 'ok');
+      assert(perRes.isMsg);
 
-      var res = await instance.chartDbQueryFuture(
+      final res = await instance.chartDbQueryFuture(
         'SELECT site.site_id FROM site WHERE site.address = "$talk"',
       );
       assert(res.isMsg);
@@ -56,7 +55,7 @@ void main() {
 
     test("chartGetPeerLocationsFuture", () async {
       await instance.connect(talk);
-      var res = await instance.chartGetPeerLocationsFuture();
+      final res = await instance.chartGetPeerLocationsFuture();
       assert(res.result is List);
     });
   });
@@ -64,7 +63,7 @@ void main() {
   group('Plugin::ContentFilter', () {
     test("muteAddFuture", () async {
       await instance.connect(talk);
-      var res = await instance.muteAddFuture(
+      final res = await instance.muteAddFuture(
         '1J4MejFtU6VkcguG1ng3xK3RjAjFohSGed',
         "18143wpue3rqyknaopx5kjkzymayhcjqhv@cryptoid.bit",
         "testing mute feature",
@@ -76,7 +75,7 @@ void main() {
 
     test("muteRemove", () async {
       await instance.connect(talk);
-      var res = await instance.muteRemoveFuture(
+      final res = await instance.muteRemoveFuture(
         '1J4MejFtU6VkcguG1ng3xK3RjAjFohSGed',
       );
       assert(res.prompt !=
@@ -87,7 +86,7 @@ void main() {
 
     test("muteListFuture", () async {
       await instance.connect(talk);
-      var res = await instance.muteListFuture();
+      final res = await instance.muteListFuture();
       assert(res.result is List);
     });
 
@@ -96,30 +95,30 @@ void main() {
           false); // handle when un authorized user call this funtion, return error message, getting null operator used on null value
 
       await instance.connect(talk);
-      var res = await instance.muteListFuture();
+      final res = await instance.muteListFuture();
       assert(res.result == 'error');
     });
 
     // test("filterIncludeAddFuture", () async {
     //   await instance.connect(talk);
-    //   var res = await instance.filterIncludeAddFuture();
+    //   final res = await instance.filterIncludeAddFuture();
     // });
     //
 
     // test("filterIncludeRemoveFuture", () async {
     //   await instance.connect(talk);
-    //   var res = await instance.filterIncludeRemoveFuture();
+    //   final res = await instance.filterIncludeRemoveFuture();
     // });
 
     test("filterIncludeListFuture", () async {
       await instance.connect(talk);
-      var res = await instance.filterIncludeListFuture();
+      final res = await instance.filterIncludeListFuture();
 
       assert(res.result is List);
     });
     test("siteblockIgnoreAddSiteFuture", () async {
       await instance.connect(talk);
-      var res = await instance
+      final res = await instance
           .siteblockIgnoreAddSiteFuture('1EjitdTHErKQccRVyfvgharFc15wVpbS2j');
 
       assert(res.isMsg);
@@ -128,7 +127,7 @@ void main() {
     test("siteblockAddFuture", () async {
       assert(false); // unathorized
       await instance.connect(talk);
-      var res = await instance.siteblockAddFuture(
+      final res = await instance.siteblockAddFuture(
           '1EjitdTHErKQccRVyfvgharFc15wVpbS2j',
           reason: "testing");
     });
@@ -136,7 +135,7 @@ void main() {
     test("siteblockRemoveFuture", () async {
       assert(false); // unathorized
       await instance.connect(talk);
-      var res = await instance.siteblockRemoveFuture(
+      final res = await instance.siteblockRemoveFuture(
           '1EjitdTHErKQccRVyfvgharFc15wVpbS2j',
           reason: "testing");
     });
@@ -144,13 +143,13 @@ void main() {
     test("siteblockListFuture", () async {
       assert(false); // unathorized
       await instance.connect(talk);
-      var res = await instance.siteblockListFuture();
+      final res = await instance.siteblockListFuture();
     });
 
     test("siteblockGetFuture", () async {
       assert(false); // unathorized
       await instance.connect(talk);
-      var res = await instance
+      final res = await instance
           .siteblockGetFuture('1EjitdTHErKQccRVyfvgharFc15wVpbS2j');
     });
   });
@@ -158,7 +157,7 @@ void main() {
   group('Plugin::Cors', () {
     test("corsPermissionFuture", () async {
       await instance.connect(talk);
-      var res = await instance
+      final res = await instance
           .corsPermissionFuture(["cors-15UYrA7aXr2Nto1Gg4yWXpY3EAJwafMTNk"]);
 
       assert(res.prompt != null);
@@ -170,17 +169,17 @@ void main() {
   group('Plugin::Crypt', () {
     test("userPublickeyFuture", () async {
       await instance.connect(talk);
-      var res = await instance.userPublickeyFuture();
+      final res = await instance.userPublickeyFuture();
 
       assert(res.result is String);
     });
 
     test("eciesEncryptFuture", () async {
       await instance.connect(talk);
-      var keyResult = await instance.userPublickeyFuture();
+      final keyResult = await instance.userPublickeyFuture();
 
       String publicKey = keyResult.result as String;
-      var res = await instance.eciesEncryptFuture('testing encrypt',
+      final res = await instance.eciesEncryptFuture('testing encrypt',
           publicKey: publicKey);
       assert(res.result is String);
     });
@@ -188,12 +187,12 @@ void main() {
     test("eciesDecryptFuture", () async {
       await instance.connect('17fZG8MAHZ4HUVpx5DwV85LeCFrJPaqFKG');
       String text = "Testing Crypt_dart";
-      var encryptStr = await instance.eciesEncryptFuture(
+      final encryptStr = await instance.eciesEncryptFuture(
         text,
       );
       assert(encryptStr.result is String);
-      var res = await instance.eciesDecryptFuture(encryptStr.result);
-      var deCrypt = res.result;
+      final res = await instance.eciesDecryptFuture(encryptStr.result);
+      final deCrypt = res.result;
       assert(res.result == text);
     });
 
@@ -201,7 +200,7 @@ void main() {
       await instance.connect(talk);
       String text = "Testing Crypt_dart";
 
-      var res = await instance.aesEncryptFuture(text);
+      final res = await instance.aesEncryptFuture(text);
 
       assert(res.result is List);
     });
@@ -210,7 +209,7 @@ void main() {
       await instance.connect("1DCN2A5VqYrQSNds7Y3s9JLn65CfykPKJw");
       String text = "Testing Crypt_dart";
 
-      var enCrypStr = await instance.aesEncryptFuture(
+      final enCrypStr = await instance.aesEncryptFuture(
         text,
       );
       assert(enCrypStr.result[0] is String);
@@ -245,7 +244,7 @@ void main() {
 
       /// Getting wrong public key length
       assert(false); // test failed with public key param
-      var aesEncryp = await instance.aesEncryptFuture(text, key: publicKey);
+      final aesEncryp = await instance.aesEncryptFuture(text, key: publicKey);
 
       final res = await instance.aesDecryptArrayFuture(
         [aesEncryp.result[0]],
@@ -258,7 +257,7 @@ void main() {
     test("ecdsaSignFuture", () async {
       await instance.connect(talk);
 
-      var res = await instance.ecdsaSignFuture("data", null);
+      final res = await instance.ecdsaSignFuture("data", null);
 
       assert(res.result != null);
     });
@@ -266,8 +265,8 @@ void main() {
     test("ecdsaVerifyFuture", () async {
       await instance.connect(talk);
 
-      var sign = await instance.ecdsaSignFuture("data", null);
-      var res = await instance.ecdsaVerifyFuture(
+      final sign = await instance.ecdsaSignFuture("data", null);
+      final res = await instance.ecdsaVerifyFuture(
         "data",
         ['1J4MejFtU6VkcguG1ng3xK3RjAjFohSGed'],
         sign.result,
@@ -280,7 +279,7 @@ void main() {
       await instance.connect(talk);
       await instance.connect(dashboard);
 
-      var res = await instance.eccPrivToPubFuture('');
+      final res = await instance.eccPrivToPubFuture('');
 
       assert(res.result is String);
     });
@@ -288,12 +287,12 @@ void main() {
     test("eccPubToAddrFuture", () async {
       assert(false); // loading ..
       await instance.connect(dashboard);
-      var keyResult = await instance.userPublickeyFuture();
+      final keyResult = await instance.userPublickeyFuture();
 
-      var pubKey = keyResult.result;
+      final pubKey = keyResult.result;
 
       assert(pubKey is String);
-      var res = await instance.eccPubToAddrFuture(pubKey);
+      final res = await instance.eccPubToAddrFuture(pubKey);
       assert(res.result is String && res.result.toString().startsWith("1"));
     });
   });
@@ -301,7 +300,7 @@ void main() {
   group('Plugin::Merger', () {
     test('mergerSiteAddFuture', () async {
       await instance.connect(testSite);
-      var res = await instance
+      final res = await instance
           .mergerSiteAddFuture(['1E54os6VQDZ2fEsgNZmB5oWJb9scQnsgNh']);
 
       assert(res.isMsg);
@@ -312,7 +311,7 @@ void main() {
     test('mergerSiteDeleteFuture', () async {
       await instance.connect(testSite);
 
-      var res = await instance
+      final res = await instance
           .mergerSiteDeleteFuture('1E54os6VQDZ2fEsgNZmB5oWJb9scQnsgNh');
 
       assert(res.isMsg);
@@ -321,7 +320,7 @@ void main() {
     test('mergerSiteListFuture', () async {
       await instance.connect('1FUzXC93wj3Djv33tzxXcLpb6AMgjKTWvH');
 
-      var res = await instance.mergerSiteListFuture(false);
+      final res = await instance.mergerSiteListFuture(false);
 
       assert(res.isMsg);
       assert(res.message!.result is List);
@@ -333,14 +332,14 @@ void main() {
 
     test('optionalFileListFuture', () async {
       await instance.connect(storageAdd);
-      var res = await instance.optionalFileListFuture(limit: 1);
+      final res = await instance.optionalFileListFuture(limit: 1);
       assert(res.isMsg);
       assert(res.message!.result is List);
     });
 
     test('optionalFileInfoFuture', () async {
       await instance.connect(storageAdd);
-      var res = await instance.optionalFileInfoFuture(
+      final res = await instance.optionalFileInfoFuture(
         'data/users/13JuGiUNQFGijiA5NWsKsgv8YWBus5NvV1/1668771876-cryptocam_android.zip',
       );
 
@@ -365,7 +364,7 @@ void main() {
 
     test('optionalFileUnPinFuture', () async {
       await instance.connect(storageAdd);
-      var res = await instance.optionalFileUnPinFuture([
+      final res = await instance.optionalFileUnPinFuture([
         'data/users/13JuGiUNQFGijiA5NWsKsgv8YWBus5NvV1/1668771876-cryptocam_android.zip',
       ]);
       assert(res.result == 'ok');
@@ -373,7 +372,7 @@ void main() {
 
     test('optionalFileDeleteFuture', () async {
       await instance.connect(storageAdd);
-      var res = await instance.optionalFileDeleteFuture(
+      final res = await instance.optionalFileDeleteFuture(
         'data/users/13JuGiUNQFGijiA5NWsKsgv8YWBus5NvV1/1668771876-cryptocam_android.zip',
       );
       assert(res.isMsg);
@@ -382,21 +381,21 @@ void main() {
     test('optionalLimitStatsFuture', () async {
       await instance.connect(storageAdd);
       assert(false);
-      var res = await instance.optionalLimitStatsFuture();
+      final res = await instance.optionalLimitStatsFuture();
     });
 
     test('optionalLimitSetFuture', () async {
       assert(false); // how to pass argument ??
       await instance.connect(storageAdd);
 
-      var res = await instance.optionalLimitSetFuture();
+      final res = await instance.optionalLimitSetFuture();
     });
 
     /// enabled auto downlaoded feature to the provided directory
     test('optionalHelpFuture', () async {
       await instance.connect(storageAdd);
       const dir = '1AmeB7f5wBfJm6iR7MRZfFh65xkJzaVCX7';
-      var res = await instance.optionalHelpFuture(
+      final res = await instance.optionalHelpFuture(
           dir, 'title, enable auto downloading to this dir');
 
       assert(res.result is Map);
@@ -406,7 +405,7 @@ void main() {
     test('optionalHelpListFuture', () async {
       await instance.connect(storageAdd);
 
-      var res = await instance.optionalHelpListFuture();
+      final res = await instance.optionalHelpListFuture();
       print(res.result.toString());
       assert(res.result is Map);
     });
@@ -414,7 +413,7 @@ void main() {
     test('optionalHelpRemoveFuture', () async {
       await instance.connect(storageAdd);
       const removeDir = '1AmeB7f5wBfJm6iR7MRZfFh65xkJzaVCX7';
-      var res = await instance.optionalHelpRemoveFuture(removeDir);
+      final res = await instance.optionalHelpRemoveFuture(removeDir);
       assert(res.result == 'ok');
     });
 
@@ -422,7 +421,7 @@ void main() {
       assert(false);
       await instance.connect(storageAdd);
 
-      var res = await instance.optionalHelpAllFuture('');
+      final res = await instance.optionalHelpAllFuture('');
       assert(res.isMsg);
     });
   });
