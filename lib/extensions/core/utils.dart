@@ -87,3 +87,19 @@ class UserID {
     this.registered = true,
   });
 }
+
+extension PortOpenedExt on Message {
+  ///Return: True (port opened) or False (port closed).
+  PortOpened get portOpened {
+    return PortOpened.fromJson(result);
+  }
+}
+
+extension SiteListExt on Message {
+  /// Return: SiteList
+  List<SiteInfo> get siteList {
+    final res = (result as List);
+    final list = res.map((e) => SiteInfo.fromJson(e)).toList();
+    return list;
+  }
+}

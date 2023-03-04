@@ -1,5 +1,7 @@
 part of '../futures.dart';
 
+/// Site should hold `ADMIN` permission to access these cmds.
+/// Otherwise return value will an Error
 extension AdminExt on ZeroNet {
   ///Return: Command's return value.
   Future<MessageOrPromptOrError> asFuture({
@@ -18,65 +20,65 @@ extension AdminExt on ZeroNet {
     return resultStr.toMsgOrPromptOrErr;
   }
 
-  ///Return: ok
-  Future<Message> permissionAddFuture(String permission) async {
+  /// Returns: `ok` on adding permission
+  Future<MessageOrError> permissionAddFuture(String permission) async {
     final result = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.permissionAdd,
       params: {
         'permission': permission,
       },
     );
-    return result.message!;
+    return result.toMsgOrErr;
   }
 
   ///Return: ok
-  Future<Message> permissionRemoveFuture(String permission) async {
+  Future<MessageOrError> permissionRemoveFuture(String permission) async {
     final result = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.permissionRemove,
       params: {
         'permission': permission,
       },
     );
-    return result.message!;
+    return result.toMsgOrErr;
   }
 
   ///Return: ok
-  Future<Message> permissionDetailsFuture(String permission) async {
+  Future<MessageOrError> permissionDetailsFuture(String permission) async {
     final res = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.permissionDetails,
       params: {
         'permission': permission,
       },
     );
-    return res.message!;
+    return res.toMsgOrErr;
   }
 
   ///Return: A list of objects each representing a certificate from an identity provider.
-  Future<Message?> certListFuture() async {
+  Future<MessageOrError> certListFuture() async {
     final resultStr = await ZeroNetCmd.certList.callFuture();
-    return resultStr.message;
+    return resultStr.toMsgOrErr;
   }
 
   ///Return: Message
-  Future<Message> certSetFuture(String domain) async {
+  Future<MessageOrError> certSetFuture(String domain) async {
     final res = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.certSet,
       params: {
         'domain': domain,
       },
     );
-    return res.message!;
+    return res.toMsgOrErr;
   }
 
   ///Return: Message
-  Future<Message> channelJoinAllSiteFuture(String channel) async {
+  Future<MessageOrError> channelJoinAllSiteFuture(String channel) async {
     final res = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.channelJoinAllsite,
       params: {
         'channel': channel,
       },
     );
-    return res.message!;
+    return res.toMsgOrErr;
   }
 
   ///Return: ok
@@ -91,28 +93,31 @@ extension AdminExt on ZeroNet {
     return resultStr.toMsgOrErr;
   }
 
-  ///Return: True (port opened) or False (port closed).
-  Future<PortOpened?> serverPortcheckFuture() async {
+  /// Returns: MessageOrErr
+  /// If result is message,
+  /// you can use [portOpened] extension method to get [PortOpened]
+  Future<MessageOrError> serverPortcheckFuture() async {
     final resultStr = await ZeroNetCmd.serverPortcheck.callFuture();
-    if (resultStr.isMessage) {
-      return PortOpened.fromJson(resultStr.message!.result);
-    }
-    return null;
+    return resultStr.toMsgOrErr;
   }
 
   ///Return: None
-  Future<PromptResult?> serverShutdownFuture({bool restart = false}) async {
-    final resultStr =
-        await ZeroNet.instance.cmdFuture(ZeroNetCmd.serverShutdown, params: {
-      'restart': restart,
-    });
-    return resultStr.prompt;
+  Future<PromptOrError?> serverShutdownFuture({bool restart = false}) async {
+    final resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.serverShutdown,
+      params: {
+        'restart': restart,
+      },
+    );
+    return resultStr.toPromptOrErr;
   }
 
   ///Return: None
-  Future<PromptResult?> serverUpdateFuture() async {
-    final resultStr = await ZeroNetCmd.serverUpdate.callFuture();
-    return resultStr.prompt;
+  Future<PromptOrError?> serverUpdateFuture() async {
+    final resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.serverUpdate,
+    );
+    return resultStr.toPromptOrErr;
   }
 
   ///Return: None, automatically redirects to new site on completion
@@ -130,20 +135,24 @@ extension AdminExt on ZeroNet {
     return result.toMsgOrPromptOrErr;
   }
 
-  ///Return: SiteInfo list of all downloaded sites
-  Future<List<SiteInfo>> siteListFuture({bool connectingSites = false}) async {
+  /// Returns: `MessageOrError`.
+  ///
+  /// If `response` isMsg, you can use siteList Extension method on `response.message!.siteList`
+  Future<MessageOrError> siteListFuture({bool connectingSites = false}) async {
     final res = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.siteList,
       params: {
         'connecting_sites': connectingSites,
       },
     );
-    final result = (res.message!.result as List);
-    final list = result.map((e) => SiteInfo.fromJson(e)).toList();
-    return list;
+    return res.toMsgOrErr;
   }
 
-  ///Return: None
+  /// Returns: `Paused`
+  ///
+  ///  or
+  ///
+  /// `Error` - If site is missing
   Future<MessageOrError> sitePauseFuture(String address) async {
     final res = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.sitePause,
@@ -154,7 +163,11 @@ extension AdminExt on ZeroNet {
     return res.toMsgOrErr;
   }
 
-  ///Return: None
+  /// Returns: `Resumed`
+  ///
+  ///  or
+  ///
+  /// `Error` - If site is missing
   Future<MessageOrError> siteResumeFuture(String address) async {
     final res = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.siteResume,

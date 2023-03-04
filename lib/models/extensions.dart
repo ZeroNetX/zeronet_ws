@@ -66,3 +66,25 @@ extension MsgOrPromptOrErr on ResponseResult {
     }
   }
 }
+
+class PromptOrError {
+  final PromptResult? prompt;
+  final Error? error;
+  const PromptOrError({
+    this.prompt,
+    this.error,
+  });
+
+  bool get isPrompt => prompt != null;
+  bool get isErr => error != null;
+}
+
+extension PromptOrErr on ResponseResult {
+  PromptOrError get toPromptOrErr {
+    if (isPrompt) {
+      return PromptOrError(prompt: prompt);
+    } else {
+      return PromptOrError(error: error);
+    }
+  }
+}
