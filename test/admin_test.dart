@@ -100,20 +100,20 @@ void main() {
   test('Admin::serverRestart', () async {
     await instance.connect(dashboard);
     final res = await instance.serverShutdownFuture(restart: true);
-    assert(res!.prompt!.type == PromptType.confirm);
-    assert(res!.prompt!.value.params[1] == 'Restart');
+    assert(res.prompt!.type == PromptType.confirm);
+    assert(res.prompt!.value.params[1] == 'Restart');
   });
 
   test('Admin::serverShutdown', () async {
     await instance.connect(dashboard);
     final res = await instance.serverShutdownFuture();
-    assert(res!.prompt!.type == PromptType.confirm);
-    assert(res!.prompt!.value.params[1] == 'Shut down');
+    assert(res.prompt!.type == PromptType.confirm);
+    assert(res.prompt!.value.params[1] == 'Shut down');
   });
   test('Admin::serverUpdate', () async {
     await instance.connect(dashboard);
     final res = await instance.serverUpdateFuture();
-    assert(res!.prompt!.type == PromptType.confirm);
+    assert(res.prompt!.type == PromptType.confirm);
   });
 
   test('Admin::siteCloneWithFakeSite', () async {

@@ -102,7 +102,7 @@ extension AdminExt on ZeroNet {
   }
 
   ///Return: None
-  Future<PromptOrError?> serverShutdownFuture({bool restart = false}) async {
+  Future<PromptOrError> serverShutdownFuture({bool restart = false}) async {
     final resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.serverShutdown,
       params: {
@@ -113,7 +113,7 @@ extension AdminExt on ZeroNet {
   }
 
   ///Return: None
-  Future<PromptOrError?> serverUpdateFuture() async {
+  Future<PromptOrError> serverUpdateFuture() async {
     final resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.serverUpdate,
     );
