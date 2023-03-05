@@ -53,6 +53,17 @@ extension AdminExt on ZeroNet {
     return res.toMsgOrErr;
   }
 
+  /// Return: "ok" on success.
+  Future<MessageOrError> userSetGlobalSettingsFuture(Map settings) async {
+    var resultStr = await ZeroNet.instance.cmdFuture(
+      ZeroNetCmd.userSetGlobalSettings,
+      params: {
+        'settings': settings,
+      },
+    );
+    return resultStr.toMsgOrErr;
+  }
+
   /// Returns: `MessageOrError`.
   ///
   /// If `response` isMsg, you can use siteList Extension method on `response.message!.certList`

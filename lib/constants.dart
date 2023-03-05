@@ -38,6 +38,7 @@ class ZeroNetCmd {
   static const String siteSign = 'siteSign';
   static const String siteUpdate = 'siteUpdate';
   static const String userGetSettings = 'userGetSettings';
+  static const String userGetGlobalSettings = 'userGetGlobalSettings';
   static const String userSetSettings = 'userSetSettings';
 
   //Plugins
@@ -99,6 +100,7 @@ class ZeroNetCmd {
   static const String permissionAdd = 'permissionAdd';
   static const String permissionRemove = 'permissionRemove';
   static const String permissionDetails = 'permissionDetails';
+  static const String userSetGlobalSettings = 'userSetGlobalSettings';
   static const String certList = 'certList';
   static const String certSet = 'certSet';
   static const String channelJoinAllsite = 'channelJoinAllsite';

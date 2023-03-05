@@ -293,7 +293,7 @@ extension UiServerExt on ZeroNet {
     return resultStr.toMsgOrErr;
   }
 
-  ///Return: The user specific site's settings saved using userSetSettings.
+  ///Return: User specific site's settings saved using userSetSettings.
   Future<Message> userGetSettingsFuture() async {
     final resultStr = await ZeroNetCmd.userGetSettings.callFuture();
     return resultStr.message!;
@@ -307,6 +307,12 @@ extension UiServerExt on ZeroNet {
         'settings': settings,
       },
     );
+    return resultStr.message!;
+  }
+
+  /// Returns: User's global settings saved using userSetGlobalSettings(ADMIN).
+  Future<Message> userGetGlobalSettingsFuture() async {
+    final resultStr = await ZeroNetCmd.userGetGlobalSettings.callFuture();
     return resultStr.message!;
   }
 }
