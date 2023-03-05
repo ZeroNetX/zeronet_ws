@@ -53,7 +53,9 @@ extension AdminExt on ZeroNet {
     return res.toMsgOrErr;
   }
 
-  ///Return: A list of objects each representing a certificate from an identity provider.
+  /// Returns: `MessageOrError`.
+  ///
+  /// If `response` isMsg, you can use siteList Extension method on `response.message!.certList`
   Future<MessageOrError> certListFuture() async {
     final resultStr = await ZeroNetCmd.certList.callFuture();
     return resultStr.toMsgOrErr;

@@ -1,5 +1,6 @@
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
+import 'package:zeronet_ws/models/cert.dart';
 import 'package:zeronet_ws/models/models.dart';
 
 List<UserID> extractCertSelectDomains(PromptResult promptResult) {
@@ -100,6 +101,15 @@ extension SiteListExt on Message {
   List<SiteInfo> get siteList {
     final res = (result as List);
     final list = res.map((e) => SiteInfo.fromJson(e)).toList();
+    return list;
+  }
+}
+
+extension CertListExt on Message {
+  /// Return: CertList
+  List<Cert> get certList {
+    final res = (result as List);
+    final list = res.map((e) => Cert.fromJson(e)).toList();
     return list;
   }
 }
