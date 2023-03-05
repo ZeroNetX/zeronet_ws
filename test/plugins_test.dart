@@ -128,37 +128,45 @@ void main() {
       assert(false); // unathorized
       await instance.connect(talk);
       final res = await instance.siteblockAddFuture(
-          '1EjitdTHErKQccRVyfvgharFc15wVpbS2j',
-          reason: "testing");
+        '1EjitdTHErKQccRVyfvgharFc15wVpbS2j',
+        reason: "testing",
+      );
+      assert(res.result != null);
     });
 
     test("siteblockRemoveFuture", () async {
       assert(false); // unathorized
       await instance.connect(talk);
       final res = await instance.siteblockRemoveFuture(
-          '1EjitdTHErKQccRVyfvgharFc15wVpbS2j',
-          reason: "testing");
+        '1EjitdTHErKQccRVyfvgharFc15wVpbS2j',
+        reason: "testing",
+      );
+      assert(res.result != null);
     });
 
     test("siteblockListFuture", () async {
       assert(false); // unathorized
       await instance.connect(talk);
       final res = await instance.siteblockListFuture();
+      assert(res.result != null);
     });
 
     test("siteblockGetFuture", () async {
       assert(false); // unathorized
       await instance.connect(talk);
-      final res = await instance
-          .siteblockGetFuture('1EjitdTHErKQccRVyfvgharFc15wVpbS2j');
+      final res = await instance.siteblockGetFuture(
+        '1EjitdTHErKQccRVyfvgharFc15wVpbS2j',
+      );
+      assert(res.result != null);
     });
   });
 
   group('Plugin::Cors', () {
     test("corsPermissionFuture", () async {
       await instance.connect(talk);
-      final res = await instance
-          .corsPermissionFuture(["cors-15UYrA7aXr2Nto1Gg4yWXpY3EAJwafMTNk"]);
+      final res = await instance.corsPermissionFuture([
+        "cors-15UYrA7aXr2Nto1Gg4yWXpY3EAJwafMTNk",
+      ]);
 
       assert(res.prompt != null);
 
@@ -193,7 +201,7 @@ void main() {
       assert(encryptStr.result is String);
       final res = await instance.eciesDecryptFuture(encryptStr.result);
       final deCrypt = res.result;
-      assert(res.result == text);
+      assert(deCrypt == text);
     });
 
     test("aesEncryptFuture", () async {
@@ -382,6 +390,7 @@ void main() {
       await instance.connect(storageAdd);
       assert(false);
       final res = await instance.optionalLimitStatsFuture();
+      assert(res.result != null);
     });
 
     test('optionalLimitSetFuture', () async {
@@ -389,6 +398,7 @@ void main() {
       await instance.connect(storageAdd);
 
       final res = await instance.optionalLimitSetFuture();
+      assert(res.result != null);
     });
 
     /// enabled auto downlaoded feature to the provided directory
@@ -406,7 +416,6 @@ void main() {
       await instance.connect(storageAdd);
 
       final res = await instance.optionalHelpListFuture();
-      print(res.result.toString());
       assert(res.result is Map);
     });
 

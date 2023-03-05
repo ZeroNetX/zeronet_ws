@@ -6,7 +6,7 @@ import 'package:zeronet_ws/zeronet_ws.dart';
 void main() {
   const dashboard = '1HELLoE3sFD9569CLCbHEAVqvqV7U2Ri9d';
   const talk = '1TaLkFrMwvbNsooF4ioKAY9EuxTBTjipT';
-  const testSite = '1DCN2A5VqYrQSNds7Y3s9JLn65CfykPKJw';
+  // const testSite = '1DCN2A5VqYrQSNds7Y3s9JLn65CfykPKJw';
 
   final instance = ZeroNet.instance;
   test('Admin::as', () async {

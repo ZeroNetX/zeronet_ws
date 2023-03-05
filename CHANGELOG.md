@@ -1,3 +1,7 @@
+## [1.1.0]
+ - Several API Fixes to match with backend
+ - Add tests for all available cmds
+
 ## [1.0.0]
  - Implemented Full Core & Main Plugin API with Proper return type
  - Full Changelog https://github.com/ZeroNetX/zeronet_ws/compare/4e97bfb7...73e9d309
