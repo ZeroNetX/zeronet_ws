@@ -1,6 +1,7 @@
-# zeronet_ws
+# ZeroNet WebSocket API 
+[![pub package](https://img.shields.io/pub/v/zeronet_ws.svg)](https://pub.dev/packages/zeronet_ws)
 
-ZeroNet Web Socket Package is dart library to connect and get data from [ZeroNet](https://github.com/canewsin/ZeroNet) Network, This package does not include zeronet client hence, it works only when there already an existing client on host system running this package.
+ZeroNet Web Socket Package is dart library to connect and get data from [ZeroNet](https://github.com/ZeroNetX/ZeroNet) Network, This package does not include zeronet client hence, it works only when there already an existing client on host system running this package.
 
 # Flutter Web Support
 
