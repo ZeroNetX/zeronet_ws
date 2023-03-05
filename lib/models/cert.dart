@@ -1,4 +1,4 @@
-import 'package:zeronet_ws/models/models.dart';
+part of 'models.dart';
 
 class Cert {
   final String authAddress;

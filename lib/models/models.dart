@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 part 'error.dart';
+part 'cert.dart';
 part 'event.dart';
 part 'extensions.dart';
 part 'message.dart';

@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zeronet_ws/constants.dart';
-import 'package:zeronet_ws/extensions/core/utils.dart';
 import 'package:zeronet_ws/models/models.dart';
 import 'package:zeronet_ws/zeronet_ws.dart';
 

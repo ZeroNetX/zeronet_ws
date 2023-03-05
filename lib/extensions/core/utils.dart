@@ -1,7 +1,4 @@
-import 'package:html/dom.dart';
-import 'package:html/parser.dart';
-import 'package:zeronet_ws/models/cert.dart';
-import 'package:zeronet_ws/models/models.dart';
+part of '../futures.dart';
 
 List<UserID> extractCertSelectDomains(PromptResult promptResult) {
   final params = (promptResult.value as Notification).params;
