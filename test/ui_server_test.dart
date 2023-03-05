@@ -197,7 +197,7 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
 
   test('siteInfoWithFilePath', () async {
     await instance.connect(dashboard);
-    final res = await instance.siteInfoFuture(file_status: 'index.html');
+    final res = await instance.siteInfoFuture(fileStatus: 'index.html');
     if (res.isMsg) {
       final siteInfo = res.message!.siteInfo;
       assert(siteInfo.address.isNotEmpty);
@@ -216,7 +216,7 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
   // this funtion is used to sign the files after file writes
   test('siteSign', () async {
     await instance.connect(dashboard);
-    var res = await instance.siteSignFuture(inner_path: "content.json");
+    var res = await instance.siteSignFuture(innerPath: "content.json");
     assert(res.isErr);
   });
 
@@ -224,7 +224,7 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
   test('sitePublish', () async {
     await instance.connect(dashboard);
     var res = await instance.sitePublishFuture(
-      inner_path: 'content.json',
+      innerPath: 'content.json',
       sign: false,
     );
     assert(res.isMsg);

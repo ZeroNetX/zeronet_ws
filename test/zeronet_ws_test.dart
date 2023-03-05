@@ -101,7 +101,7 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
   test('sitePublish', () async {
     await instance.connect(dashboard);
     var res = await instance.sitePublishFuture(
-      inner_path: 'content.json',
+      innerPath: 'content.json',
       sign: false,
     );
     assert(res.isMsg);
@@ -110,7 +110,7 @@ ORDER BY sticky DESC, last_action DESC LIMIT 31
 
   test('siteSign', () async {
     await instance.connect(dashboard);
-    var res = await instance.siteSignFuture(inner_path: "content.json");
+    var res = await instance.siteSignFuture(innerPath: "content.json");
     assert(res.isErr);
   });
 }

@@ -3,7 +3,7 @@ part of '../futures.dart';
 /// Site should hold `ADMIN` permission to access these cmds.
 /// Otherwise return value will an Error
 extension AdminExt on ZeroNet {
-  ///Return: Command's return value.
+  /// Return: Command's return value.
   Future<MessageOrPromptOrError> asFuture({
     required String site,
     required String cmd,
@@ -31,7 +31,7 @@ extension AdminExt on ZeroNet {
     return result.toMsgOrErr;
   }
 
-  ///Return: ok
+  /// Return: ok
   Future<MessageOrError> permissionRemoveFuture(String permission) async {
     final result = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.permissionRemove,
@@ -42,7 +42,7 @@ extension AdminExt on ZeroNet {
     return result.toMsgOrErr;
   }
 
-  ///Return: ok
+  /// Return: ok
   Future<MessageOrError> permissionDetailsFuture(String permission) async {
     final res = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.permissionDetails,
@@ -72,7 +72,7 @@ extension AdminExt on ZeroNet {
     return resultStr.toMsgOrErr;
   }
 
-  ///Return: Message
+  /// Return: Message
   Future<MessageOrError> certSetFuture(String domain) async {
     final res = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.certSet,
@@ -83,7 +83,7 @@ extension AdminExt on ZeroNet {
     return res.toMsgOrErr;
   }
 
-  ///Return: Message
+  /// Return: Message
   Future<MessageOrError> channelJoinAllSiteFuture(String channel) async {
     final res = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.channelJoinAllsite,
@@ -94,7 +94,7 @@ extension AdminExt on ZeroNet {
     return res.toMsgOrErr;
   }
 
-  ///Return: ok
+  /// Return: ok
   Future<MessageOrError> configSetFuture(String key, String value) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.configSet,
@@ -114,7 +114,7 @@ extension AdminExt on ZeroNet {
     return resultStr.toMsgOrErr;
   }
 
-  ///Return: None
+  /// Return: None
   Future<PromptOrError> serverShutdownFuture({bool restart = false}) async {
     final resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.serverShutdown,
@@ -125,7 +125,7 @@ extension AdminExt on ZeroNet {
     return resultStr.toPromptOrErr;
   }
 
-  ///Return: None
+  /// Return: None
   Future<PromptOrError> serverUpdateFuture() async {
     final resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.serverUpdate,
@@ -133,7 +133,7 @@ extension AdminExt on ZeroNet {
     return resultStr.toPromptOrErr;
   }
 
-  ///Return: None, automatically redirects to new site on completion
+  /// Return: None, automatically redirects to new site on completion
   Future<MessageOrPromptOrError> siteCloneFuture(
     String address,
     String rootInnerPath,

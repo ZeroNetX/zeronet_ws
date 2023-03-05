@@ -26,7 +26,7 @@ part 'plugins/optional.dart';
 extension ToMessage on String {
   Message toMessage() => Message.fromJson(json.decode(this));
 
-  //{"cmd": "notification", "params": ["done", "New certificate added <b>app/helloworld@skynetid.bit</b>."], "id": 2}
+  /// {"cmd": "notification", "params": ["done", "New certificate added <b>app/helloworld@skynetid.bit</b>."], "id": 2}
   Notification toNotification() => Notification.fromJson(json.decode(this));
 
   dynamic toMsgOrNotification() {
@@ -46,7 +46,7 @@ extension ToMessage on String {
 extension ToMessageExt on Map<String, dynamic>? {
   Message toMessage() => Message.fromJson(this ?? {});
 
-  //{"cmd": "notification", "params": ["done", "New certificate added <b>app/helloworld@skynetid.bit</b>."], "id": 2}
+  /// {"cmd": "notification", "params": ["done", "New certificate added <b>app/helloworld@skynetid.bit</b>."], "id": 2}
   Notification toNotification() => Notification.fromJson(this ?? {});
 
   dynamic toMsgOrNotification() {

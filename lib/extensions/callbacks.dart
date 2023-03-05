@@ -4,15 +4,18 @@ import '../constants.dart';
 import '../interface.dart';
 
 extension UiServerExt on ZeroNet {
-  void announcerInfo({MessageCallback? callback}) => ZeroNet.instance.cmd(
+  void announcerInfo({
+    MessageCallback? callback,
+  }) =>
+      ZeroNet.instance.cmd(
         ZeroNetCmd.announcerInfo,
         callback: callback ?? onMessage,
       );
 
   void certAdd(
     String domain,
-    String auth_type,
-    String auth_user_name,
+    String authType,
+    String authUserName,
     String cert, {
     MessageCallback? callback,
   }) =>
@@ -20,25 +23,25 @@ extension UiServerExt on ZeroNet {
         ZeroNetCmd.certAdd,
         params: {
           'domain': domain,
-          'auth_type': auth_type,
-          'auth_user_name': auth_user_name,
+          'auth_type': authType,
+          'auth_user_name': authUserName,
           'cert': cert,
         },
         callback: callback ?? onMessage,
       );
 
   void certSelect({
-    List<String>? accepted_domains,
-    String? accept_any,
-    String? accepted_pattern,
+    List<String>? acceptedDomains,
+    String? acceptAny,
+    String? acceptedPattern,
     MessageCallback? callback,
   }) {
     var params = {};
-    if (accepted_domains != null) {
-      params['accepted_domains'] = accepted_domains;
+    if (acceptedDomains != null) {
+      params['accepted_domains'] = acceptedDomains;
     }
-    if (accept_any != null) params['accept_any'] = accept_any;
-    if (accepted_pattern != null) params['accepted_pattern'] = accepted_pattern;
+    if (acceptAny != null) params['accept_any'] = acceptAny;
+    if (acceptedPattern != null) params['accepted_pattern'] = acceptedPattern;
 
     ZeroNet.instance.cmd(
       ZeroNetCmd.certSelect,
@@ -69,31 +72,31 @@ extension UiServerExt on ZeroNet {
       );
 
   void dirList(
-    String inner_path, {
+    String innerPath, {
     MessageCallback? callback,
   }) =>
       ZeroNet.instance.cmd(
         ZeroNetCmd.dirList,
         params: {
-          'inner_path': inner_path,
+          'inner_path': innerPath,
         },
         callback: callback ?? onMessage,
       );
 
   void fileDelete(
-    String inner_path, {
+    String innerPath, {
     MessageCallback? callback,
   }) =>
       ZeroNet.instance.cmd(
         ZeroNetCmd.fileDelete,
         params: {
-          'inner_path': inner_path,
+          'inner_path': innerPath,
         },
         callback: callback ?? onMessage,
       );
 
   void fileGet(
-    String inner_path, {
+    String innerPath, {
     bool required = true,
     String format = 'text',
     int timeout = 300,
@@ -102,7 +105,7 @@ extension UiServerExt on ZeroNet {
     ZeroNet.instance.cmd(
       ZeroNetCmd.fileGet,
       params: {
-        'inner_path': inner_path,
+        'inner_path': innerPath,
         'required': required,
         'format': format,
         'timeout': timeout,
@@ -112,67 +115,67 @@ extension UiServerExt on ZeroNet {
   }
 
   void fileList(
-    String inner_path, {
+    String innerPath, {
     MessageCallback? callback,
   }) =>
       ZeroNet.instance.cmd(
         ZeroNetCmd.fileList,
         params: {
-          'inner_path': inner_path,
+          'inner_path': innerPath,
         },
         callback: callback ?? onMessage,
       );
 
   void fileNeed(
-    String inner_path, {
+    String innerPath, {
     int timeout = 300,
     MessageCallback? callback,
   }) =>
       ZeroNet.instance.cmd(
         ZeroNetCmd.fileNeed,
         params: {
-          'inner_path': inner_path,
+          'inner_path': innerPath,
           'timeout': timeout,
         },
         callback: callback ?? onMessage,
       );
 
   void fileQuery(
-    String dir_inner_path, {
+    String dirInnerpath, {
     String query = '',
     MessageCallback? callback,
   }) =>
       ZeroNet.instance.cmd(
         ZeroNetCmd.fileQuery,
         params: {
-          'dir_inner_path': dir_inner_path,
+          'dir_inner_path': dirInnerpath,
           'query': query,
         },
         callback: callback ?? onMessage,
       );
 
   void fileRules(
-    String inner_path, {
+    String innerPath, {
     MessageCallback? callback,
   }) =>
       ZeroNet.instance.cmd(
         ZeroNetCmd.fileRules,
         params: {
-          'inner_path': inner_path,
+          'inner_path': innerPath,
         },
         callback: callback ?? onMessage,
       );
 
   void fileWrite(
-    String inner_path,
-    String content_base64, {
+    String innerPath,
+    String contentBase64, {
     MessageCallback? callback,
   }) =>
       ZeroNet.instance.cmd(
         ZeroNetCmd.fileWrite,
         params: {
-          'inner_path': inner_path,
-          'content_base64': content_base64,
+          'inner_path': innerPath,
+          'content_base64': contentBase64,
         },
         callback: callback ?? onMessage,
       );
@@ -195,13 +198,13 @@ extension UiServerExt on ZeroNet {
 
   void sitePublish({
     String? privatekey,
-    String? inner_path,
+    String? innerPath,
     bool sign = true,
     MessageCallback? callback,
   }) {
     var params = {};
     if (privatekey != null) params['privatekey'] = privatekey;
-    if (inner_path != null) params['inner_path'] = inner_path;
+    if (innerPath != null) params['inner_path'] = innerPath;
     params['sign'] = sign;
     ZeroNet.instance.cmd(
       ZeroNetCmd.sitePublish,
@@ -217,14 +220,14 @@ extension UiServerExt on ZeroNet {
 
   void siteSign({
     String privatekey = 'stored',
-    String? inner_path,
-    bool remove_missing_optional = false,
+    String? innerPath,
+    bool removeMissingOptional = false,
     MessageCallback? callback,
   }) {
     var params = {};
-    if (inner_path != null) params['inner_path'] = inner_path;
+    if (innerPath != null) params['inner_path'] = innerPath;
     params['privatekey'] = privatekey;
-    params['remove_missing_optional'] = remove_missing_optional;
+    params['remove_missing_optional'] = removeMissingOptional;
     ZeroNet.instance.cmd(
       ZeroNetCmd.siteSign,
       params: params,
@@ -310,11 +313,13 @@ extension AdminExt on ZeroNet {
 
   void serverUpdate() => ZeroNet.instance.cmd(ZeroNetCmd.serverUpdate);
 
-  void siteClone(String address, String root_inner_path) =>
-      ZeroNet.instance.cmd(ZeroNetCmd.siteClone, params: {
-        'address': address,
-        'root_inner_path': root_inner_path,
-      });
+  void siteClone(String address, String rootInnerPath) => ZeroNet.instance.cmd(
+        ZeroNetCmd.siteClone,
+        params: {
+          'address': address,
+          'root_inner_path': rootInnerPath,
+        },
+      );
 
   void siteList({MessageCallback? callback}) => ZeroNet.instance.cmd(
         ZeroNetCmd.siteList,
