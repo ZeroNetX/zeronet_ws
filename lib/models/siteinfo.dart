@@ -105,7 +105,7 @@ class Settings {
   int? downloaded;
   int? size;
   int? sizeLimit;
-  String? autodownloadoptional;
+  bool autodownloadoptional;
   num? modified;
 
   //TODO! Handle Stored Plugin Data
@@ -126,7 +126,7 @@ class Settings {
     this.downloaded,
     this.size,
     this.sizeLimit,
-    this.autodownloadoptional,
+    this.autodownloadoptional = false,
     this.modified,
     //
     // this.bytesRecv,
@@ -150,7 +150,7 @@ class Settings {
       downloaded: json['downloaded'],
       size: json['size'],
       sizeLimit: json['size_limit'],
-      autodownloadoptional: json['autodownloadoptional'],
+      autodownloadoptional: json['autodownloadoptional'] ?? false,
       modified: json['modified'],
 
       // bytesRecv: json['bytes_recv'],
