@@ -183,6 +183,7 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
         var id = msg['to'];
         if (msg['cmd'] == 'confirm' || msg['cmd'] == 'notification') {
           id = msg['id'];
+          id++;
         } else if (msg['cmd'] == 'injectScript') {
           // i = msg['id'];
           i++;
