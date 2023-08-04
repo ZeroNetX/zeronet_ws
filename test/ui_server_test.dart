@@ -7,8 +7,16 @@ void main() {
   var talk = '1TaLkFrMwvbNsooF4ioKAY9EuxTBTjipT';
   var instance = ZeroNet.instance;
 
-  test('announcerInfo', () async {
+  Future<void> connectDashboard() async {
     await instance.connect(dashboard);
+  }
+
+  Future<void> connectZeroTalk() async {
+    await instance.connect(talk);
+  }
+
+  test('announcerInfo', () async {
+    await connectDashboard();
     final res = await instance.announcerInfoFuture();
     final result = res?.result;
     assert(result is Map);
@@ -17,7 +25,7 @@ void main() {
   });
 
   test('certAdd', () async {
-    await instance.connect(talk);
+    await connectZeroTalk();
     final res = await instance.certAddFuture(
       'test.bit',
       'app',
@@ -55,7 +63,7 @@ void main() {
   });
 
   test('certSelect', () async {
-    await instance.connect(talk);
+    await connectZeroTalk();
     final res = await instance.certSelectFuture();
     final certs = extractCertSelectDomains(res);
     var userId = certs.firstWhere((element) => element.domain == 'zeroid.bit');
@@ -97,7 +105,7 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
   });
 
   test('dirList', () async {
-    await instance.connect(talk);
+    await connectZeroTalk();
     final res = await instance.dirListFuture('js');
     assert(res.isMsg);
     assert(res.message!.result != null);
@@ -110,7 +118,7 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
   });
 
   test('fileDelete', () async {
-    await instance.connect(talk);
+    await connectZeroTalk();
     final res = await instance.fileDeleteFuture('js/all.js');
     assert(!res.isMsg);
     assert(res.error != null);
@@ -118,7 +126,7 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
   });
 
   test('fileGet', () async {
-    await instance.connect(talk);
+    await connectZeroTalk();
     final res = await instance.fileGetFuture('js/all.js');
     assert(res.isMsg);
     assert(res.message!.result != null);
@@ -127,7 +135,7 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
 
   /// returns fileslist
   test('fileList', () async {
-    await instance.connect(talk);
+    await connectZeroTalk();
     final res = await instance.fileListFuture('js');
     assert(res.isMsg);
     assert(res.message!.result != null);
@@ -135,7 +143,7 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
   });
 
   test('fileNeed', () async {
-    await instance.connect(talk);
+    await connectZeroTalk();
     final res = await instance.fileNeedFuture('js/all.js');
     assert(res.isMsg);
     assert(res.message!.result != null);
@@ -148,7 +156,7 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
   });
 
   test('fileQuery', () async {
-    await instance.connect(talk);
+    await connectZeroTalk();
     final res = await instance.fileQueryFuture(
       'data/users/*/data.json',
       query: 'topic',
@@ -160,7 +168,7 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
 
   /// provides information about the files, file owners,
   test('fileRules', () async {
-    await instance.connect(talk);
+    await connectZeroTalk();
     final res = await instance.fileRulesFuture('content.json');
     assert(res.result != null);
     assert(res.result is Map);
@@ -170,14 +178,14 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
 
 //takes innerpath and base64 string to write the file
   test('fileWrite', () async {
-    await instance.connect(talk);
+    await connectZeroTalk();
     final res = await instance.fileWriteFuture('js/all.js', '');
     assert(res.isErr);
     assert(res.error!.error == 'Forbidden, you can only modify your own files');
   });
 
   test('ping', () async {
-    await instance.connect(dashboard);
+    await connectDashboard();
     final res = await instance.pingFuture();
     final result = res.result;
     assert(result is String);
@@ -187,7 +195,7 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
 // returns siteInfo, siteInfo provides user auth address, site address, site content obj
 // by using site content obj you can laod site default settings
   test('siteInfo', () async {
-    await instance.connect(dashboard);
+    await connectDashboard();
     final res = await instance.siteInfoFuture();
     if (res.isMsg) {
       final siteInfo = res.message!.siteInfo;
@@ -196,7 +204,7 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
   });
 
   test('siteInfoWithFilePath', () async {
-    await instance.connect(dashboard);
+    await connectDashboard();
     final res = await instance.siteInfoFuture(fileStatus: 'index.html');
     if (res.isMsg) {
       final siteInfo = res.message!.siteInfo;
@@ -208,21 +216,21 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
 
   /// provides information about the zeronet server i.e local client
   test('serverInfo', () async {
-    await instance.connect(dashboard);
+    await connectDashboard();
     var serverInfo = await instance.serverInfoFuture();
     assert(serverInfo.version.isNotEmpty);
   });
 
   // this funtion is used to sign the files after file writes
   test('siteSign', () async {
-    await instance.connect(dashboard);
+    await connectDashboard();
     var res = await instance.siteSignFuture(innerPath: "content.json");
     assert(res.isErr);
   });
 
   //  sitePublish funcion publishes the files to the network, this is used after user file writes.
   test('sitePublish', () async {
-    await instance.connect(dashboard);
+    await connectDashboard();
     var res = await instance.sitePublishFuture(
       innerPath: 'content.json',
       sign: false,
@@ -232,13 +240,13 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
   });
 
   test('siteReloadFuture', () async {
-    await instance.connect(dashboard);
+    await connectDashboard();
     final res = await instance.siteReloadFuture('content.json');
     assert(res.result == 'ok');
   });
 
   test('siteUpdate', () async {
-    await instance.connect(dashboard);
+    await connectDashboard();
     var res = await instance.siteUpdateFuture(dashboard);
 
     if (res.isMsg) {
@@ -249,13 +257,13 @@ WHERE topic.topic_id = "$topicId" AND topic_creator_address = '$topicUseraddress
   });
 
   test('userGetSettings', () async {
-    await instance.connect(dashboard);
+    await connectDashboard();
     var res = await instance.userGetSettingsFuture();
     assert(res.result != null);
   });
 
   test('userSetSettings', () async {
-    await instance.connect(dashboard);
+    await connectDashboard();
     var settings = await instance.userGetSettingsFuture();
     var res = await instance.userSetSettingsFuture(settings.result);
     assert(res.result is String);
