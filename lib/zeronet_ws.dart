@@ -40,8 +40,26 @@ class ZeroNet {
   }) async {
     await ZeroNetWSInterface.instance.connect(
       site,
-      ip: ip,
-      port: port,
+      host: '$ip:$port',
+      wrapperKey_: wrapperKey_,
+      override: override,
+      onEventMessage: onEventMessage,
+    );
+    isInitialised = true;
+  }
+
+  Future<void> connectProxy(
+    String site, {
+    String host = 'proxy.zeronet.dev',
+    bool useSecured = true,
+    bool override = false,
+    String? wrapperKey_,
+    MessageCallback? onEventMessage,
+  }) async {
+    await ZeroNetWSInterface.instance.connectProxy(
+      site,
+      host: host,
+      useSecured: useSecured,
       wrapperKey_: wrapperKey_,
       override: override,
       onEventMessage: onEventMessage,

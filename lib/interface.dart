@@ -26,9 +26,18 @@ abstract class ZeroNetWSInterface extends PlatformInterface {
 
   Future<void> connect(
     String site, {
-    String ip = '127.0.0.1',
-    String port = '43110',
+    String host = '127.0.0.1:43110',
     bool override = false,
+    String? wrapperKey_,
+    MessageCallback? onEventMessage,
+  }) =>
+      Future.value();
+
+  Future<void> connectProxy(
+    String site, {
+    String host = '',
+    bool override = false,
+    bool useSecured = true,
     String? wrapperKey_,
     MessageCallback? onEventMessage,
   }) =>

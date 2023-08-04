@@ -10,6 +10,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../models/models.dart';
@@ -40,6 +41,7 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
   final String _kCmdResponse = 'response';
   final String _kCmdPing = 'ping';
   final String _kCmdPong = 'pong';
+  String cookie = '';
 
   @override
   Future<String?> getWrapperKey(
@@ -52,6 +54,7 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
           Uri.parse(url),
           headers: {'Accept': 'text/html'},
         );
+        cookie = res.headers['set-cookie'] ?? '';
         var body = res.body;
         var i = body.indexOf('wrapper_key = "');
         var bodyM = body.substring(i + 15);
@@ -68,16 +71,33 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
   @override
   Future<void> connect(
     String site, {
-    String ip = '127.0.0.1',
-    String port = '43110',
+    String host = '127.0.0.1:43110',
     bool override = false,
     String? wrapperKey_,
     MessageCallback? onEventMessage,
   }) async {
     await connectResult(
       site,
-      ip: ip,
-      port: port,
+      host: host,
+      override: override,
+      wrapperKey_: wrapperKey_,
+      onEventMessage: onEventMessage,
+    );
+  }
+
+  @override
+  Future<void> connectProxy(
+    String site, {
+    String host = 'proxy.zeronet.dev',
+    bool override = false,
+    bool useSecured = true,
+    String? wrapperKey_,
+    MessageCallback? onEventMessage,
+  }) async {
+    await connectResult(
+      site,
+      host: host,
+      useSecured: useSecured,
       override: override,
       wrapperKey_: wrapperKey_,
       onEventMessage: onEventMessage,
@@ -86,9 +106,9 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
 
   Future<WebSocketChannel?> connectResult(
     String site, {
-    String ip = '127.0.0.1',
-    String port = '43110',
+    String host = '127.0.0.1:43110',
     bool override = false,
+    bool useSecured = false,
     String? wrapperKey_,
     MessageCallback? onEventMessage,
   }) async {
@@ -96,20 +116,29 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
         ? wrapperKey_
         : (override || wrapperKey.isEmpty)
             ? await getWrapperKey(
-                  'http://$ip:$port/$site',
+                  'http${useSecured ? 's' : ''}://$host/$site',
                   override: override,
                 ) ??
                 ''
             : wrapperKey;
     assert(wrapperKey.isNotEmpty);
-    var uri = Uri.parse('ws://$ip:$port/Websocket?wrapper_key=$wrapperKey');
-    channel ??= WebSocketChannel.connect(uri);
-    subscription ??= channel!.stream.listen(null);
-    this.onEventMessage ??= onEventMessage;
+    var uri = Uri.parse(
+      'ws${useSecured ? '' : ''}://$host/Websocket?wrapper_key=$wrapperKey',
+    );
+    //Add cookie to header
+    Map<String, String> headers = {};
+    if (cookie.isNotEmpty) {
+      headers['Cookie'] = cookie;
+    }
+
     if (override) {
-      channel = WebSocketChannel.connect(uri);
+      channel = IOWebSocketChannel.connect(uri, headers: headers);
       subscription = channel!.stream.listen(null);
       if (onEventMessage != null) this.onEventMessage = onEventMessage;
+    } else {
+      channel ??= IOWebSocketChannel.connect(uri, headers: headers);
+      subscription ??= channel!.stream.listen(null);
+      this.onEventMessage ??= onEventMessage;
     }
     return channel;
   }
