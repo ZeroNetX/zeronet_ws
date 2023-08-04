@@ -179,9 +179,12 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
     }
     if (callback != null) {
       (isWrapperCmd ? wrapperSubscription : subscription)?.onData((message) {
+        onEventMessage?.call(message);
         var msg = json.decode(message);
         var id = msg['to'];
-        if (msg['cmd'] == 'confirm' || msg['cmd'] == 'notification') {
+        var cmd = msg['cmd'];
+        if (!callbacks.keys.contains(id)) return;
+        if (cmd == 'confirm' || cmd == 'notification') {
           id = msg['id'];
           id++;
         } else if (msg['cmd'] == 'injectScript') {
@@ -190,7 +193,6 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
         }
         callbacks[id]?.call(message);
         if (cmdStr != 'channelJoin') callbacks.remove(id);
-        onEventMessage?.call(message);
       });
     }
   }
