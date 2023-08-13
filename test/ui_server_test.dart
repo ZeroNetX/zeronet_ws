@@ -66,8 +66,9 @@ void main() {
     await connectZeroTalk();
     final res = await instance.certSelectFuture();
     final certs = extractCertSelectDomains(res);
-    var userId = certs.firstWhere((element) => element.domain == 'zeroid.bit');
-    final domain = userId.domain;
+    final userIds = certs.where((element) => element.domain == 'zeroid.bit');
+    if (userIds.isEmpty) return;
+    final domain = userIds.first.domain;
     final vRes = await instance.respondFuture(
       (res.value as Notification).id,
       domain,

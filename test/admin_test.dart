@@ -24,19 +24,24 @@ void main() {
       arguments: ['data/users/', false],
     );
 
+    assert(result.isMsg);
+
+    if (result.message!.result is String) {
+      assert(result.message!.result == 'No permission for site $talk');
+      return;
+    }
+
     assert(result.message!.result is List);
   });
 
   test('Admin::permissionAdd', () async {
     await instance.connect(dashboard);
     final res = await instance.permissionAddFuture('ADMIN');
-    assert(res.isMsg);
-    assert(res.message!.result == 'ok');
-  });
-
-  test('Admin::permissionRemove', () async {
-    await instance.connect(dashboard);
-    final res = await instance.permissionRemoveFuture('ADMIN');
+    if (!res.isMsg) {
+      final error = res.error!.error;
+      assert(error == "You don't have permission to run permissionAdd");
+      return;
+    }
     assert(res.isMsg);
     assert(res.message!.result == 'ok');
   });
@@ -44,6 +49,11 @@ void main() {
   test('Admin::permissionDetails', () async {
     await instance.connect(dashboard);
     final res = await instance.permissionDetailsFuture('ADMIN');
+    if (!res.isMsg) {
+      final error = res.error!.error;
+      assert(error == "You don't have permission to run permissionDetails");
+      return;
+    }
     assert(res.isMsg);
     assert(res.message!.result is String);
   });
@@ -51,6 +61,11 @@ void main() {
   test('Admin::certList', () async {
     await instance.connect(dashboard);
     final res = await instance.certListFuture();
+    if (!res.isMsg) {
+      final error = res.error!.error;
+      assert(error == "You don't have permission to run certList");
+      return;
+    }
     assert(res.isMsg);
     assert(res.message!.result is List);
     if (res.message!.result is List && res.message!.result.isNotEmpty) {
@@ -61,6 +76,11 @@ void main() {
   test('Admin::certSet', () async {
     await instance.connect(dashboard);
     final res = await instance.certSetFuture('zeroid.bit');
+    if (!res.isMsg) {
+      final error = res.error!.error;
+      assert(error == "You don't have permission to run certSet");
+      return;
+    }
     assert(res.isMsg);
     assert(res.message!.result == 'ok');
   });
@@ -68,6 +88,11 @@ void main() {
   test('Admin::channelJoinAllsite', () async {
     await instance.connect(dashboard);
     final res = await instance.channelJoinAllSiteFuture('siteChanged');
+    if (!res.isMsg) {
+      final error = res.error!.error;
+      assert(error == "You don't have permission to run channelJoinAllsite");
+      return;
+    }
     assert(res.isMsg);
     assert(res.message!.result == 'ok');
   });
@@ -75,6 +100,11 @@ void main() {
   test('Admin::serverConfigSet', () async {
     await instance.connect(dashboard);
     var res = await instance.configSetFuture('open_browser', 'False');
+    if (!res.isMsg) {
+      final error = res.error!.error;
+      assert(error.startsWith("You don't have permission to run"));
+      return;
+    }
     assert(res.isMsg);
     assert(res.message!.result == 'ok');
     res = await instance.configSetFuture('open_browser', 'default_browser');
@@ -85,6 +115,11 @@ void main() {
   test('Admin::serverPortCheck', () async {
     await instance.connect(dashboard);
     final res = await instance.serverPortcheckFuture();
+    if (!res.isMsg) {
+      final error = res.error!.error;
+      assert(error.startsWith("You don't have permission to run"));
+      return;
+    }
     assert(res.isMsg);
     assert(
       res.message!.portOpened.ipv4 is bool ||
@@ -99,6 +134,11 @@ void main() {
   test('Admin::serverRestart', () async {
     await instance.connect(dashboard);
     final res = await instance.serverShutdownFuture(restart: true);
+    if (!res.isPrompt) {
+      final error = res.error!.error;
+      assert(error.startsWith("You don't have permission to run"));
+      return;
+    }
     assert(res.prompt!.type == PromptType.confirm);
     assert(res.prompt!.value.params[1] == 'Restart');
   });
@@ -106,12 +146,22 @@ void main() {
   test('Admin::serverShutdown', () async {
     await instance.connect(dashboard);
     final res = await instance.serverShutdownFuture();
+    if (!res.isPrompt) {
+      final error = res.error!.error;
+      assert(error.startsWith("You don't have permission to run"));
+      return;
+    }
     assert(res.prompt!.type == PromptType.confirm);
     assert(res.prompt!.value.params[1] == 'Shut down');
   });
   test('Admin::serverUpdate', () async {
     await instance.connect(dashboard);
     final res = await instance.serverUpdateFuture();
+    if (!res.isPrompt) {
+      final error = res.error!.error;
+      assert(error.startsWith("You don't have permission to run"));
+      return;
+    }
     assert(res.prompt!.type == PromptType.confirm);
   });
 
@@ -125,14 +175,29 @@ void main() {
   test('Admin::siteCloneWithAdminSite', () async {
     await instance.connect(dashboard);
     final res = await instance.siteCloneFuture(dashboard, 'template-new');
-    assert(res.isMsg);
-    assert(res.message!.result is Map);
-    assert(res.message!.result['address'] is String);
+    if (res.isErr) {
+      final error = res.error!.error;
+      assert(error.startsWith("You don't have permission to run"));
+      return;
+    } else if (res.isMsg) {
+      assert(res.isMsg);
+      assert(res.message!.result is Map);
+      assert(res.message!.result['address'] is String);
+    } else if (res.isPrompt) {
+      assert(res.isPrompt);
+      assert(res.prompt!.type == PromptType.confirm);
+      assert(res.prompt!.value.params[1] == 'Clone');
+    }
   });
 
   test('Admin::siteCloneWithNonAdminSite', () async {
     await instance.connect(talk);
     final res = await instance.siteCloneFuture(dashboard, '');
+    if (!res.isPrompt) {
+      final error = res.error!.error;
+      assert(error.startsWith("You don't have permission to run"));
+      return;
+    }
     assert(res.isPrompt);
     assert(res.prompt!.type == PromptType.confirm);
     assert(res.prompt!.value.params[1] is String);
@@ -142,12 +207,22 @@ void main() {
   test('Admin::siteList', () async {
     await instance.connect(dashboard);
     final res = await instance.siteListFuture();
+    if (!res.isMsg) {
+      final error = res.error!.error;
+      assert(error.startsWith("You don't have permission to run"));
+      return;
+    }
     assert(res.message!.result.isNotEmpty);
   });
 
   test('Admin::sitePause', () async {
     await instance.connect(dashboard);
     final res = await instance.sitePauseFuture(talk);
+    if (!res.isMsg) {
+      final error = res.error!.error;
+      assert(error.startsWith("You don't have permission to run"));
+      return;
+    }
     assert(res.isMsg);
     assert(res.message!.result == 'Paused');
   });
@@ -155,7 +230,24 @@ void main() {
   test('Admin::siteResume', () async {
     await instance.connect(dashboard);
     final res = await instance.siteResumeFuture(talk);
+    if (!res.isMsg) {
+      final error = res.error!.error;
+      assert(error.startsWith("You don't have permission to run"));
+      return;
+    }
     assert(res.isMsg);
     assert(res.message!.result == 'Resumed');
+  });
+
+  test('Admin::permissionRemove', () async {
+    await instance.connect(dashboard);
+    final res = await instance.permissionRemoveFuture('ADMIN');
+    if (!res.isMsg) {
+      final error = res.error!.error;
+      assert(error == "You don't have permission to run permissionRemove");
+      return;
+    }
+    assert(res.isMsg);
+    assert(res.message!.result == 'ok');
   });
 }
