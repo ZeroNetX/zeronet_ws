@@ -183,10 +183,11 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
         var msg = json.decode(message);
         var id = msg['to'];
         var cmd = msg['cmd'];
-        if (!callbacks.keys.contains(id)) return;
-        if (cmd == 'confirm' || cmd == 'notification') {
+        final isConfOrNoti = ['confirm', 'notification'].contains(cmd);
+        if (!callbacks.keys.contains(id) && !isConfOrNoti) return;
+        if (isConfOrNoti) {
           id = msg['id'];
-          id++;
+          // id++;
         } else if (msg['cmd'] == 'injectScript') {
           // i = msg['id'];
           i++;
