@@ -11,6 +11,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:zeronet_ws/constants.dart';
 
 import '../models/models.dart';
 import '../interface.dart';
@@ -36,6 +37,12 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
   int iW = 1000000;
 
   final callbacks = <int, MessageCallback>{};
+
+  List<String> prevCmds = [];
+  final cmdsNeedPatching = [
+    ZeroNetCmd.certAdd,
+    ZeroNetCmd.certSelect,
+  ];
 
   final String _kCmdResponse = 'response';
   final String _kCmdPing = 'ping';
@@ -164,6 +171,7 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
         callbacks[cmdId] = callback;
       }
       final vChannel = isWrapperCmd ? wrapperChannel : channel;
+      if (cmdsNeedPatching.contains(cmdStr)) prevCmds.add(cmdStr);
       vChannel!.sink.add(
         json.encode({
           'cmd': cmdStr,
@@ -187,7 +195,15 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
         if (!callbacks.keys.contains(id) && !isConfOrNoti) return;
         if (isConfOrNoti) {
           id = msg['id'];
-          if (id < i) id = id + 2;
+          if (prevCmds.contains(ZeroNetCmd.certAdd)) {
+            id = id + 1;
+            prevCmds.remove(ZeroNetCmd.certAdd);
+          } else if (prevCmds.contains(ZeroNetCmd.certSelect)) {
+            id = id + 2;
+            prevCmds.remove(ZeroNetCmd.certSelect);
+          } else {
+            id = id + 1;
+          }
         } else if (msg['cmd'] == 'injectScript') {
           // i = msg['id'];
           i++;
