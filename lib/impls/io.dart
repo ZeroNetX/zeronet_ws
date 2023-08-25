@@ -187,7 +187,7 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
         if (!callbacks.keys.contains(id) && !isConfOrNoti) return;
         if (isConfOrNoti) {
           id = msg['id'];
-          // id++;
+          if (id < i) id = id + 2;
         } else if (msg['cmd'] == 'injectScript') {
           // i = msg['id'];
           i++;
@@ -205,9 +205,10 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
     int? id,
     MessageCallback? callback,
   }) {
-    var cmdId = id ?? i++;
+    if (id == null) i = i + 2;
+    final cmdId = id ?? i;
     if (callback != null) {
-      callbacks[to] = callback;
+      callbacks[cmdId] = callback;
     }
     channel!.sink.add(
       json.encode(
