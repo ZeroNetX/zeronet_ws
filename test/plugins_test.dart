@@ -430,7 +430,7 @@ void main() {
       assert(false);
       await instance.connect(storageAdd);
 
-      final res = await instance.optionalHelpAllFuture('');
+      final res = await instance.optionalHelpAllFuture(true);
       assert(res.isMsg);
     });
   });

@@ -135,13 +135,13 @@ extension OptionalFileExt on ZeroNet {
   }
 
   Future<MessageOrPromptOrError> optionalHelpAllFuture(
-    String value, {
+    bool enable, {
     String? address,
   }) async {
     var resultStr = await ZeroNet.instance.cmdFuture(
       ZeroNetCmd.optionalHelpAll,
       params: {
-        'value': value,
+        'value': enable,
         'address': address,
       },
     );
