@@ -27,7 +27,7 @@ void main() {
   test('certAdd', () async {
     await connectZeroTalk();
     final res = await instance.certAddFuture(
-      'test.bit',
+      'cryptoid.bit',
       'app',
       'usertesting',
       'Gze3JrN+NNSZblwFwg9NQf9/HIvAjkDSB1ES7nQUiuM8DLAASZ7Lg5fSQTG4l7jYxxszZxMrb+giYtCCwunKEWI=',
@@ -35,30 +35,34 @@ void main() {
     assert(res.isMsg || res.isPrompt || res.isErr);
     if (res.isMsg) {
       final res_ = res.message?.result;
-      assert(res_ == 'ok' || res_ == 'Not changed');
+      assert(res_ == 'ok');
     } else if (res.isErr) {
       assert(res.error?.error != null);
     } else {
       assert(res.isPrompt);
     }
-    final resReadd = await instance.certAddFuture(
-      'test.bit',
-      'app',
-      'usertesting',
-      'Gze3JrN+NNSZblwFwg9NQf9/HIvAjkDSB1ES7nQUiuM8DLAASZ7Lg5fSQTG4l7jYxxszZxMrb+giYtCCwunKEWI=',
-    );
-    assert(resReadd.isMsg || resReadd.isPrompt || resReadd.isErr);
-    if (resReadd.isMsg) {
-      final resReadd_ = resReadd.message?.result;
-      assert(resReadd_ == 'ok' || resReadd_ == 'Not changed');
-    } else if (resReadd.isErr) {
-      assert(resReadd.error?.error != null);
-    } else {
-      assert(resReadd.isPrompt);
-      assert(resReadd.prompt!.type == PromptType.confirm);
-      final confirm = resReadd.prompt!.value as Confirm;
-      final changeRes = await ZeroNet.instance.respondFuture(confirm.id);
-      assert(changeRes.result == 'ok');
+    for (var i = 0; i < 2; i++) {
+      final resReadd = await instance.certAddFuture(
+        'cryptoid.bit',
+        'web',
+        'testing',
+        'IDRKP20F5MEfKZxoDz3lkWsObEDz3Hqh+7qU5ZDipiaTDYYb8xSK+qHtE9NxrEaX5TH930/Nt7511dc3/u2gHFU=',
+      );
+      assert(resReadd.isMsg || resReadd.isPrompt || resReadd.isErr);
+      if (resReadd.isMsg) {
+        assert(i == 1);
+        final resReadd_ = resReadd.message?.result;
+        assert(resReadd_ == 'Not changed');
+      } else if (resReadd.isErr) {
+        assert(resReadd.error?.error != null);
+      } else {
+        assert(i == 0);
+        assert(resReadd.isPrompt);
+        assert(resReadd.prompt!.type == PromptType.confirm);
+        final confirm = resReadd.prompt!.value as Confirm;
+        final changeRes = await ZeroNet.instance.respondFuture(confirm.id);
+        assert(changeRes.result == 'ok');
+      }
     }
   });
 
@@ -66,7 +70,7 @@ void main() {
     await connectZeroTalk();
     final res = await instance.certSelectFuture();
     final certs = extractCertSelectDomains(res);
-    final userIds = certs.where((element) => element.domain == 'zeroid.bit');
+    final userIds = certs.where((element) => element.domain == 'cryptoid.bit');
     if (userIds.isEmpty) return;
     final domain = userIds.first.domain;
     final vRes = await instance.respondFuture(

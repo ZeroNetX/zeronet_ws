@@ -38,7 +38,7 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
 
   final callbacks = <int, MessageCallback>{};
 
-  List<String> prevCmds = [];
+  Map<String, int> prevCmds = {};
   final cmdsNeedPatching = [
     ZeroNetCmd.certAdd,
     ZeroNetCmd.certSelect,
@@ -118,6 +118,9 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
       subscription = channel!.stream.listen(null);
       if (onEventMessage != null) this.onEventMessage = onEventMessage;
     }
+    addCallbackHandler(wrapperCmd: true);
+    addCallbackHandler();
+
     return channel;
   }
 
@@ -171,7 +174,7 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
         callbacks[cmdId] = callback;
       }
       final vChannel = isWrapperCmd ? wrapperChannel : channel;
-      if (cmdsNeedPatching.contains(cmdStr)) prevCmds.add(cmdStr);
+      if (cmdsNeedPatching.contains(cmdStr)) prevCmds[cmdStr] = cmdId;
       vChannel!.sink.add(
         json.encode({
           'cmd': cmdStr,
@@ -185,33 +188,34 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
         throw 'Initalize ZeroNet Api First before calling any method';
       }
     }
-    if (callback != null) {
-      (isWrapperCmd ? wrapperSubscription : subscription)?.onData((message) {
-        onEventMessage?.call(message);
-        var msg = json.decode(message);
-        var id = msg['to'];
-        var cmd = msg['cmd'];
-        final isConfOrNoti = ['confirm', 'notification'].contains(cmd);
-        if (!callbacks.keys.contains(id) && !isConfOrNoti) return;
-        if (isConfOrNoti) {
-          id = msg['id'];
-          if (prevCmds.contains(ZeroNetCmd.certAdd)) {
-            id = id + 1;
-            prevCmds.remove(ZeroNetCmd.certAdd);
-          } else if (prevCmds.contains(ZeroNetCmd.certSelect)) {
-            id = id + 2;
-            prevCmds.remove(ZeroNetCmd.certSelect);
-          } else {
-            id = id + 1;
+  }
+
+  void addCallbackHandler({bool wrapperCmd = false}) {
+    (wrapperCmd ? wrapperSubscription : subscription)?.onData((message) {
+      onEventMessage?.call(message);
+      var msg = json.decode(message);
+      var id = msg['to'];
+      var cmd = msg['cmd'];
+      if (cmd != 'response') {
+        if (cmd == 'confirm') {
+          if (message.contains('current certificate') &&
+              message.contains('Change it')) {
+            id = prevCmds[ZeroNetCmd.certAdd]!;
           }
-        } else if (msg['cmd'] == 'injectScript') {
-          // i = msg['id'];
-          i++;
+        } else if (cmd == 'notification') {
+          if (message.contains('"ask"') &&
+              message.contains('#Select+account')) {
+            id = prevCmds[ZeroNetCmd.certSelect]!;
+          }
+        } else if (cmd == 'injectScript') {
+          //TODO! Check if need handling
+        } else {
+          return;
         }
-        callbacks[id]?.call(message);
-        if (cmdStr != 'channelJoin') callbacks.remove(id);
-      });
-    }
+      }
+      callbacks[id]?.call(message);
+      callbacks.remove(id);
+    });
   }
 
   @override
@@ -221,7 +225,15 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
     int? id,
     MessageCallback? callback,
   }) {
-    if (id == null) i = i + 2;
+    if (id == null) {
+      if (prevCmds.keys.contains(ZeroNetCmd.certAdd)) {
+        i = prevCmds[ZeroNetCmd.certAdd]!;
+        prevCmds.remove(ZeroNetCmd.certAdd);
+      } else if (prevCmds.keys.contains(ZeroNetCmd.certSelect)) {
+        i = prevCmds[ZeroNetCmd.certSelect]!;
+        prevCmds.remove(ZeroNetCmd.certSelect);
+      }
+    }
     final cmdId = id ?? i;
     if (callback != null) {
       callbacks[cmdId] = callback;
