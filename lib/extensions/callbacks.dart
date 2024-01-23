@@ -1,5 +1,4 @@
-import 'package:zeronet_ws/zeronet_ws.dart';
-
+import '../lib.dart';
 import '../constants.dart';
 import '../interface.dart';
 

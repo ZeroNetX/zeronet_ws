@@ -9,7 +9,7 @@ import 'package:html/parser.dart';
 
 import '../constants.dart';
 import '../models/models.dart';
-import '../zeronet_ws.dart';
+import '../lib.dart';
 
 part 'core/admin.dart';
 part 'core/ui_server.dart';

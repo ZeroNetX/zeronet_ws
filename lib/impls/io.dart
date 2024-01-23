@@ -11,8 +11,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:zeronet_ws/constants.dart';
 
+import '../constants.dart';
 import '../models/models.dart';
 import '../interface.dart';
 
