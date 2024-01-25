@@ -10,6 +10,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../constants.dart';
@@ -22,6 +23,7 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
   }
 
   static String wrapperKey = '';
+  String? _masterAddress;
 
   Client client = Client();
   WebSocketChannel? channel;
@@ -42,6 +44,8 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
   final cmdsNeedPatching = [
     ZeroNetCmd.certAdd,
     ZeroNetCmd.certSelect,
+    //
+    ZeroNetCmd.userShowMasterSeed,
   ];
 
   final String _kCmdResponse = 'response';
@@ -59,6 +63,14 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
           Uri.parse(url),
           headers: {'Accept': 'text/html'},
         );
+        if (res.headers.containsKey('set-cookie') &&
+            res.headers['set-cookie']!.contains('master_address=')) {
+          var cookie = res.headers['set-cookie']!;
+          var i = cookie.indexOf('master_address=');
+          var cookieM = cookie.substring(i + 15);
+          var j = cookieM.indexOf(';');
+          _masterAddress = cookieM.substring(0, j);
+        }
         var body = res.body;
         var i = body.indexOf('wrapper_key = "');
         var bodyM = body.substring(i + 15);
@@ -110,11 +122,15 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
             : wrapperKey;
     assert(wrapperKey.isNotEmpty);
     var uri = Uri.parse('ws://$ip:$port/Websocket?wrapper_key=$wrapperKey');
-    channel ??= WebSocketChannel.connect(uri);
+    Map<String, dynamic>? headers;
+    if (_masterAddress != null) {
+      headers = {'Cookie': 'master_address=$_masterAddress'};
+    }
+    channel ??= IOWebSocketChannel.connect(uri, headers: headers);
     subscription ??= channel!.stream.listen(null);
     this.onEventMessage ??= onEventMessage;
     if (override) {
-      channel = WebSocketChannel.connect(uri);
+      channel = IOWebSocketChannel.connect(uri, headers: headers);
       subscription = channel!.stream.listen(null);
       if (onEventMessage != null) this.onEventMessage = onEventMessage;
     }
@@ -133,7 +149,11 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
     var uri = Uri.parse(
       'ws://$ip:$port/ZeroNet-Internal/Websocket?wrapper_key=$wrapperKey',
     );
-    wrapperChannel ??= WebSocketChannel.connect(uri);
+    Map<String, dynamic>? headers;
+    if (_masterAddress != null) {
+      headers = {'Cookie': 'master_address=$_masterAddress'};
+    }
+    wrapperChannel ??= IOWebSocketChannel.connect(uri, headers: headers);
     wrapperSubscription ??= wrapperChannel!.stream.listen(null);
   }
 
@@ -206,6 +226,9 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
           if (message.contains('"ask"') &&
               message.contains('#Select+account')) {
             id = prevCmds[ZeroNetCmd.certSelect]!;
+          } else if (message.contains('"info"') &&
+              message.contains('Your unique private key:')) {
+            id = prevCmds[ZeroNetCmd.userShowMasterSeed]!;
           }
         } else if (cmd == 'injectScript') {
           //TODO! Check if need handling

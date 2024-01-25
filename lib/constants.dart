@@ -111,4 +111,13 @@ class ZeroNetCmd {
   static const String siteList = 'siteList';
   static const String sitePause = 'sitePause';
   static const String siteResume = 'siteResume';
+
+  //Multiuser
+  static const String userShowMasterSeed = 'userShowMasterSeed';
+  static const String userLogout = 'userLogout';
+  static const String userSet = 'userSet';
+
+  //Multiuser: yet to be implemented
+  static const String userSelectForm = 'userSelectForm';
+  static const String userLoginForm = 'userLoginForm';
 }

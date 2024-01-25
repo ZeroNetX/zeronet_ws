@@ -434,4 +434,28 @@ void main() {
       assert(res.isMsg);
     });
   });
+
+  group('Plugin::MultiUser', () {
+    test('userShowMasterSeed', () async {
+      await instance.connect(dashboard);
+      final res = await instance.userShowMasterSeedFuture();
+      assert(res.isNotEmpty);
+    });
+
+    test('userSet', () async {
+      await instance.connect(dashboard);
+      final serverInfo = await instance.serverInfoFuture();
+      final res = await instance.userSetFuture(serverInfo.masterAddress!);
+      assert(res.isMsg);
+    });
+
+    test('userLogout', () async {
+      await instance.connect(dashboard);
+      final res = await instance.userLogoutFuture();
+      if (res.isMsg) {
+        final result = res.message!.result;
+        assert(result == 'Successful logout' || result == 'User not found');
+      }
+    });
+  });
 }

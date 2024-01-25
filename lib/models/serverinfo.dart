@@ -30,6 +30,10 @@ class ServerInfo extends Result {
   String? distType;
   String? libVerifyBest;
 
+  String? masterAddress;
+  bool? multiUser;
+  bool? multiUserAdmin;
+
   ServerInfo({
     required this.version,
     required this.rev,
@@ -55,6 +59,10 @@ class ServerInfo extends Result {
     this.updatesite,
     this.distType,
     this.libVerifyBest,
+    //
+    this.masterAddress,
+    this.multiUser,
+    this.multiUserAdmin,
   });
 
   factory ServerInfo.fromJson(Map<String, dynamic> json) {
@@ -82,6 +90,10 @@ class ServerInfo extends Result {
       updatesite: json['updatesite'],
       distType: json['dist_type'],
       libVerifyBest: json['lib_verify_best'],
+      //
+      masterAddress: json['master_address'],
+      multiUser: json['multiuser'],
+      multiUserAdmin: json['multiuser_admin'],
     );
   }
 
@@ -113,6 +125,10 @@ class ServerInfo extends Result {
     data['updatesite'] = updatesite;
     data['dist_type'] = distType;
     data['lib_verify_best'] = libVerifyBest;
+
+    data['master_address'] = masterAddress;
+    data['multi_user'] = multiUser;
+    data['multi_user_admin'] = multiUserAdmin;
     return data;
   }
 }

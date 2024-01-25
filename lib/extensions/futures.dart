@@ -20,6 +20,7 @@ part 'plugins/chart.dart';
 part 'plugins/cors.dart';
 part 'plugins/crypt.dart';
 part 'plugins/merger.dart';
+part 'plugins/multi_user.dart';
 part 'plugins/content_filter.dart';
 part 'plugins/optional.dart';
 
