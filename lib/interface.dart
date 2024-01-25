@@ -19,6 +19,10 @@ abstract class ZeroNetWSInterface extends PlatformInterface {
     _instance = instance;
   }
 
+  String? get masterAddress => null;
+
+  set masterAddress(String? masterAddress) {}
+
   Future<String?> getWrapperKey(
     String url, {
     bool override = false,
@@ -30,7 +34,9 @@ abstract class ZeroNetWSInterface extends PlatformInterface {
     String port = '43110',
     bool override = false,
     String? wrapperKey_,
+    String? masterAddress,
     MessageCallback? onEventMessage,
+    bool overrideMasterAddress = false,
   }) =>
       Future.value();
 

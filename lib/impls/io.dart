@@ -53,16 +53,23 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
   final String _kCmdPong = 'pong';
 
   @override
+  String? get masterAddress => _masterAddress;
+
+  @override
+  set masterAddress(String? masterAddress) => _masterAddress = masterAddress;
+
+  @override
   Future<String?> getWrapperKey(
     String url, {
     bool override = false,
   }) async {
     if (wrapperKey.isEmpty || override) {
       try {
-        var res = await client.get(
-          Uri.parse(url),
-          headers: {'Accept': 'text/html'},
-        );
+        final headers = {
+          'Accept': 'text/html',
+          if (_masterAddress != null) 'Cookie': 'master_address=$_masterAddress'
+        };
+        var res = await client.get(Uri.parse(url), headers: headers);
         if (res.headers.containsKey('set-cookie') &&
             res.headers['set-cookie']!.contains('master_address=')) {
           var cookie = res.headers['set-cookie']!;
@@ -91,6 +98,8 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
     String port = '43110',
     bool override = false,
     String? wrapperKey_,
+    String? masterAddress,
+    bool overrideMasterAddress = false,
     MessageCallback? onEventMessage,
   }) async {
     await connectResult(
@@ -99,6 +108,8 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
       port: port,
       override: override,
       wrapperKey_: wrapperKey_,
+      masterAddress: masterAddress,
+      overrideMasterAddress: overrideMasterAddress,
       onEventMessage: onEventMessage,
     );
   }
@@ -109,8 +120,14 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
     String port = '43110',
     bool override = false,
     String? wrapperKey_,
+    String? masterAddress,
+    bool overrideMasterAddress = false,
     MessageCallback? onEventMessage,
   }) async {
+    _masterAddress ??= masterAddress;
+    if (overrideMasterAddress) {
+      _masterAddress = masterAddress;
+    }
     wrapperKey = (wrapperKey_ != null)
         ? wrapperKey_
         : (override || wrapperKey.isEmpty)

@@ -25,6 +25,10 @@ class ZeroNet {
         : Future.value(wrapperKey);
   }
 
+  String get masterAddress => ZeroNetWSInterface.instance.masterAddress ?? '';
+  set masterAddress(String masterAddress) =>
+      ZeroNetWSInterface.instance.masterAddress = masterAddress;
+
   Future<void> connect(
     String site, {
     String ip = '127.0.0.1',
@@ -32,6 +36,8 @@ class ZeroNet {
     bool override = false,
     String? wrapperKey_,
     MessageCallback? onEventMessage,
+    String? masterAddress,
+    bool overrideMasterAddress = false,
   }) async {
     await ZeroNetWSInterface.instance.connect(
       site,
@@ -40,6 +46,8 @@ class ZeroNet {
       wrapperKey_: wrapperKey_,
       override: override,
       onEventMessage: onEventMessage,
+      masterAddress: masterAddress,
+      overrideMasterAddress: overrideMasterAddress,
     );
     isInitialised = true;
   }
