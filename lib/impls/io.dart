@@ -181,7 +181,14 @@ class ZeroNetWSIO extends ZeroNetWSInterface {
     bool isWrapperCmd = false,
   }) {
     if (subscription == null) {
-      throw Exception('Initalize ZeroNet Api First before calling any method');
+      return Future.value(ResponseResult(
+        id: -1,
+        type: ResponseType.error,
+        error: Error(
+          id: -1,
+          error: 'Initalize ZeroNet Api First before calling any method',
+        ),
+      ));
     }
     Completer<ResponseResult> completer = Completer();
     cmd(
